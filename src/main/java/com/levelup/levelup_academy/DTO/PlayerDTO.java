@@ -1,29 +1,19 @@
-package com.levelup.levelup_academy.Model;
+package com.levelup.levelup_academy.DTO;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.Check;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
-@Entity
-@NoArgsConstructor
-
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class PlayerDTO {
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3,max = 30,message = "Username length must be between 3 and 30 characters")
-    @Column(columnDefinition = "varchar(40) not null unique")
+
     private String username;
     @NotEmpty(message = "Password can not be empty")
     @Size(min = 8,max = 200,message = "Password length must be more than 8 character")
@@ -39,15 +29,6 @@ public class User {
     @Column(columnDefinition = "varchar(40) not null")
     private String lastName;
     @Column(columnDefinition = "varchar(40) not null")
-    @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS|TRAINER)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
+    @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;
-
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private Trainer trainer;
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private Player player;
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private Pro pro;
-
-
 }
