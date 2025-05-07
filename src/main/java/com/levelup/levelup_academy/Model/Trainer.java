@@ -16,7 +16,7 @@ import java.io.File;
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-@Check(constraints = "game = 'FC25' OR game = 'CALLOFDUTY' OR game = 'OVERWATCH' OR game 'FATALFURY' OR game 'FORTNITE'")
+
 public class Trainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

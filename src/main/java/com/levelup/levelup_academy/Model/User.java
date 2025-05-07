@@ -16,7 +16,7 @@ import org.hibernate.annotations.Check;
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-@Check(constraints = "role = 'ADMIN' OR role = 'MODERATOR' OR role = 'PLAYER' OR role 'PRO' OR role 'PARENTS'")
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
