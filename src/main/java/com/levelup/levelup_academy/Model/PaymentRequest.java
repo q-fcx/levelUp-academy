@@ -3,7 +3,7 @@ package com.levelup.levelup_academy.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+// comment
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
