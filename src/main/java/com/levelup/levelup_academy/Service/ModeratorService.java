@@ -5,7 +5,6 @@ import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.ModeratorRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
