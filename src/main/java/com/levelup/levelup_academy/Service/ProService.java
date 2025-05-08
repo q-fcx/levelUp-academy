@@ -48,4 +48,9 @@ public class ProService {
         authRepository.save(user);
         proRepository.save(pro);
     }
+
+//    public void updatePro(Integer proId, Pro pro) {
+//        Pro proPlayer =
+//    }
+
 }
