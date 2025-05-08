@@ -40,4 +40,8 @@ public class Trainer {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
+    private Set<Session> sessions;
+
 }
