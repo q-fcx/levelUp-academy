@@ -6,14 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Check;
+
 
 @Getter
 @Setter
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,10 +49,10 @@ public class User {
     private Pro pro;
     //Moderator
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Moderator moderator;
 
-    @AssertFalse
-    private Boolean iaApproved;
+    private Boolean iaApproved = false;
 
 
 }

@@ -51,6 +51,6 @@ public class StatisticPro {
     private LocalDate date;
 
     @OneToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "id", unique = true)
+    @JoinColumn(name = "pro_id", referencedColumnName = "id")
     private Pro pro;
 }

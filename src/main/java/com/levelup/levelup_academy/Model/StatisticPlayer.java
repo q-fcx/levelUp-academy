@@ -53,7 +53,7 @@ public class StatisticPlayer {
 
 
     @OneToOne
-    @JoinColumn(name = "player_id", referencedColumnName = "id", unique = true)
+    @JoinColumn(name = "player_id", referencedColumnName = "id")
     private Player player;
 
 }
