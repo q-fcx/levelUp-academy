@@ -8,9 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Check;
 
-import java.io.File;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,4 +35,8 @@ public class Trainer {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
+    private Set<Session> sessions;
+
 }
