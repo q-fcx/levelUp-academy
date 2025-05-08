@@ -29,4 +29,7 @@ public class Player {
     @JoinColumn(name = "booking_id")
     @JsonIgnore
     private Booking booking;
+
+    @OneToOne(mappedBy = "player",cascade = CascadeType.ALL)
+    private StatisticPlayer statistics;
 }
