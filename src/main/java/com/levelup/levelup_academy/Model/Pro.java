@@ -24,4 +24,7 @@ public class Pro {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+
+    @OneToOne(mappedBy = "pro",cascade = CascadeType.ALL)
+    private Statistics statistics;
 }

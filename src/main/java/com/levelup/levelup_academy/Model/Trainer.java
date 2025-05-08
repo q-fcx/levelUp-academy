@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Check;
 
 import java.io.File;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -31,6 +32,9 @@ public class Trainer {
 
 //    @Lob
 //    private byte[] cv;
+
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "trainer")
+    private Set<Review> reviews;
 
     @OneToOne
     @JoinColumn(name = "user_id")

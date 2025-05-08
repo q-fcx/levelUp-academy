@@ -7,21 +7,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-public class Player {
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
-    private User user;
+    private String title;
+    private String comment;
+    private LocalDate date;
+    private Integer rate;
 
-    @OneToOne(mappedBy = "player",cascade = CascadeType.ALL)
-    private Statistics statistics;
+    @ManyToOne
+    @JoinColumn(name = "trainer_review_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Trainer trainer;
+
 }
