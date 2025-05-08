@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.File;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,5 +24,5 @@ public class Pro {
     private User user;
 
     @OneToOne(mappedBy = "pro",cascade = CascadeType.ALL)
-    private Statistics statistics;
+    private StatisticPlayer statistics;
 }

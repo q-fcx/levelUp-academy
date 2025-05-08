@@ -16,8 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-public class Statistics {
-
+public class StatisticPro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -51,12 +50,7 @@ public class Statistics {
     @Column(columnDefinition = "date not null")
     private LocalDate date;
 
-
     @OneToOne
-    @JoinColumn(name = "player_id", referencedColumnName = "id", unique = true)
-    private Player player;
-
-    @OneToOne
-    @JoinColumn(name = "player_id", referencedColumnName = "id", unique = true)
+    @JoinColumn(name = "pro_id", referencedColumnName = "id", unique = true)
     private Pro pro;
 }

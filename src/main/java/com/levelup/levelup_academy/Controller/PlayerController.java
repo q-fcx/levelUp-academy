@@ -25,4 +25,16 @@ public class PlayerController {
         playerService.registerPlayer(playerDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Player registers"));
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<String> update(@PathVariable Integer id, @RequestBody PlayerDTO playerDTO) {
+        playerService.updatePlayer(id, playerDTO);
+        return ResponseEntity.ok("Player updated successfully");
+    }
+
+    // Delete player by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
+        playerService.deletePlayer(id);
+        return ResponseEntity.ok("Player deleted successfully");
+    }
 }
