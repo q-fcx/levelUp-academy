@@ -23,7 +23,7 @@ public class ParentService {
 
     public void registerParent(ParentDTO parentDTO) {
         parentDTO.setRole("PARENTS");
-        User user = new User(null, parentDTO.getUsername(), parentDTO.getPassword(), parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), null, null, null,null);
+        User user = new User(null, parentDTO.getUsername(), parentDTO.getPassword(), parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), null, null, null,null,false);
 
         Parent parent = new Parent(null, user,null, null);
         authRepository.save(user);
