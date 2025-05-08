@@ -9,21 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Check;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@Entity
 @NoArgsConstructor
-
+@Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3,max = 30,message = "Username length must be between 3 and 30 characters")
-    @Column(columnDefinition = "varchar(40) not null unique")
+    @Column(columnDefinition = "varchar(200) not null unique")
     private String username;
     @NotEmpty(message = "Password can not be empty")
     @Size(min = 8,max = 200,message = "Password length must be more than 8 character")
@@ -42,12 +40,19 @@ public class User {
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS|TRAINER)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;
 
+    //Tariner
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Trainer trainer;
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Player player;
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Pro pro;
+    //Moderator
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private Moderator moderator;
 
 
 }

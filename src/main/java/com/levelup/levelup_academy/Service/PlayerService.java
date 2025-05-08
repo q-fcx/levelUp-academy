@@ -27,7 +27,7 @@ public class PlayerService {
     public void registerPlayer(PlayerDTO playerDTO){
         playerDTO.setRole("PLAYER");
         User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), null,null,null);
-        Player player = new Player(null,user,null);
+        Player player = new Player(null,user,null,null);
         authRepository.save(user);
         playerRepository.save(player);
     }
@@ -46,6 +46,8 @@ public class PlayerService {
         user.setFirstName(playerDTO.getFirstName());
         user.setLastName(playerDTO.getLastName());
 
+        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), null,null,null,null);
+        Player player = new Player(null,user,null);
         authRepository.save(user);
         playerRepository.save(player);
     }

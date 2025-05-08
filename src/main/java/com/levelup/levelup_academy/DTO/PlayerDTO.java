@@ -11,9 +11,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PlayerDTO {
+
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3,max = 30,message = "Username length must be between 3 and 30 characters")
-
     private String username;
     @NotEmpty(message = "Password can not be empty")
     @Size(min = 8,max = 200,message = "Password length must be more than 8 character")
