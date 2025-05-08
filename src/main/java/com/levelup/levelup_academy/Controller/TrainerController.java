@@ -5,6 +5,7 @@ import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Service.TrainerService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -37,5 +38,19 @@ public class TrainerController {
         List<Trainer> trainers = trainerService.getAllTrainers();
         return ResponseEntity.ok(trainers);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateTrainer(@PathVariable Integer id,
+                                                @RequestBody @Valid TrainerDTO trainerDTO){
+        trainerService.updateTrainer(id, trainerDTO);
+        return ResponseEntity.ok("Trainer updated successfully");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTrainer(@PathVariable Integer id){
+        trainerService.deleteTrainer(id);
+        return ResponseEntity.ok("Trainer deleted successfully");
+    }
+
+
 
 }

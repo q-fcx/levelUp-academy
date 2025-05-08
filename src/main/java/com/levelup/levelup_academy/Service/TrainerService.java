@@ -41,7 +41,7 @@ public class TrainerService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),null,null,null,null);
+        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),null,null,null,null,false);
         Trainer trainer = new Trainer(null,filePath,trainerDTO.getGame(),trainerDTO.getIsAvailable(),user);
         authRepository.save(user);
         trainerRepository.save(trainer);
@@ -75,4 +75,30 @@ public class TrainerService {
             throw new RuntimeException("Failed to read CV file", e);
         }
     }
+    public void updateTrainer(Integer id, TrainerDTO trainerDTO){
+        Trainer trainer = trainerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Trainer not found"));
+
+        User user = trainer.getUser();
+        user.setUsername(trainerDTO.getUsername());
+        user.setPassword(trainerDTO.getPassword());
+        user.setEmail(trainerDTO.getEmail());
+        user.setFirstName(trainerDTO.getFirstName());
+        user.setLastName(trainerDTO.getLastName());
+
+        trainer.setGame(trainerDTO.getGame());
+        trainer.setIsAvailable(trainerDTO.getIsAvailable());
+
+        authRepository.save(user);
+        trainerRepository.save(trainer);
+    }
+    public void deleteTrainer(Integer id){
+        Trainer trainer = trainerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Trainer not found"));
+
+        authRepository.delete(trainer.getUser());
+        trainerRepository.delete(trainer);
+    }
+
+
 }

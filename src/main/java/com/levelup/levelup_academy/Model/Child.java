@@ -39,6 +39,6 @@ public class Child {
     @JsonIgnore
     private Parent parent;
 
-    @OneToOne(mappedBy = "Child",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "child",cascade = CascadeType.ALL)
     private StatisticChild statistics;
 }

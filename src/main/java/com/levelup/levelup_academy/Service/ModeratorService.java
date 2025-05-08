@@ -5,6 +5,7 @@ import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.ModeratorRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,4 +30,25 @@ public class ModeratorService {
         authRepository.save(user);
         moderatorRepository.save(moderator);
     }
+    public void updateModerator(Integer id, ModeratorDTO moderatorDTO){
+        Moderator moderator = moderatorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Moderator not found"));
+
+        User user = moderator.getUser();
+        user.setUsername(moderatorDTO.getUsername());
+        user.setPassword(moderatorDTO.getPassword());
+        user.setEmail(moderatorDTO.getEmail());
+        user.setFirstName(moderatorDTO.getFirstName());
+        user.setLastName(moderatorDTO.getLastName());
+
+        authRepository.save(user);
+    }
+    public void deleteModerator(Integer id){
+        Moderator moderator = moderatorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Moderator not found"));
+
+        authRepository.delete(moderator.getUser());
+        moderatorRepository.delete(moderator);
+    }
+
 }

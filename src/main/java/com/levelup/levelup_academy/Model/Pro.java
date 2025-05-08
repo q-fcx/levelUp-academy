@@ -24,5 +24,5 @@ public class Pro {
     private User user;
 
     @OneToOne(mappedBy = "pro",cascade = CascadeType.ALL)
-    private StatisticPro statistics;
+    private StatisticPlayer statistics;
 }

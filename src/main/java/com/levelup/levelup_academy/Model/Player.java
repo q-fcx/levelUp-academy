@@ -30,6 +30,5 @@ public class Player {
     @JsonIgnore
     private Booking booking;
 
-    @OneToOne(mappedBy = "player",cascade = CascadeType.ALL)
-    private StatisticPlayer statistics;
+
 }
