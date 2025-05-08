@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PlayerDTO {
+public class ModeratorDTO {
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3,max = 200,message = "Username length must be between 3 and 30 characters")
 

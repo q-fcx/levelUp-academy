@@ -23,7 +23,7 @@ public class User {
     private Integer id;
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3,max = 30,message = "Username length must be between 3 and 30 characters")
-    @Column(columnDefinition = "varchar(40) not null unique")
+    @Column(columnDefinition = "varchar(200) not null unique")
     private String username;
     @NotEmpty(message = "Password can not be empty")
     @Size(min = 8,max = 200,message = "Password length must be more than 8 character")
@@ -42,12 +42,18 @@ public class User {
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS|TRAINER)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;
 
+    //Tariner
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Trainer trainer;
+   //Player
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Player player;
+    //Pro
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Pro pro;
+    //Moderator
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private Moderator moderator;
 
 
 }
