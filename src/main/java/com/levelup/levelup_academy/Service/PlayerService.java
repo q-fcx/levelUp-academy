@@ -27,8 +27,39 @@ public class PlayerService {
     public void registerPlayer(PlayerDTO playerDTO){
         playerDTO.setRole("PLAYER");
         User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), null,null,null,null);
-        Player player = new Player(null,user,null);
+        Player player = new Player(null,user,null, null);
         authRepository.save(user);
         playerRepository.save(player);
     }
+    public void updatePlayer(Integer id, PlayerDTO playerDTO) {
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        User user = player.getUser();
+        if (user == null) {
+            throw new RuntimeException("User not found for this player");
+        }
+
+        user.setUsername(playerDTO.getUsername());
+        user.setPassword(playerDTO.getPassword());
+        user.setEmail(playerDTO.getEmail());
+        user.setFirstName(playerDTO.getFirstName());
+        user.setLastName(playerDTO.getLastName());
+
+        authRepository.save(user);
+        playerRepository.save(player);
+    }
+    public void deletePlayer(Integer id) {
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        User user = player.getUser();
+        if (user != null) {
+            authRepository.delete(user);
+        }
+
+        playerRepository.delete(player);
+    }
+
+
 }
