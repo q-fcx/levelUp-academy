@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PlayerDTO {
+public class ParentDTO {
 
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3,max = 30,message = "Username length must be between 3 and 30 characters")
@@ -22,12 +22,15 @@ public class PlayerDTO {
     @Email
     @Column(columnDefinition = "varchar(200) not null unique")
     private String email;
+
     @NotEmpty(message = "firstName can not be empty")
     @Column(columnDefinition = "varchar(40) not null")
     private String firstName;
+
     @NotEmpty(message = "lastName can not be empty")
     @Column(columnDefinition = "varchar(40) not null")
     private String lastName;
+
     @Column(columnDefinition = "varchar(40) not null")
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;

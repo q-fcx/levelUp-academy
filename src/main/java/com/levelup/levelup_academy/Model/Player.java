@@ -21,4 +21,9 @@ public class Player {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+
+    @OneToOne
+    @JoinColumn(name = "booking_id")
+    @JsonIgnore
+    private Booking booking;
 }
