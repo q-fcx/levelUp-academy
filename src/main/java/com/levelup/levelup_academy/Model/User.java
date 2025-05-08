@@ -13,7 +13,6 @@ import org.hibernate.annotations.Check;
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,10 +49,10 @@ public class User {
     private Pro pro;
     //Moderator
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Moderator moderator;
 
-    @AssertFalse
-    private Boolean iaApproved;
+    private Boolean iaApproved = false;
 
 
 }
