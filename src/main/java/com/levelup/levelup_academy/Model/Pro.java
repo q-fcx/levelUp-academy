@@ -24,5 +24,9 @@ public class Pro {
     private User user;
 
     @OneToOne(mappedBy = "pro",cascade = CascadeType.ALL)
-    private StatisticPlayer statistics;
+    private StatisticPro statistics;
+
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "pro")
+    @PrimaryKeyJoinColumn
+    private Contract contract;
 }

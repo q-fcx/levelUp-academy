@@ -28,8 +28,21 @@ public class SessionService {
     }
 
     //ADD
-    public void addClass(Session session,Integer moderator_id){
+    public void addClass(Session session,Integer moderator_id,Integer trainerId,Integer gameId){
         Moderator moderator = moderatorRepository.findModeratorById(moderator_id);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer not found");
+        }
+        Game game = gameRepository.findGameById(gameId);
+        if(game == null){
+            throw new ApiException("Game not found");
+        }
+        session.setTrainer(trainer);
+        session.setGame(game);
         sessionRepository.save(session);
 
     }
