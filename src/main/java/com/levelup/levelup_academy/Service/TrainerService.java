@@ -42,7 +42,7 @@ public class TrainerService {
             }
         }
         User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),null,null,null,null,false);
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getGame(),trainerDTO.getIsAvailable(),null,user,null);
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null, user, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
     }
@@ -58,13 +58,7 @@ public class TrainerService {
         }
 
         try {
-            Path baseDir = Paths.get("C:/levelup/cvs").toAbsolutePath().normalize(); // replace with your base CV folder
             Path path = Paths.get(filePath).toAbsolutePath().normalize();
-
-//            if (!path.startsWith(baseDir)) {
-//                throw new RuntimeException("Invalid file path.");
-//            }
-
             if (!Files.exists(path) || !Files.isReadable(path)) {
                 throw new RuntimeException("CV file not found or not readable.");
             }
@@ -75,4 +69,29 @@ public class TrainerService {
             throw new RuntimeException("Failed to read CV file", e);
         }
     }
+    public void updateTrainer(Integer id, TrainerDTO trainerDTO){
+        Trainer trainer = trainerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Trainer not found"));
+
+        User user = trainer.getUser();
+        user.setUsername(trainerDTO.getUsername());
+        user.setPassword(trainerDTO.getPassword());
+        user.setEmail(trainerDTO.getEmail());
+        user.setFirstName(trainerDTO.getFirstName());
+        user.setLastName(trainerDTO.getLastName());
+
+        trainer.setIsAvailable(trainerDTO.getIsAvailable());
+
+        authRepository.save(user);
+        trainerRepository.save(trainer);
+    }
+    public void deleteTrainer(Integer id){
+        Trainer trainer = trainerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Trainer not found"));
+
+        authRepository.delete(trainer.getUser());
+        trainerRepository.delete(trainer);
+    }
+
+
 }

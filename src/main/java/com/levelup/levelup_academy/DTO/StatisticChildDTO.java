@@ -1,26 +1,18 @@
-package com.levelup.levelup_academy.Model;
+package com.levelup.levelup_academy.DTO;
 
-import jakarta.persistence.*;
+import com.levelup.levelup_academy.Model.Child;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
-@Entity
-@NoArgsConstructor
-public class StatisticChild {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class StatisticChildDTO {
     @NotNull
     @Min(0)
     @Column(columnDefinition = "Integer not null")
@@ -50,7 +42,5 @@ public class StatisticChild {
     @Column(columnDefinition = "date not null")
     private LocalDate date;
 
-    @OneToOne
-    @JoinColumn(name = "child_id", referencedColumnName = "id", unique = true)
     private Child child;
 }

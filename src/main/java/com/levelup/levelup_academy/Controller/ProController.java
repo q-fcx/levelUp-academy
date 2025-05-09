@@ -1,7 +1,6 @@
 package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.DTO.ProDTO;
-import com.levelup.levelup_academy.DTO.TrainerDTO;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ProService;
 import jakarta.validation.Valid;
@@ -29,37 +28,32 @@ public class ProController {
             @RequestPart("pro") ProDTO proDTO,
             @RequestPart("file") MultipartFile file) {
         proService.registerPro(proDTO, file);
-        return ResponseEntity.ok("pro player registered successfully with PDF uploaded");
+        return ResponseEntity.ok("pro player registered successfully with CV uploaded");
     }
 
     //Edit
-    @PutMapping("/edit/{proId}")
-    public ResponseEntity EditProAccount(@PathVariable Integer proId, @RequestBody @Valid ProDTO proDTO) {
-        proService.edit(proId, proDTO);
+    @PutMapping("/edit")
+    public ResponseEntity EditProAccount(@PathVariable User pro, @RequestBody @Valid ProDTO proDTO) {
+        proService.edit(pro.getId(), proDTO);
         return ResponseEntity.ok("Pro player information updated successfully");
     }
 
     // Endpoint to delete Pro player by ID
-    @DeleteMapping("/delete/{proId}")
-    public ResponseEntity<String> deleteProPlayer(@PathVariable Integer proId) {
-        proService.delete(proId);
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteProPlayer(@PathVariable User pro) {
+        proService.delete(pro.getId());
         return ResponseEntity.ok("Your account have been deleted successfully.");
 
     }
 
-    // approving the pro request "only the admin can approve"
     @PutMapping("/approve/{adminId}/{proId}")
     public ResponseEntity<String> approvePro(@PathVariable Integer adminId, @PathVariable Integer proId) {
         proService.approveProByAdmin(adminId, proId);
         return ResponseEntity.ok("The professional player has been approved.");
     }
-
-    //rejecting the pro request "only the admin can reject"
     @PutMapping("/reject/{adminId}/{proId}")
     public ResponseEntity<String> rejectPro(@PathVariable Integer adminId, @PathVariable Integer proId) {
         proService.rejectProByAdmin(adminId, proId);
         return ResponseEntity.ok("The professional player has been rejected and deleted.");
     }
-
-
 }

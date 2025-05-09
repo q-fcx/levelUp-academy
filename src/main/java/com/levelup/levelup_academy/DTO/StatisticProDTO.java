@@ -1,6 +1,5 @@
 package com.levelup.levelup_academy.DTO;
 
-import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.Pro;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
@@ -10,10 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
-
 @Data
 @AllArgsConstructor
-public class StatisticsDTO {
+public class StatisticProDTO {
     @NotNull
     @Min(0)
     @Column(columnDefinition = "Integer not null")
@@ -42,8 +40,6 @@ public class StatisticsDTO {
     @NotNull
     @Column(columnDefinition = "date not null")
     private LocalDate date;
-
-    private Player player;
 
     private Pro pro;
 }

@@ -21,9 +21,9 @@ public class SessionController {
     }
 
     //ADD
-    @PostMapping("/add/{moderatorId}")
-    public ResponseEntity addSession(@RequestBody @Valid Session session, @PathVariable Integer moderatorId){
-        sessionService.addClass(session,moderatorId);
+    @PostMapping("/add/{moderatorId}/{trainerId}/{gameId}")
+    public ResponseEntity addSession(@RequestBody @Valid Session session, @PathVariable Integer moderatorId,@PathVariable Integer trainerId,@PathVariable Integer gameId){
+        sessionService.addClass(session,moderatorId,trainerId,gameId);
         return ResponseEntity.status(200).body(new ApiResponse("Session Added"));
     }
 

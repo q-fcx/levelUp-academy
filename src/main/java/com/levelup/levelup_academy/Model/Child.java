@@ -38,4 +38,7 @@ public class Child {
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonIgnore
     private Parent parent;
+
+    @OneToOne(mappedBy = "child",cascade = CascadeType.ALL)
+    private StatisticChild statistics;
 }

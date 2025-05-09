@@ -23,8 +23,10 @@ public class Pro {
     @JsonIgnore
     private User user;
 
-    @OneToOne
-//            (mappedBy = "pro",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "pro",cascade = CascadeType.ALL)
+    private StatisticPro statistics;
+
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "pro")
     @PrimaryKeyJoinColumn
-    private StatisticPlayer statistics;
+    private Contract contract;
 }

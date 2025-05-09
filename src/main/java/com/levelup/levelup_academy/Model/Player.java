@@ -22,12 +22,13 @@ public class Player {
     @JsonIgnore
     private User user;
 
+    @OneToOne(mappedBy = "player",cascade = CascadeType.ALL)
+    private StatisticPlayer statistics;
+
     @OneToOne
     @JoinColumn(name = "booking_id")
     @JsonIgnore
     private Booking booking;
 
-    @OneToOne(mappedBy = "player",cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private StatisticPlayer statistics;
+
 }

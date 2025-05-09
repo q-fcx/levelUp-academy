@@ -1,7 +1,10 @@
 package com.levelup.levelup_academy.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +26,14 @@ public class Booking {
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate bookDate;
 
-    @OneToOne(mappedBy = "booking",cascade = CascadeType.ALL)
-    private Player player;
+    @NotEmpty(message = "Status cannot be empty")
+    @Pattern(regexp = "^(PENDING|ACTIVE)$", message = "Booking must be PENDING OR ACTIVE only")
+    @Column(columnDefinition = "varchar(20) not null")
+    private String status;
 
-    @OneToOne(mappedBy = "booking",cascade = CascadeType.ALL)
-    private Parent parent;
+    @ManyToOne
+    @JoinColumn(name = "session_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Session session;
 
 }
