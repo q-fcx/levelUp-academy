@@ -42,7 +42,7 @@ public class TrainerService {
             }
         }
         User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),null,null,null,null,false);
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getGame(),trainerDTO.getIsAvailable(),user);
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getGame(),trainerDTO.getIsAvailable(),null, user, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
     }
@@ -75,6 +75,7 @@ public class TrainerService {
             throw new RuntimeException("Failed to read CV file", e);
         }
     }
+
     public void updateTrainer(Integer id, TrainerDTO trainerDTO){
         Trainer trainer = trainerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
@@ -96,9 +97,11 @@ public class TrainerService {
         Trainer trainer = trainerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
-        authRepository.delete(trainer.getUser());
-        trainerRepository.delete(trainer);
+        authRepository.delete(trainer.getUser()); // حذف المستخدم
+        trainerRepository.delete(trainer);        // حذف المدرب
     }
 
 
 }
+
+
