@@ -41,6 +41,20 @@ public class SessionController {
         return ResponseEntity.status(200).body(new ApiResponse("Assigned"));
     }
 
+    //update
+    @PutMapping("/update/{moderatorId}/{sessionId}")
+    public ResponseEntity updateSession(@PathVariable Integer moderatorId ,@PathVariable Integer sessionId, @RequestBody @Valid Session session){
+        sessionService.updateSession(moderatorId,session,sessionId);
+        return ResponseEntity.status(200).body(new ApiResponse("Session Updated"));
+    }
+
+    //delete
+    @DeleteMapping("/del/{moderatorId}/{sessionId}")
+    public ResponseEntity deleteSession(@PathVariable Integer moderatorId,@PathVariable Integer sessionId){
+        sessionService.deleteSession(moderatorId, sessionId);
+        return ResponseEntity.status(200).body(new ApiResponse("Session Deleted"));
+    }
+
 
 
 }

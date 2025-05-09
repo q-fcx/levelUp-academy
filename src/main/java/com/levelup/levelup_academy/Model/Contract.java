@@ -39,9 +39,19 @@ public class Contract {
     private LocalDate endDate;
     @Column(columnDefinition = "double not null")
     private Double amount;
+
+    private Boolean proStatus = false;
+
+    private Boolean moderatorStatus = false;
+
+
     @OneToOne
     @JoinColumn
     @JsonIgnore
     private Pro pro;
 
+    @ManyToOne
+    @JoinColumn(name = "moderator_id")
+    @JsonIgnore
+    private Moderator moderator;
 }
