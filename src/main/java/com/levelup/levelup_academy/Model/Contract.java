@@ -25,7 +25,7 @@ public class Contract {
     @Column(columnDefinition = "varchar(50) not null")
     private String team;
     @Email
-    @Column(columnDefinition = "varchar(40) not null unique")
+    @Column(columnDefinition = "varchar(40) not null")
     private String email;
     @NotNull(message = "Commercial register can not be null")
     @Column(columnDefinition = "int not null")
@@ -43,4 +43,5 @@ public class Contract {
     @JoinColumn
     @JsonIgnore
     private Pro pro;
+
 }

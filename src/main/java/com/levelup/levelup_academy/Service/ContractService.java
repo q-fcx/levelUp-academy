@@ -4,8 +4,10 @@ import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.ContractDTO;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.Model.Contract;
+import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Repository.ContractRepository;
+import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.ProRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class ContractService {
     private final ContractRepository contractRepository;
     private final EmailNotificationService emailNotificationService;
     private final ProRepository proRepository;
+    private final ModeratorRepository moderatorRepository;
 
     //GET
     public List<Contract> getAllContract(){
@@ -25,31 +28,34 @@ public class ContractService {
     }
 
     //ADD
-    public void addContract(ContractDTO contractDTO){
-        Pro pro = proRepository.findProById(contractDTO.getProId());
-        if (pro == null){
-            throw new ApiException("Pro not found");
+    public void addContract(ContractDTO contractDTO) {
+        // Validate the moderator exists
+        Moderator moderator = moderatorRepository.findModeratorById(contractDTO.getModeratorId());
+        if (moderator == null) {
+            throw new ApiException("Moderator not found with ID: " + contractDTO.getModeratorId());
         }
-        Contract contract = new Contract(null, contractDTO.getTeam(),pro.getUser().getEmail() , contractDTO.getCommercialRegister(), contractDTO.getGame(), contractDTO.getStartDate(),contractDTO.getEndDate(), contractDTO.getAmount(), null);
+
+        // Create and save contract without linking to moderator
+        Contract contract = new Contract(
+                null,
+                contractDTO.getTeam(),
+                contractDTO.getEmail(),
+                contractDTO.getCommercialRegister(),
+                contractDTO.getGame(),
+                contractDTO.getStartDate(),
+                contractDTO.getEndDate(),
+                contractDTO.getAmount(),
+                null // Pro is still null
+        );
+
         contractRepository.save(contract);
 
-        // Save contract first to generate the ID
-        contractRepository.save(contract);
-
-        // Build email
+        // Send notification to the moderator
         EmailRequest emailRequest = new EmailRequest();
-        emailRequest.setRecipient(pro.getUser().getEmail());
-        emailRequest.setSubject("Contract Confirmation");
-        emailRequest.setMessage("Dear " + contract.getTeam() + ",\n\n" +
-                "Your contract has been successfully added. Details:\n" +
-                "- Game: " + contract.getGame() + "\n" +
-                "- Start Date: " + contract.getStartDate() + "\n" +
-                "- End Date: " + contract.getEndDate() + "\n" +
-                "- Amount: " + contract.getAmount() + "\n\n" +
-                "Regards,\nReal Estate Team");
+        emailRequest.setRecipient(moderator.getUser().getEmail());
+        emailRequest.setSubject("New Contract Added");
+        emailRequest.setMessage("A new contract has been added by team: " + contract.getTeam());
 
-        // Send email
         emailNotificationService.sendEmail(emailRequest);
-
     }
 }
