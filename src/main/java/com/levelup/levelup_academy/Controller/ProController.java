@@ -6,8 +6,7 @@ import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ProService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,4 +46,18 @@ public class ProController {
 //        return ResponseEntity.ok("Your account have been deleted successfully.");
 //
 //    }
+
+    @GetMapping("/{id}/cv")
+    public ResponseEntity<byte[]> downloadProCv(@PathVariable Integer id) {
+        byte[] cvContent = proService.downloadProCv(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition
+                .builder("attachment")
+                .filename("pro_cv_" + id + ".pdf")
+                .build());
+
+        return new ResponseEntity<>(cvContent, headers, HttpStatus.OK);
+    }
 }

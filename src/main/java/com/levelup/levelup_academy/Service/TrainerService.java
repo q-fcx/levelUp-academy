@@ -58,13 +58,7 @@ public class TrainerService {
         }
 
         try {
-            Path baseDir = Paths.get("C:/levelup/cvs").toAbsolutePath().normalize(); // replace with your base CV folder
             Path path = Paths.get(filePath).toAbsolutePath().normalize();
-
-//            if (!path.startsWith(baseDir)) {
-//                throw new RuntimeException("Invalid file path.");
-//            }
-
             if (!Files.exists(path) || !Files.isReadable(path)) {
                 throw new RuntimeException("CV file not found or not readable.");
             }

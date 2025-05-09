@@ -86,4 +86,27 @@ public class ProService {
         proRepository.delete(pro);
         authRepository.delete(user);
     }
+
+
+    public byte[] downloadProCv(Integer proId) {
+        Pro pro = proRepository.findById(proId)
+                .orElseThrow(() -> new RuntimeException("Pro not found"));
+
+        String filePath = pro.getCvPath();
+        if (filePath == null || filePath.isEmpty()) {
+            throw new RuntimeException("CV not uploaded for this pro.");
+        }
+
+        try {
+            Path path = Paths.get(filePath).toAbsolutePath().normalize();
+            if (!Files.exists(path) || !Files.isReadable(path)) {
+                throw new RuntimeException("CV file not found or not readable.");
+            }
+
+            return Files.readAllBytes(path);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read CV file", e);
+        }
+    }
+
 }
