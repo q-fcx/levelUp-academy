@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Service;
 
+import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.ParentDTO;
 import com.levelup.levelup_academy.Model.Parent;
 import com.levelup.levelup_academy.Model.User;
@@ -32,4 +33,30 @@ public class ParentService {
     }
 
 
+
+    public void editParent(Integer parentId, ParentDTO parentDTO) {
+        Parent parent = parentRepository.findParentById(parentId);
+        if (parent == null) {
+            throw new ApiException("Parent not found");
+        }
+        User user = parent.getUser();
+        user.setUsername(parentDTO.getUsername());
+        user.setEmail(parentDTO.getEmail());
+        user.setFirstName(parentDTO.getFirstName());
+        user.setLastName(parentDTO.getLastName());
+        user.setPassword(parentDTO.getPassword());
+
+        authRepository.save(user);
+        parentRepository.save(parent);
+    }
+
+    public void deleteParent(Integer parentId) {
+        Parent parent = parentRepository.findParentById(parentId);
+        if (parent == null) {
+            throw new ApiException("Parent not found");
+        }
+        User user = parent.getUser();
+        parentRepository.delete(parent);
+        authRepository.delete(user);
+    }
 }

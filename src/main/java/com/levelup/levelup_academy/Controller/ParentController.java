@@ -27,4 +27,18 @@ public class ParentController {
         parentService.registerParent(parentDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Parent registered"));
     }
+
+    @PutMapping("/edit/{parentId}")
+    public ResponseEntity editParent(@PathVariable Integer parentId, @RequestBody ParentDTO parentDTO) {
+            parentService.editParent(parentId, parentDTO);
+            return ResponseEntity.status(200).body("Parent details updated successfully");
+
+    }
+
+    @DeleteMapping("/delete/{parentId}")
+    public ResponseEntity deleteParent(@PathVariable Integer parentId) {
+        parentService.deleteParent(parentId);
+        return ResponseEntity.status(200).body("Parent deleted successfully");
+    }
+
 }

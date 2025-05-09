@@ -56,8 +56,7 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Moderator moderator;
 
-    @AssertFalse
-    private Boolean isApproved;
+    private Boolean isApproved=false;
 
 
 

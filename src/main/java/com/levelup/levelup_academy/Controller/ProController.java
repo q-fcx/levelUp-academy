@@ -1,6 +1,7 @@
 package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.DTO.ProDTO;
+import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ProService;
 import jakarta.validation.Valid;
@@ -32,21 +33,21 @@ public class ProController {
     }
 
     //Edit
-    @PutMapping("/edit")
-    public ResponseEntity EditProAccount(@PathVariable User pro, @RequestBody @Valid ProDTO proDTO) {
-        proService.edit(pro.getId(), proDTO);
+    @PutMapping("/edit/{proId}")
+    public ResponseEntity EditProAccount(@PathVariable Integer proId, @RequestBody @Valid ProDTO proDTO) {
+        proService.edit(proId, proDTO);
         return ResponseEntity.ok("Pro player information updated successfully");
     }
 
     // Endpoint to delete Pro player by ID
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteProPlayer(@PathVariable User pro) {
-        proService.delete(pro.getId());
+    @DeleteMapping("/delete/{proId}")
+    public ResponseEntity deleteProPlayer(@PathVariable Integer proId) {
+        proService.delete(proId);
         return ResponseEntity.ok("Your account have been deleted successfully.");
 
     }
 
-    @PutMapping("/approve/{adminId}/{proId}")
+    @PostMapping("/approve/{adminId}/{proId}")
     public ResponseEntity<String> approvePro(@PathVariable Integer adminId, @PathVariable Integer proId) {
         proService.approveProByAdmin(adminId, proId);
         return ResponseEntity.ok("The professional player has been approved.");
@@ -56,4 +57,6 @@ public class ProController {
         proService.rejectProByAdmin(adminId, proId);
         return ResponseEntity.ok("The professional player has been rejected and deleted.");
     }
+
+
 }
