@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Service;
 
+import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
 import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.User;
@@ -26,14 +27,14 @@ public class PlayerService {
 
     public void registerPlayer(PlayerDTO playerDTO){
         playerDTO.setRole("PLAYER");
-        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), null,null,null,null);
-        Player player = new Player(null,user,null, null, null);
+        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), null,null,null,null,false);
+        Player player = new Player(null,user,null, null);
         authRepository.save(user);
         playerRepository.save(player);
     }
     public void updatePlayer(Integer id, PlayerDTO playerDTO) {
         Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Player not found"));
+                .orElseThrow(() -> new ApiException("Player not found"));
 
         User user = player.getUser();
         if (user == null) {
