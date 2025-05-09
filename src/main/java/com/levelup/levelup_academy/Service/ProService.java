@@ -28,20 +28,28 @@ public class ProService {
         return proRepository.findAll();
     }
 
-    //Register pro player
 
+
+    //Register pro player
     public void registerPro(ProDTO proDTO, MultipartFile file){
         proDTO.setRole("PRO");
+        if (authRepository.existsByEmail(proDTO.getEmail())) {
+            throw new ApiException("Email is already in use");
+        }
+
+        if (authRepository.existsByUsername(proDTO.getUsername())) {
+            throw new ApiException("Username is already in use");
+        }
         String filePath = null;
         if (file != null && !file.isEmpty()) {
             try {
                 String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-                Path path = Paths.get("uploads/cvs/" + fileName);
+                Path path = Paths.get("uploads/PDF/" + fileName);
                 Files.createDirectories(path.getParent());
                 Files.write(path, file.getBytes());
                 filePath = path.toString();
             } catch (IOException e) {
-                throw new RuntimeException("Failed to save CV file.");
+                throw new RuntimeException("Failed to save PDF file.");
             }
         }
         User user = new User(null,proDTO.getUsername(),proDTO.getPassword(),proDTO.getEmail(),proDTO.getFirstName(),proDTO.getLastName(),proDTO.getRole(),null,null,null,null,false);
@@ -57,17 +65,10 @@ public class ProService {
             throw new ApiException("The Professional Player you search for is not found ");
         }
 
-        if(pro.getUser().getIaApproved()== false){
+        if(pro.getUser().getIsApproved().equals(false)){
             throw new ApiException("The Professional Player you search for is not approved yet ");
         }
-        if(authRepository.existsByEmail(proDTO.getUsername()) && !pro.getUser().getEmail().equals(proDTO.getEmail())){
-            throw new ApiException("Email is already in use");
 
-        }
-
-        if(authRepository.existsByUsername(proDTO.getUsername()) && !pro.getUser().getUsername().equals(proDTO.getUsername())) {
-            throw new ApiException("Username is already in use");
-        }
         pro.getUser().setEmail(proDTO.getEmail());
         pro.getUser().setUsername(proDTO.getUsername());
 
@@ -86,4 +87,55 @@ public class ProService {
         proRepository.delete(pro);
         authRepository.delete(user);
     }
+
+
+// Admin approved the professional player account after checking the requirements
+    public void approveProByAdmin(Integer adminId, Integer proId) {
+        // to make sure it is an admin
+        User admin = authRepository.findUserById(adminId);
+        if(admin== null){
+            throw new ApiException("Admin not found");
+        }
+        if (!admin.getRole().equals("ADMIN")) {
+            throw new ApiException("Unauthorized: You must be an admin to approve players.");
+        }
+        Pro pro = proRepository.findProById(proId);
+        if (pro == null) {
+            throw new ApiException("The Professional Player you are looking for is not found.");
+        }
+
+        // to check the account not approved yet
+        if (pro.getUser().getIsApproved()) {
+            throw new ApiException("This player has already been approved.");
+        }
+
+        User user = pro.getUser();
+        user.setIsApproved(true);
+        pro.getUser().setIsApproved(true);
+        authRepository.save(user);
+        proRepository.save(pro);
+    }
+
+    // Admin can reject the professional account after checking on the requirements if not complete or enough , and delete the account
+    public void rejectProByAdmin(Integer adminId, Integer proId) {
+        User admin = authRepository.findUserById(adminId);
+        if(admin== null){
+            throw new ApiException("Admin not found");
+        }
+        if (!admin.getRole().equals("ADMIN")) {
+            throw new ApiException("Unauthorized: You must be an admin to reject players.");
+        }
+        Pro pro = proRepository.findProById(proId);
+        if (pro == null) {
+            throw new ApiException("The Professional Player you are looking for is not found.");
+        }
+
+        User user = pro.getUser();
+        user.setIsApproved(false);
+        pro.getUser().setIsApproved(false);
+        proRepository.delete(pro);
+        authRepository.delete(user);
+    }
+
+
 }

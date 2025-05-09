@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,21 +29,37 @@ public class ProController {
             @RequestPart("pro") ProDTO proDTO,
             @RequestPart("file") MultipartFile file) {
         proService.registerPro(proDTO, file);
-        return ResponseEntity.ok("pro player registered successfully with CV uploaded");
+        return ResponseEntity.ok("pro player registered successfully with PDF uploaded");
     }
 
     //Edit
-    @PutMapping("/edit")
-    public ResponseEntity EditProAccount(@AuthenticationPrincipal User pro, @RequestBody @Valid ProDTO proDTO) {
-        proService.edit(pro.getId(), proDTO);
+    @PutMapping("/edit/{proId}")
+    public ResponseEntity EditProAccount(@PathVariable Integer proId, @RequestBody @Valid ProDTO proDTO) {
+        proService.edit(proId, proDTO);
         return ResponseEntity.ok("Pro player information updated successfully");
     }
 
     // Endpoint to delete Pro player by ID
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteProPlayer(@AuthenticationPrincipal User pro) {
-        proService.delete(pro.getId());
+    @DeleteMapping("/delete/{proId}")
+    public ResponseEntity<String> deleteProPlayer(@PathVariable Integer proId) {
+        proService.delete(proId);
         return ResponseEntity.ok("Your account have been deleted successfully.");
 
     }
+
+    // approving the pro request "only the admin can approve"
+    @PutMapping("/approve/{adminId}/{proId}")
+    public ResponseEntity<String> approvePro(@PathVariable Integer adminId, @PathVariable Integer proId) {
+        proService.approveProByAdmin(adminId, proId);
+        return ResponseEntity.ok("The professional player has been approved.");
+    }
+
+    //rejecting the pro request "only the admin can reject"
+    @PutMapping("/reject/{adminId}/{proId}")
+    public ResponseEntity<String> rejectPro(@PathVariable Integer adminId, @PathVariable Integer proId) {
+        proService.rejectProByAdmin(adminId, proId);
+        return ResponseEntity.ok("The professional player has been rejected and deleted.");
+    }
+
+
 }

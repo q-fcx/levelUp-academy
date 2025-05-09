@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -51,6 +52,8 @@ public class StatisticPro {
     private LocalDate date;
 
     @OneToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "id")
+//    @JoinColumn(name = "pro_id", referencedColumnName = "id", unique = true)
+    @MapsId
+    @JsonIgnore
     private Pro pro;
 }

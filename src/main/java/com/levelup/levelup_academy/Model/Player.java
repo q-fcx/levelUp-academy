@@ -28,5 +28,6 @@ public class Player {
     private Booking booking;
 
     @OneToOne(mappedBy = "player",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private StatisticPlayer statistics;
 }
