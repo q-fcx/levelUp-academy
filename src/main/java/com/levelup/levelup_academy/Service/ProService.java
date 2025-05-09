@@ -45,7 +45,7 @@ public class ProService {
             }
         }
         User user = new User(null,proDTO.getUsername(),proDTO.getPassword(),proDTO.getEmail(),proDTO.getFirstName(),proDTO.getLastName(),proDTO.getRole(),null,null,null,null,false);
-        Pro pro = new Pro(null,filePath,user,null);
+        Pro pro = new Pro(null,filePath,user,null,null);
         authRepository.save(user);
         proRepository.save(pro);
     }

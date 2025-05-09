@@ -36,9 +36,6 @@ public class TrainerDTO {
     private String role;
 
     private MultipartFile cv;
-    @NotEmpty(message = "Game can not empty")
-    @Column(columnDefinition = "varchar(40) not null")
-    @Pattern(regexp = "^(FC25|CALLOFDUTY|OVERWATCH|FATALFURY|FORTNITE|ROCKETLEAUGE)$", message = "Game must be FC25, CALLOFDUTY, OVERWATCH, FATALFURY, FORTNITE or ROCKETLEAUGE only")
-    private String game;
+
     private Boolean isAvailable = false;
 }

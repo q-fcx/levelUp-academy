@@ -35,11 +35,11 @@ public class Session {
     private String games;
     @ManyToOne
     @JoinColumn(name = "trainer_id" , referencedColumnName = "id")
-    @JsonIgnore
+
     private Trainer trainer;
     @ManyToOne
     @JoinColumn(name = "game_id" , referencedColumnName = "id")
-    @JsonIgnore
+
     private Game game;
 
 
