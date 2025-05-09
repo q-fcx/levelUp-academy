@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,6 +42,9 @@ public class Session {
     @JoinColumn(name = "game_id" , referencedColumnName = "id")
 
     private Game game;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "session")
+    private Set<Booking> bookings;
 
 
 }

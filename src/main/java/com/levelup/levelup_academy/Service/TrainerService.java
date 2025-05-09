@@ -42,7 +42,7 @@ public class TrainerService {
             }
         }
         User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),null,null,null,null,false);
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getGame(),trainerDTO.getIsAvailable(),null, user, null);
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null, user, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
     }
@@ -86,7 +86,6 @@ public class TrainerService {
         user.setFirstName(trainerDTO.getFirstName());
         user.setLastName(trainerDTO.getLastName());
 
-        trainer.setGame(trainerDTO.getGame());
         trainer.setIsAvailable(trainerDTO.getIsAvailable());
 
         authRepository.save(user);
