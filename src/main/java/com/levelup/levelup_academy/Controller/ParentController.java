@@ -3,6 +3,7 @@ package com.levelup.levelup_academy.Controller;
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ParentDTO;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
+import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Service.ParentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,25 @@ public class ParentController {
         parentService.deleteParent(parentId);
         return ResponseEntity.status(200).body("Parent deleted successfully");
     }
+
+    @PostMapping("/add-child/{parentId}")
+    public ResponseEntity registerChild(@RequestBody @Valid Child child, @PathVariable Integer parentId){
+        parentService.addChildToParent(child,parentId);
+        return ResponseEntity.status(200).body(new ApiResponse("Child registered"));
+    }
+
+    @PutMapping("/update-child/{parentId}, {childId}")
+    public ResponseEntity updateChild(@RequestBody @Valid Child child,  @PathVariable Integer parentId, @PathVariable Integer childId){
+        parentService.updateChild(child,parentId,childId);
+        return ResponseEntity.status(200).body(new ApiResponse("Child updated"));
+    }
+
+    @DeleteMapping("/delete-child/{parentId}, {childId}")
+    public ResponseEntity deleteChild( @PathVariable Integer parentId, @PathVariable Integer childId){
+        parentService.deleteChild(parentId,childId);
+        return ResponseEntity.status(200).body(new ApiResponse("Child deleted"));
+    }
+
+
 
 }
