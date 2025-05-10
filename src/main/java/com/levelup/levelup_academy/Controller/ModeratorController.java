@@ -27,14 +27,14 @@ public class ModeratorController {
     }
 
     // Update moderator
-    @PutMapping("/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<String> updateModerator(@PathVariable Integer id, @RequestBody @Valid ModeratorDTO moderatorDTO) {
         moderatorService.updateModerator(id, moderatorDTO);
         return ResponseEntity.ok("Moderator updated successfully");
     }
 
     // Delete moderator
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteModerator(@PathVariable Integer id) {
         moderatorService.deleteModerator(id);
         return ResponseEntity.ok("Moderator deleted successfully");

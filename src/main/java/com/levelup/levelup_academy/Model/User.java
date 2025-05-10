@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import java.util.Set;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -51,7 +50,7 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Pro pro;
-
+    //Moderator
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Moderator moderator;

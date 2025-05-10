@@ -21,9 +21,23 @@ public class GameController {
     }
 
     //ADD
-    @PostMapping("/add")
-    public ResponseEntity addGame(@RequestBody @Valid Game game){
-        gameService.addGame(game);
+    @PostMapping("/add/{moderatorId}")
+    public ResponseEntity addGame(@PathVariable Integer moderatorId,@RequestBody @Valid Game game){
+        gameService.addGame(moderatorId, game);
         return ResponseEntity.status(200).body(new ApiResponse("Game Added"));
     }
+
+    @PutMapping("/edit/{moderatorId}/{gameId}")
+    public ResponseEntity editingGame(@PathVariable Integer moderatorId,@PathVariable Integer gameId,@RequestBody @Valid Game game){
+        gameService.editGame(moderatorId, gameId, game);
+        return ResponseEntity.status(200).body(new ApiResponse("The Game edited successfully"));
+    }
+
+    @DeleteMapping("/delete/{moderatorId}/{gameId}")
+    public ResponseEntity deletingGame(@PathVariable Integer moderatorId,@PathVariable Integer gameId){
+        gameService.deleteGame(moderatorId, gameId);
+        return ResponseEntity.status(200).body(new ApiResponse("The Game deleted successfully"));
+    }
+
+
 }

@@ -8,6 +8,7 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mail.MailSendException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -86,6 +87,14 @@ public class AdviceController {
         String msg = e.getMessage();
         return ResponseEntity.status(400).body(new ApiResponse(msg));
     }
+
+
+    @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ApiResponse> HttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e){
+        String msg = e.getMessage();
+        return ResponseEntity.status(400).body(new ApiResponse(msg));
+    }
+
 
 
 }

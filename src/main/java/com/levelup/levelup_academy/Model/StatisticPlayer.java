@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -53,7 +54,9 @@ public class StatisticPlayer {
 
 
     @OneToOne
-    @JoinColumn(name = "player_id", referencedColumnName = "id")
+//    @JoinColumn(name = "player_id", referencedColumnName = "id")
+    @JsonIgnore
+    @MapsId
     private Player player;
 
 }

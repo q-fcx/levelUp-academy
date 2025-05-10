@@ -57,15 +57,15 @@ public class ProService {
             throw new ApiException("The Professional Player you search for is not found ");
         }
 
-        if(pro.getUser().getIaApproved()== false){
+        if (pro.getUser().getIsApproved() == false) {
             throw new ApiException("The Professional Player you search for is not approved yet ");
         }
-        if(authRepository.existsByEmail(proDTO.getUsername()) && !pro.getUser().getEmail().equals(proDTO.getEmail())){
+        if (authRepository.existsByEmail(proDTO.getUsername()) && !pro.getUser().getEmail().equals(proDTO.getEmail())) {
             throw new ApiException("Email is already in use");
 
         }
 
-        if(authRepository.existsByUsername(proDTO.getUsername()) && !pro.getUser().getUsername().equals(proDTO.getUsername())) {
+        if (authRepository.existsByUsername(proDTO.getUsername()) && !pro.getUser().getUsername().equals(proDTO.getUsername())) {
             throw new ApiException("Username is already in use");
         }
         pro.getUser().setEmail(proDTO.getEmail());
@@ -75,10 +75,10 @@ public class ProService {
         proRepository.save(pro);
     }
 
-    public void delete(Integer proId){
+    public void delete(Integer proId) {
         Pro pro = proRepository.findProById(proId);
 
-        if (pro == null){
+        if (pro == null) {
             throw new ApiException("The player is not found");
         }
         User user = pro.getUser();
@@ -109,7 +109,41 @@ public class ProService {
         }
     }
 
-    //
+    // Approving professional player request by admin if the pdf match the requirement
+    public void approveProByAdmin(Integer adminId, Integer proId) {
+        User admin = authRepository.findUserById(adminId);
+        if (!admin.getRole().equals("ADMIN")) {
+            throw new ApiException("Unauthorized: You must be an admin to approve players.");
+        }
+        Pro pro = proRepository.findProById(proId);
+        if (pro == null) {
+            throw new ApiException("The Professional Player you are looking for is not found.");
+        }
+        if (pro.getUser().getIsApproved()) {
+            throw new ApiException("This player has already been approved.");
+        }
+        User user = pro.getUser();
+        user.setIsApproved(true);
+        pro.getUser().setIsApproved(true);
+        authRepository.save(user);
+        proRepository.save(pro);
+    }
 
+    // rejecting the professional player request by admin if the pdf not match the requirement
+    public void rejectProByAdmin(Integer adminId, Integer proId) {
+        User admin = authRepository.findUserById(adminId);
+        if (!admin.getRole().equals("ADMIN")) {
+            throw new ApiException("Unauthorized: You must be an admin to reject players.");
+        }
+        Pro pro = proRepository.findProById(proId);
+        if (pro == null) {
+            throw new ApiException("The Professional Player you are looking for is not found.");
+        }
 
+        User user = pro.getUser();
+        user.setIsApproved(false);
+        pro.getUser().setIsApproved(false);
+        proRepository.delete(pro);
+        authRepository.delete(user);
+    }
 }
