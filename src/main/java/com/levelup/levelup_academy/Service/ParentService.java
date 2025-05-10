@@ -11,6 +11,7 @@ import com.levelup.levelup_academy.Repository.ParentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -19,7 +20,6 @@ public class ParentService {
 
     private final ParentRepository parentRepository;
     private final AuthRepository authRepository;
-    private final ChildRepository childRepository;
 
     public List<Parent> getAllParents() {
         return parentRepository.findAll();
@@ -27,7 +27,7 @@ public class ParentService {
 
     public void registerParent(ParentDTO parentDTO) {
         parentDTO.setRole("PARENTS");
-        User user = new User(null, parentDTO.getUsername(), parentDTO.getPassword(), parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), false, null, null,null,null,null,null,null,null);
+        User user = new User(null, parentDTO.getUsername(), parentDTO.getPassword(), parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), null, null, null,null,null,null,null,null,null LocalDate.now(),);
 
         Parent parent = new Parent(null, user,null, null);
         authRepository.save(user);

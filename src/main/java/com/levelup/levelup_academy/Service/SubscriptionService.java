@@ -70,4 +70,6 @@ public class SubscriptionService {
         authRepository.save(user);
         subscriptionRepository.save(subscription);
     }
+
+
 }

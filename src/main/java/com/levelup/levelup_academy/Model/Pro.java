@@ -30,4 +30,6 @@ public class Pro {
     @PrimaryKeyJoinColumn
     private Contract contract;
 
+    private Boolean isApproved=false;
+
 }

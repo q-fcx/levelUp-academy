@@ -34,4 +34,6 @@ public class ProDTO {
     private String role;
 
     private MultipartFile cv;
+
+
 }

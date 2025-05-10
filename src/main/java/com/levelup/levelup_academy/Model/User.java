@@ -6,14 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 
-import java.util.Set;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,21 +37,26 @@ public class User {
     @NotEmpty(message = "lastName can not be empty")
     @Column(columnDefinition = "varchar(40) not null")
     private String lastName;
+
     @Column(columnDefinition = "varchar(40) not null")
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS|TRAINER)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;
 
     private Boolean isApproved = false;
+    private LocalDate registration= LocalDate.now() ;
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Trainer trainer;
+
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Player player;
+
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Pro pro;
+
     //Moderator
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn

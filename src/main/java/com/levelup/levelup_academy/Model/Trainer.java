@@ -25,10 +25,10 @@ public class Trainer {
     private Integer id;
     private String cvPath;
     private Boolean isAvailable = false;
+    private Boolean isApproved=false;
 
 //    @Lob
 //    private byte[] cv;
-
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -41,4 +41,7 @@ public class Trainer {
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
     private Set<Review> reviews;
+
+
+
 }

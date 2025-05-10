@@ -1,10 +1,13 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ProDTO;
+import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
+import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.ProRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,15 +26,17 @@ import java.util.UUID;
 public class ProService {
     private final ProRepository proRepository;
     private final AuthRepository authRepository;
+    private final EmailNotificationService emailNotificationService;
+    private final ModeratorRepository moderatorRepository;
 
     //GET
-    public List<Pro> getAllPro(){
+    public List<Pro> getAllPro() {
         return proRepository.findAll();
     }
 
     //Register pro player
 
-    public void registerPro(ProDTO proDTO, MultipartFile file){
+    public void registerPro(ProDTO proDTO, MultipartFile file) {
         proDTO.setRole("PRO");
         String filePath = null;
         if (file != null && !file.isEmpty()) {
@@ -44,20 +50,20 @@ public class ProService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null,proDTO.getUsername(),proDTO.getPassword(),proDTO.getEmail(),proDTO.getFirstName(),proDTO.getLastName(),proDTO.getRole(),false,null,null,null,null,null,null,null);
-        Pro pro = new Pro(null,filePath, user,null,null);
+        User user = new User(null, proDTO.getUsername(), proDTO.getPassword(), proDTO.getEmail(), proDTO.getFirstName(), proDTO.getLastName(), proDTO.getRole(), null, null, null, null, LocalDate.now());
+        Pro pro = new Pro(null, filePath, user, null, null,false);
         authRepository.save(user);
         proRepository.save(pro);
     }
 
 
-    public void edit(Integer proId,ProDTO proDTO){
+    public void edit(Integer proId, ProDTO proDTO) {
         Pro pro = proRepository.findProById(proId);
-        if(pro == null){
+        if (pro == null) {
             throw new ApiException("The Professional Player you search for is not found ");
         }
 
-        if (pro.getUser().getIaApproved() == false) {
+        if (pro.getIsApproved().equals(false)) {
             throw new ApiException("The Professional Player you search for is not approved yet ");
         }
         if (authRepository.existsByEmail(proDTO.getUsername()) && !pro.getUser().getEmail().equals(proDTO.getEmail())) {
@@ -119,12 +125,12 @@ public class ProService {
         if (pro == null) {
             throw new ApiException("The Professional Player you are looking for is not found.");
         }
-        if (pro.getUser().getIaApproved()) {
+        if (pro.getIsApproved()) {
             throw new ApiException("This player has already been approved.");
         }
         User user = pro.getUser();
-        user.setIaApproved(true);
-        pro.getUser().setIaApproved(true);
+//        user.setIsApproved(true);
+        pro.setIsApproved(true);
         authRepository.save(user);
         proRepository.save(pro);
     }
@@ -141,9 +147,45 @@ public class ProService {
         }
 
         User user = pro.getUser();
-        user.setIaApproved(false);
-        pro.getUser().setIaApproved(false);
+//        user.setIsApproved(false);
+        pro.setIsApproved(false);
         proRepository.delete(pro);
         authRepository.delete(user);
     }
+
+//moderator can see all the requests
+    public List<Pro> getAllProRequests(Integer moderatorId){
+        return proRepository.findByIsApproved(false);
+    }
+
+    public void sendDiscordExamLink(Integer moderatorId,Integer proId) {
+        Pro pro = proRepository.findProById(proId);
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+
+        if (pro == null) {
+            throw new ApiException("The Professional Player you are looking for is not found.");
+        }
+        if (moderator == null) {
+            throw new ApiException("Moderator is not found.");
+        }
+        String discordChannelLink = "https://discord.com/invite/yourChannelID";
+
+        String emailMessage = "Dear " + pro.getUser().getUsername() + ",\n\n" +
+                "Please click the link below to join the Discord channel and demonstrate your professional skills:\n\n" +
+                discordChannelLink + "\n\n" +
+                "Best regards,\n" +
+                "The Team";
+
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRecipient(pro.getUser().getEmail());
+        emailRequest.setSubject("Discord Exam Link");
+        emailRequest.setMessage(emailMessage);
+
+        emailNotificationService.sendEmail(emailRequest);
+    }
+
+
+
+
+
 }

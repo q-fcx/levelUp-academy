@@ -9,6 +9,7 @@ import com.levelup.levelup_academy.Repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,10 +27,9 @@ public class PlayerService {
     //Register player
 
     public void registerPlayer(PlayerDTO playerDTO){
-
-        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), "PLAYER", false,null,null,null,null,null,null,null);
-
-        Player player = new Player(null,user,null);
+        playerDTO.setRole("PLAYER");
+        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), null,null,null,null, LocalDate.now());
+        Player player = new Player(null,user,null, null);
         authRepository.save(user);
         playerRepository.save(player);
     }
@@ -39,7 +39,7 @@ public class PlayerService {
 
         User user = player.getUser();
         if (user == null) {
-            throw new ApiException("User not found for this player");
+            throw new RuntimeException("User not found for this player");
         }
 
         user.setUsername(playerDTO.getUsername());
@@ -53,7 +53,7 @@ public class PlayerService {
     }
     public void deletePlayer(Integer id) {
         Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new ApiException("Player not found"));
+                .orElseThrow(() -> new RuntimeException("Player not found"));
 
         User user = player.getUser();
         if (user != null) {

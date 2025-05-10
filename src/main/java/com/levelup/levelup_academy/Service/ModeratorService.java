@@ -15,7 +15,10 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import static org.hibernate.annotations.UuidGenerator.Style.RANDOM;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +37,10 @@ public class ModeratorService {
     //Register Moderator
     public void registerModerator(ModeratorDTO moderatorDTO){
         moderatorDTO.setRole("MODERATOR");
-        User user = new User(null, moderatorDTO.getUsername(), moderatorDTO.getPassword(), moderatorDTO.getEmail(), moderatorDTO.getFirstName(), moderatorDTO.getLastName(), moderatorDTO.getRole(), false,null,null,null,null, null,null,null);
+        User user = new User(null, moderatorDTO.getUsername(), moderatorDTO.getPassword(), moderatorDTO.getEmail(), moderatorDTO.getFirstName(), moderatorDTO.getLastName(), moderatorDTO.getRole(), null,null,null,null, null,null,null, LocalDate.now());
         Moderator moderator = new Moderator(null,user);
         authRepository.save(user);
         moderatorRepository.save(moderator);
-
     }
     public void updateModerator(Integer id, ModeratorDTO moderatorDTO){
         Moderator moderator = moderatorRepository.findById(id)
