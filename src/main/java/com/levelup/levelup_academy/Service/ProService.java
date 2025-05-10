@@ -57,7 +57,7 @@ public class ProService {
             throw new ApiException("The Professional Player you search for is not found ");
         }
 
-        if (pro.getUser().getIsApproved() == false) {
+        if (pro.getUser().getIaApproved() == false) {
             throw new ApiException("The Professional Player you search for is not approved yet ");
         }
         if (authRepository.existsByEmail(proDTO.getUsername()) && !pro.getUser().getEmail().equals(proDTO.getEmail())) {
@@ -119,12 +119,12 @@ public class ProService {
         if (pro == null) {
             throw new ApiException("The Professional Player you are looking for is not found.");
         }
-        if (pro.getUser().getIsApproved()) {
+        if (pro.getUser().getIaApproved()) {
             throw new ApiException("This player has already been approved.");
         }
         User user = pro.getUser();
-        user.setIsApproved(true);
-        pro.getUser().setIsApproved(true);
+        user.setIaApproved(true);
+        pro.getUser().setIaApproved(true);
         authRepository.save(user);
         proRepository.save(pro);
     }
@@ -141,8 +141,8 @@ public class ProService {
         }
 
         User user = pro.getUser();
-        user.setIsApproved(false);
-        pro.getUser().setIsApproved(false);
+        user.setIaApproved(false);
+        pro.getUser().setIaApproved(false);
         proRepository.delete(pro);
         authRepository.delete(user);
     }
