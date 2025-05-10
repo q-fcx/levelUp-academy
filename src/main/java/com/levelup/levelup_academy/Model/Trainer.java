@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Check;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -29,6 +30,15 @@ public class Trainer {
 
 //    @Lob
 //    private byte[] cv;
+
+    @OneToMany(mappedBy = "trainer")
+    private List<Child> children;
+
+    @OneToMany(mappedBy = "trainer")
+    private List<Player> players;
+
+    @OneToMany(mappedBy = "trainer")
+    private List<Pro> professionals;
 
     @OneToOne
     @JoinColumn(name = "user_id")

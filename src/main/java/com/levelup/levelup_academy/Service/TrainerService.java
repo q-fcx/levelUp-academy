@@ -51,7 +51,7 @@ public class TrainerService {
             }
         }
         User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null, user, null,null);
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null,null,null,null,user, null,null);
         authRepository.save(user);
         trainerRepository.save(trainer);
     }
@@ -143,11 +143,15 @@ public class TrainerService {
     }
 
     public void giveTrophyToPlayer(Integer trainerId, Integer playerId) {
-        Trainer trainer = trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new ApiException("Trainer not found"));
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer==null){
+            throw new ApiException("Trainer not found");
+        }
 
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new ApiException("Player not found"));
+        Player player = playerRepository.findPlayerById(playerId);
+        if (player==null){
+            throw new ApiException("Player not found");
+        }
 
         StatisticPlayer stats = player.getStatistics();
         if (stats == null) {
@@ -163,11 +167,14 @@ public class TrainerService {
     }
 
     public void giveTrophyToProfessional(Integer trainerId, Integer professionalId) {
-        Trainer trainer = trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new ApiException("Trainer not found"));
-
-        Pro pro = proRepository.findById(professionalId)
-                .orElseThrow(() -> new ApiException("Professional not found"));
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer==null){
+            throw new ApiException("Trainer not found");
+        }
+        Pro pro = proRepository.findProById(professionalId);
+        if (pro==null){
+            throw new ApiException("Professional not found");
+        }
 
         StatisticPro stats = pro.getStatistics();
         if (stats == null) {
@@ -183,11 +190,15 @@ public class TrainerService {
     }
 
     public void giveTrophyToChild(Integer trainerId, Integer childId) {
-        Trainer trainer = trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new ApiException("Trainer not found"));
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer==null){
+            throw new ApiException("Trainer not found");
+        }
 
-        Child child = childRepository.findById(childId)
-                .orElseThrow(() -> new ApiException("Child not found"));
+        Child child = childRepository.findChildById(childId);
+        if (child==null){
+            throw new ApiException("Child not found");
+        }
 
         StatisticChild stats = child.getStatistics();
         if (stats == null) {
