@@ -25,8 +25,22 @@ public class Review {
     private Integer rate;
 
     @ManyToOne
-    @JoinColumn(name = "trainer_review_id", referencedColumnName = "id")
+    @JoinColumn(name = "session_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Session session;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
+    private User user;
+
+//    @ManyToOne
+//    @JoinColumn(name = "user_id1", referencedColumnName = "id")
+//    @JsonIgnore
+//    private User user1;
+
+    @ManyToOne
+    @JoinColumn(name = "trainer_id", referencedColumnName = "id")
     @JsonIgnore
     private Trainer trainer;
-
 }

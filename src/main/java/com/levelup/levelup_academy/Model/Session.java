@@ -34,14 +34,16 @@ public class Session {
     @NotEmpty(message = "Game can not be empty")
     @Column(columnDefinition = "varchar(30) not null")
     private String games;
+
     @ManyToOne
     @JoinColumn(name = "trainer_id" , referencedColumnName = "id")
-
     private Trainer trainer;
     @ManyToOne
     @JoinColumn(name = "game_id" , referencedColumnName = "id")
-
     private Game game;
+
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "session")
+    private Set<Review> reviews;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "session")
     private Set<Booking> bookings;

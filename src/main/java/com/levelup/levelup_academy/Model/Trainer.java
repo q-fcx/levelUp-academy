@@ -29,8 +29,6 @@ public class Trainer {
 //    @Lob
 //    private byte[] cv;
 
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "trainer")
-    private Set<Review> reviews;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -41,4 +39,8 @@ public class Trainer {
     @JsonIgnore
     private Set<Session> sessions;
 
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
+    @JsonIgnore
+    private Set<Review> reviews;
 }

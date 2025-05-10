@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 
 @Getter
 @Setter
@@ -38,6 +40,8 @@ public class User {
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS|TRAINER)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;
 
+    private Boolean iaApproved = false;
+
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Trainer trainer;
@@ -47,12 +51,24 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Pro pro;
-    //Moderator
+
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Moderator moderator;
 
-    private Boolean iaApproved = false;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Booking booking;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Subscription> subscriptions;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Review> reviews;
+
+
+
+
 
 
 }

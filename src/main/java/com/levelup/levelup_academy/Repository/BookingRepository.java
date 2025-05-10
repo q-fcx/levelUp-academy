@@ -1,10 +1,10 @@
 package com.levelup.levelup_academy.Repository;
 
-import com.levelup.levelup_academy.Model.Session;
+import com.levelup.levelup_academy.Model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SessionRepository extends JpaRepository<Session,Integer> {
-    Session findSessionById(Integer id);
+public interface BookingRepository extends JpaRepository<Booking, Integer> {
+    Booking findBookingById(Integer id);
 }

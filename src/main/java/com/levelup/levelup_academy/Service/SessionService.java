@@ -51,7 +51,7 @@ public class SessionService {
     //Assign Trainer
     public void assignTrainerToSession(Integer trainerId,Integer sessionId){
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
-        Session session = sessionRepository.findClassById(sessionId);
+        Session session = sessionRepository.findSessionById(sessionId);
 
         if(trainer == null){
             throw new ApiException("Trainer not found");
@@ -65,7 +65,7 @@ public class SessionService {
 
     public void assignGameToTrainer(Integer sessionId ){
 
-        Session session = sessionRepository.findClassById(sessionId);
+        Session session = sessionRepository.findSessionById(sessionId);
 
 //        if(games == null){
 //            throw new ApiException("Game not found");
