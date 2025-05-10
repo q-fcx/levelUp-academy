@@ -60,4 +60,11 @@ public class ReviewService {
         trainerRepository.save(trainer);
 
     }
+
+    public void deleteReview(Integer userId, Integer reviewId) {
+        Review review = reviewRepository.findReviewById(reviewId);
+        if(review == null) throw new ApiException("Review not found");
+
+        if(!review.getUser().getId().equals(userId)) throw new ApiException("You have no permission to delete this review");
+    }
 }

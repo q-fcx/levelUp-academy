@@ -25,4 +25,10 @@ public class ReviewController {
         reviewService.addReview(review, userId, sessionId);
         return ResponseEntity.status(200).body(new ApiResponse("Review Added successfully"));
     }
+
+    @DeleteMapping("/delete/{userId}/{reviewId}")
+    public ResponseEntity deleteReview(@PathVariable Integer userId, @PathVariable Integer reviewId) {
+        reviewService.deleteReview(userId, reviewId);
+        return ResponseEntity.status(200).body(new ApiResponse("Review deleted successfully"));
+    }
 }
