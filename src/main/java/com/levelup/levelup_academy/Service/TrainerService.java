@@ -1,10 +1,12 @@
 package com.levelup.levelup_academy.Service;
 
+import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.StatisticChildDTO;
+import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
+import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
-import com.levelup.levelup_academy.Model.Trainer;
-import com.levelup.levelup_academy.Model.User;
-import com.levelup.levelup_academy.Repository.AuthRepository;
-import com.levelup.levelup_academy.Repository.TrainerRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,12 @@ import java.util.UUID;
 public class TrainerService {
     private final TrainerRepository trainerRepository;
     private final AuthRepository authRepository;
+    private final StatisticChildService statisticChildService;
+    private final StatisticPlayerService statisticPlayerService;
+    private final StatisticProService statisticProService;
+    private final ChildRepository childRepository;
+    private final PlayerRepository playerRepository;
+    private final ProRepository proRepository;
 
     //GET
     public List<Trainer> getAllTrainers(){
@@ -91,6 +99,46 @@ public class TrainerService {
 
         authRepository.delete(trainer.getUser());
         trainerRepository.delete(trainer);
+    }
+
+    //for child
+    public void addStatisticToChild(Integer trainerId, Integer childId, StatisticChildDTO statisticChildDTO){
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        Child child = childRepository.findChildById(childId);
+        if(child == null){
+            throw new ApiException("Child not found");
+        }
+
+        statisticChildService.createStatistic(childId,statisticChildDTO);
+    }
+
+    //for player
+    public void addStatisticToPlayer(Integer trainerId, Integer playerId, StatisticPlayerDTO statisticPlayerDTO){
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer not found");
+        }
+        Player player = playerRepository.findPlayerById(playerId);
+        if (player == null){
+            throw new ApiException("Player not found");
+        }
+        statisticPlayerService.createStatistic(playerId,statisticPlayerDTO);
+
+    }
+
+    public void addStatisticToPro(Integer trainerId, Integer proId, StatisticProDTO statisticProDTO){
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer not found");
+        }
+        Pro pro = proRepository.findProById(proId);
+        if(pro == null){
+            throw new ApiException("Pro not found");
+        }
+        statisticProService.createStatistic(proId,statisticProDTO);
     }
 
 

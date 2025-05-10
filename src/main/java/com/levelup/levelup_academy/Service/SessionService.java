@@ -85,7 +85,7 @@ public class SessionService {
         if(moderator == null){
             throw new ApiException("Moderator not found");
         }
-        Session oldSession = sessionRepository.findClassById(sessionId);
+        Session oldSession = sessionRepository.findSessionById(sessionId);
         if(oldSession == null){
             throw new ApiException("Session not found");
         }
@@ -102,7 +102,7 @@ public class SessionService {
         if(moderator == null){
             throw new ApiException("Moderator not found");
         }
-        Session delSession = sessionRepository.findClassById(sessionId);
+        Session delSession = sessionRepository.findSessionById(sessionId);
         if(delSession == null){
             throw new ApiException("Session not found");
         }
