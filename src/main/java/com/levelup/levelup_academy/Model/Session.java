@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -24,9 +25,9 @@ public class Session {
     @Column(columnDefinition = "varchar(40) not null")
     private String name;
     @Column(columnDefinition = "DATE")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @Column(columnDefinition = "DATE")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     @Column(columnDefinition = "int not null")
     private Integer availableSets;
     @Column(columnDefinition = "varchar(20) not null")

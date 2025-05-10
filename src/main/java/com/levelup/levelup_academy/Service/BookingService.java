@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,7 +36,7 @@ public class BookingService {
         if(session == null) throw new ApiException("Session not found");
 
         Booking booking = new Booking();
-        booking.setBookDate(LocalDate.now());
+        booking.setBookDate(LocalDateTime.now());
         booking.setUser(user);
         booking.setSession(session);
 
@@ -55,4 +56,23 @@ public class BookingService {
         }
 
     }
+    public void cancelPendingBooking(Integer bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ApiException("Booking not found"));
+
+        if (!booking.getStatus().equalsIgnoreCase("PENDING")) {
+            throw new ApiException("Only bookings with status PENDING can be cancelled.");
+        }
+
+        LocalDateTime sessionStart = booking.getSession().getStartDate();
+        LocalDateTime now = LocalDateTime.now();
+
+        if (!now.isBefore(sessionStart.minusHours(1))) {
+            throw new RuntimeException("Cannot cancel booking less than 1 hour before the session.");
+        }
+
+        booking.setStatus("CANCELLED");
+        bookingRepository.save(booking);
+    }
+
 }

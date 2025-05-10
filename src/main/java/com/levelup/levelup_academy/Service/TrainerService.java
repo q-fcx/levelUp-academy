@@ -1,10 +1,9 @@
 package com.levelup.levelup_academy.Service;
 
+import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
-import com.levelup.levelup_academy.Model.Trainer;
-import com.levelup.levelup_academy.Model.User;
-import com.levelup.levelup_academy.Repository.AuthRepository;
-import com.levelup.levelup_academy.Repository.TrainerRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +20,9 @@ import java.util.UUID;
 public class TrainerService {
     private final TrainerRepository trainerRepository;
     private final AuthRepository authRepository;
+    private final ChildRepository childRepository;
+    private final PlayerRepository playerRepository;
+    private final ProRepository proRepository;
 
     //GET
     public List<Trainer> getAllTrainers(){
@@ -50,7 +52,7 @@ public class TrainerService {
     //download
     public byte[] downloadTrainerCv(Integer trainerId) {
         Trainer trainer = trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new RuntimeException("Trainer not found"));
+                .orElseThrow(() -> new ApiException("Trainer not found"));
 
         String filePath = trainer.getCvPath();
         if (filePath == null || filePath.isEmpty()) {
@@ -71,7 +73,7 @@ public class TrainerService {
     }
     public void updateTrainer(Integer id, TrainerDTO trainerDTO){
         Trainer trainer = trainerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Trainer not found"));
+                .orElseThrow(() -> new ApiException("Trainer not found"));
 
         User user = trainer.getUser();
         user.setUsername(trainerDTO.getUsername());
@@ -87,11 +89,72 @@ public class TrainerService {
     }
     public void deleteTrainer(Integer id){
         Trainer trainer = trainerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Trainer not found"));
+                .orElseThrow(() -> new ApiException("Trainer not found"));
 
         authRepository.delete(trainer.getUser());
         trainerRepository.delete(trainer);
     }
+
+    public void giveTrophyToPlayer(Integer trainerId, Integer playerId) {
+        Trainer trainer = trainerRepository.findById(trainerId)
+                .orElseThrow(() -> new ApiException("Trainer not found"));
+
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new ApiException("Player not found"));
+
+        StatisticPlayer stats = player.getStatistics();
+        if (stats == null) {
+            throw new ApiException("Player statistics not found.");
+        }
+
+        if (stats.getWinGame() > 5 || stats.getLossGame() < 3) {
+            stats.setTrophy("GOLD");
+            playerRepository.save(player);
+        } else {
+            throw new ApiException("Player not eligible for trophy.");
+        }
+    }
+
+    public void giveTrophyToProfessional(Integer trainerId, Integer professionalId) {
+        Trainer trainer = trainerRepository.findById(trainerId)
+                .orElseThrow(() -> new ApiException("Trainer not found"));
+
+        Pro pro = proRepository.findById(professionalId)
+                .orElseThrow(() -> new ApiException("Professional not found"));
+
+        StatisticPro stats = pro.getStatistics();
+        if (stats == null) {
+            throw new ApiException("Professional statistics not found.");
+        }
+
+        if (stats.getWinGame() > 10 || stats.getLossGame() < 2) {
+            stats.setTrophy("GOLD");
+            proRepository.save(pro);
+        } else {
+            throw new ApiException("Professional not eligible for trophy.");
+        }
+    }
+
+    public void giveTrophyToChild(Integer trainerId, Integer childId) {
+        Trainer trainer = trainerRepository.findById(trainerId)
+                .orElseThrow(() -> new ApiException("Trainer not found"));
+
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new ApiException("Child not found"));
+
+        StatisticChild stats = child.getStatistics();
+        if (stats == null) {
+            throw new ApiException("Child statistics not found.");
+        }
+
+        if (stats.getWinGame() > 3 || stats.getLossGame() < 5) {
+            stats.setTrophy("GOLD");
+            childRepository.save(child);
+        } else {
+            throw new ApiException("Child not eligible for trophy.");
+        }
+    }
+
 
 
 }
