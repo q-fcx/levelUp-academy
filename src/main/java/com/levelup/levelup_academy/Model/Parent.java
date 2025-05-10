@@ -26,7 +26,7 @@ public class Parent {
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    private Set<Child> child;
+    private Set<Child> children;
 
     @OneToOne
     @JoinColumn(name = "booking_id")
