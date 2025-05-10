@@ -19,9 +19,9 @@ public class BookingController {
         return ResponseEntity.status(200).body(bookingService.getAllBookings());
     }
 
-    @PostMapping("add/{userId}/{sessionId}")
-    public ResponseEntity addBooking(@PathVariable Integer userId, @PathVariable Integer sessionId) {
-        bookingService.addBooking(userId,sessionId);
+    @PostMapping("add/{userId}/{sessionId}/{subscriptionId}")
+    public ResponseEntity addBooking(@PathVariable Integer userId, @PathVariable Integer sessionId, @PathVariable Integer subscriptionId) {
+        bookingService.addBooking(userId,sessionId,subscriptionId);
         return ResponseEntity.status(200).body(new ApiResponse("Book added successfully"));
     }
 

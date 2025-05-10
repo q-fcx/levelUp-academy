@@ -19,19 +19,19 @@ public class SubscriptionController {
     }
 
     @PostMapping("/basic/{userId}")
-    public ResponseEntity getBasicSubscription(@PathVariable Integer userId) {
+    public ResponseEntity addBasicSubscription(@PathVariable Integer userId) {
         subscriptionService.basicSubscription(userId);
         return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Basic Subscription"));
     }
 
     @PostMapping("/standard/{userId}")
-    public ResponseEntity getStandardSubscription(@PathVariable Integer userId) {
+    public ResponseEntity addStandardSubscription(@PathVariable Integer userId) {
         subscriptionService.standardSubscription(userId);
         return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Standard Subscription"));
     }
 
     @PostMapping("/premium/{userId}")
-    public ResponseEntity getPremiumSubscription(@PathVariable Integer userId) {
+    public ResponseEntity addPremiumSubscription(@PathVariable Integer userId) {
         subscriptionService.premiumSubscription(userId);
         return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Premium Subscription"));
     }

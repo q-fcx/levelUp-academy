@@ -29,4 +29,5 @@ public class Pro {
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "pro")
     @PrimaryKeyJoinColumn
     private Contract contract;
+
 }

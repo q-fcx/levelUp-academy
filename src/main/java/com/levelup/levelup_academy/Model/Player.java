@@ -25,10 +25,5 @@ public class Player {
     @OneToOne(mappedBy = "player",cascade = CascadeType.ALL)
     private StatisticPlayer statistics;
 
-    @OneToOne
-    @JoinColumn(name = "booking_id")
-    @JsonIgnore
-    private Booking booking;
-
 
 }

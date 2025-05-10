@@ -36,11 +36,9 @@ public class Trainer {
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
-    @JsonIgnore
     private Set<Session> sessions;
 
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
-    @JsonIgnore
     private Set<Review> reviews;
 }

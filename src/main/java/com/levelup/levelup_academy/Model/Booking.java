@@ -32,7 +32,7 @@ public class Booking {
     private String status = "PENDING";
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;

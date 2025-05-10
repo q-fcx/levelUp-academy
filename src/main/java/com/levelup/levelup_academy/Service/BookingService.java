@@ -8,6 +8,7 @@ import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.BookingRepository;
 import com.levelup.levelup_academy.Repository.SessionRepository;
+import com.levelup.levelup_academy.Repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,27 +22,39 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final SessionRepository sessionRepository;
     private final AuthRepository authRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
 
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
 
-    public void addBooking(Integer userId, Integer sessionId){
+    public void addBooking(Integer userId, Integer sessionId, Integer subscriptionId){
         User user = authRepository.findUserById(userId);
         if(user == null) throw new ApiException("User not found");
 
         Session session = sessionRepository.findSessionById(sessionId);
         if(session == null) throw new ApiException("Session not found");
 
+//        List<Booking> existingBookings = bookingRepository.findByUserId(userId);
+//        for (Booking b : existingBookings) {
+//            if (b.getSession().getStartDate().isEqual(session.getStartDate()) &&
+//                    b.getSession().getTime().equals(session.getTime())) {
+//                throw new ApiException("You already have a booking at this time.");
+//            }
+//        }
+        Subscription subscription = subscriptionRepository.findSubscriptionById(subscriptionId);
+        subscription.setSessionCount(subscription.getSessionCount() - 1);
         Booking booking = new Booking();
         booking.setBookDate(LocalDate.now());
         booking.setUser(user);
         booking.setSession(session);
+        booking.setSubscription(subscription);
 
         authRepository.save(user);
         sessionRepository.save(session);
         bookingRepository.save(booking);
+        subscriptionRepository.save(subscription);
 
     }
 

@@ -37,9 +37,11 @@ public class Session {
 
     @ManyToOne
     @JoinColumn(name = "trainer_id" , referencedColumnName = "id")
+    @JsonIgnore
     private Trainer trainer;
     @ManyToOne
     @JoinColumn(name = "game_id" , referencedColumnName = "id")
+    @JsonIgnore
     private Game game;
 
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "session")
