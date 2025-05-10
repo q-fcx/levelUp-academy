@@ -60,16 +60,4 @@ public class ProController {
         return ResponseEntity.ok("The professional player has been rejected and deleted.");
     }
 
-
-    @GetMapping("/top")
-    public ResponseEntity getTopPro() {
-        return ResponseEntity.ok(statisticProService.getTopProByTrophy());
-    }
-
-    @GetMapping("/top5/{game}")
-    public ResponseEntity getTop5Pros(@PathVariable String game) {
-        return ResponseEntity.ok(statisticProService.getTop5ProsByGame(game));
-    }
-
-
 }
