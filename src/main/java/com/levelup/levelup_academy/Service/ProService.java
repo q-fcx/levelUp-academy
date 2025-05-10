@@ -50,7 +50,7 @@ public class ProService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null, proDTO.getUsername(), proDTO.getPassword(), proDTO.getEmail(), proDTO.getFirstName(), proDTO.getLastName(), proDTO.getRole(), null, null, null, null, LocalDate.now());
+        User user = new User(null, proDTO.getUsername(), proDTO.getPassword(), proDTO.getEmail(), proDTO.getFirstName(), proDTO.getLastName(), proDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
         Pro pro = new Pro(null, filePath, user, null, null,false);
         authRepository.save(user);
         proRepository.save(pro);

@@ -20,6 +20,7 @@ public class ParentService {
 
     private final ParentRepository parentRepository;
     private final AuthRepository authRepository;
+    private final ChildRepository childRepository;
 
     public List<Parent> getAllParents() {
         return parentRepository.findAll();
@@ -27,7 +28,7 @@ public class ParentService {
 
     public void registerParent(ParentDTO parentDTO) {
         parentDTO.setRole("PARENTS");
-        User user = new User(null, parentDTO.getUsername(), parentDTO.getPassword(), parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), null, null, null,null,null,null,null,null,null LocalDate.now(),);
+        User user = new User(null, parentDTO.getUsername(), parentDTO.getPassword(), parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
 
         Parent parent = new Parent(null, user,null, null);
         authRepository.save(user);
