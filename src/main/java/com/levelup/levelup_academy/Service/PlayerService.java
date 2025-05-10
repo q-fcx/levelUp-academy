@@ -9,6 +9,7 @@ import com.levelup.levelup_academy.Repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -27,7 +28,7 @@ public class PlayerService {
 
     public void registerPlayer(PlayerDTO playerDTO){
         playerDTO.setRole("PLAYER");
-        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), null,null,null,null,false);
+        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), null,null,null,null, LocalDate.now());
         Player player = new Player(null,user,null, null);
         authRepository.save(user);
         playerRepository.save(player);

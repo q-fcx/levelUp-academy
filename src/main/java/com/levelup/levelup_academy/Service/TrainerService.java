@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,8 +42,8 @@ public class TrainerService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),null,null,null,null,false);
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null, user, null);
+        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),null,null,null,null, LocalDate.now());
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null, user, null,false);
         authRepository.save(user);
         trainerRepository.save(trainer);
     }

@@ -29,7 +29,7 @@ public class ProController {
             @RequestPart("pro") ProDTO proDTO,
             @RequestPart("file") MultipartFile file) {
         proService.registerPro(proDTO, file);
-        return ResponseEntity.ok("pro player registered successfully with CV uploaded");
+        return ResponseEntity.ok("pro player registered successfully with PDF uploaded");
     }
 
     //Edit

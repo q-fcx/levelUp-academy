@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Check;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -56,7 +58,8 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Moderator moderator;
 
-    private Boolean isApproved=false;
+
+    private LocalDate registration= LocalDate.now() ;
 
 
 

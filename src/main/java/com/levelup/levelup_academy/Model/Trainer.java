@@ -41,4 +41,7 @@ public class Trainer {
     @JsonIgnore
     private Set<Session> sessions;
 
+    private Boolean isApproved=false;
+
+
 }
