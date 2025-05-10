@@ -79,5 +79,37 @@ public class SessionService {
 
     }
 
+    //update session
+    public void updateSession(Integer moderatorId, Session session, Integer sessionId){
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
+        Session oldSession = sessionRepository.findClassById(sessionId);
+        if(oldSession == null){
+            throw new ApiException("Session not found");
+        }
+
+        oldSession.setGame(session.getGame());
+        oldSession.setName(session.getName());
+        oldSession.setTrainer(session.getTrainer());
+        oldSession.setTime(session.getTime());
+        sessionRepository.save(oldSession);
+    }
+
+    public void deleteSession(Integer moderatorId, Integer sessionId){
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
+        Session delSession = sessionRepository.findClassById(sessionId);
+        if(delSession == null){
+            throw new ApiException("Session not found");
+        }
+
+        sessionRepository.delete(delSession);
+    }
+
+
 
 }
