@@ -29,10 +29,10 @@ public class ContractService {
     }
 
     //ADD
-    public void addContract(ContractDTO contractDTO) {
+    public void addContract(ContractDTO contractDTO, Integer moderatorId) {
 
         // Proceed with creating and saving the contract
-        Moderator moderator = moderatorRepository.findModeratorById(contractDTO.getModeratorId());
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
               if(moderator == null) {new ApiException("Moderator not found with ID: " + contractDTO.getModeratorId());
               }
         Contract contract = new Contract(

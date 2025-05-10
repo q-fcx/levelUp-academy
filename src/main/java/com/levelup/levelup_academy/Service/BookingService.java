@@ -37,13 +37,13 @@ public class BookingService {
         Session session = sessionRepository.findSessionById(sessionId);
         if(session == null) throw new ApiException("Session not found");
 
-//        List<Booking> existingBookings = bookingRepository.findByUserId(userId);
-//        for (Booking b : existingBookings) {
-//            if (b.getSession().getStartDate().isEqual(session.getStartDate()) &&
-//                    b.getSession().getTime().equals(session.getTime())) {
-//                throw new ApiException("You already have a booking at this time.");
-//            }
-//        }
+        List<Booking> existingBookings = bookingRepository.findByUserId(userId);
+        for (Booking b : existingBookings) {
+            if (b.getSession().getStartDate().isEqual(session.getStartDate()) &&
+                    b.getSession().getTime().equals(session.getTime())) {
+                throw new ApiException("You already have a booking at this time.");
+            }
+        }
         Subscription subscription = subscriptionRepository.findSubscriptionById(subscriptionId);
         subscription.setSessionCount(subscription.getSessionCount() - 1);
         Booking booking = new Booking();

@@ -18,6 +18,8 @@ public class StatisticChildService {
     private final ChildRepository childRepository;
 
 
+    //get all
+    //get my stat
     public StatisticChild getStatisticById(Integer statId) {
         return statisticChildRepository.findById(statId)
                 .orElseThrow(() -> new ApiException("Statistic not found"));

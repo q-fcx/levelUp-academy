@@ -183,8 +183,9 @@ public class TrainerService {
     }
 
     public void giveTrophyToChild(Integer trainerId, Integer childId) {
-        Trainer trainer = trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new ApiException("Trainer not found"));
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null ) throw new ApiException("Trainer not found");
+
 
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new ApiException("Child not found"));
