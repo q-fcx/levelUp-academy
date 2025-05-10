@@ -39,13 +39,5 @@ public class PlayerController {
         playerService.deletePlayer(id);
         return ResponseEntity.ok("Player deleted successfully");
     }
-    @GetMapping("/top")
-    public ResponseEntity getTopPlayer() {
-        return ResponseEntity.ok(statisticPlayerService.getTopPlayerByTrophy());
-    }
 
-    @GetMapping("/top5/{game}")
-    public ResponseEntity getTop5Players(@PathVariable String game) {
-        return ResponseEntity.ok(statisticPlayerService.getTop5PlayersByGame(game));
-    }
 }
