@@ -5,8 +5,10 @@ import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
 import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
-import com.levelup.levelup_academy.Model.*;
-import com.levelup.levelup_academy.Repository.*;
+import com.levelup.levelup_academy.Model.Trainer;
+import com.levelup.levelup_academy.Model.User;
+import com.levelup.levelup_academy.Repository.AuthRepository;
+import com.levelup.levelup_academy.Repository.TrainerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -140,6 +142,67 @@ public class TrainerService {
         }
         statisticProService.createStatistic(proId,statisticProDTO);
     }
+
+    public void giveTrophyToPlayer(Integer trainerId, Integer playerId) {
+        Trainer trainer = trainerRepository.findById(trainerId)
+                .orElseThrow(() -> new ApiException("Trainer not found"));
+
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new ApiException("Player not found"));
+
+        StatisticPlayer stats = player.getStatistics();
+        if (stats == null) {
+            throw new ApiException("Player statistics not found.");
+        }
+
+        if (stats.getWinGame() > 5 || stats.getLossGame() < 3) {
+            stats.setTrophy("GOLD");
+            playerRepository.save(player);
+        } else {
+            throw new ApiException("Player not eligible for trophy.");
+        }
+    }
+
+    public void giveTrophyToProfessional(Integer trainerId, Integer professionalId) {
+        Trainer trainer = trainerRepository.findById(trainerId)
+                .orElseThrow(() -> new ApiException("Trainer not found"));
+
+        Pro pro = proRepository.findById(professionalId)
+                .orElseThrow(() -> new ApiException("Professional not found"));
+
+        StatisticPro stats = pro.getStatistics();
+        if (stats == null) {
+            throw new ApiException("Professional statistics not found.");
+        }
+
+        if (stats.getWinGame() > 10 || stats.getLossGame() < 2) {
+            stats.setTrophy("GOLD");
+            proRepository.save(pro);
+        } else {
+            throw new ApiException("Professional not eligible for trophy.");
+        }
+    }
+
+    public void giveTrophyToChild(Integer trainerId, Integer childId) {
+        Trainer trainer = trainerRepository.findById(trainerId)
+                .orElseThrow(() -> new ApiException("Trainer not found"));
+
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new ApiException("Child not found"));
+
+        StatisticChild stats = child.getStatistics();
+        if (stats == null) {
+            throw new ApiException("Child statistics not found.");
+        }
+
+        if (stats.getWinGame() > 3 || stats.getLossGame() < 5) {
+            stats.setTrophy("GOLD");
+            childRepository.save(child);
+        } else {
+            throw new ApiException("Child not eligible for trophy.");
+        }
+    }
+
 
 
 }

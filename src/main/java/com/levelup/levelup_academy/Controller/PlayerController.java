@@ -3,6 +3,7 @@ package com.levelup.levelup_academy.Controller;
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
 import com.levelup.levelup_academy.Service.PlayerService;
+import com.levelup.levelup_academy.Service.StatisticPlayerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PlayerController {
     private final PlayerService playerService;
+    private final StatisticPlayerService statisticPlayerService;
 //GET
     @GetMapping("/get")
     public ResponseEntity getAllPlayers(){
@@ -36,5 +38,14 @@ public class PlayerController {
     public ResponseEntity<String> delete(@PathVariable Integer id) {
         playerService.deletePlayer(id);
         return ResponseEntity.ok("Player deleted successfully");
+    }
+    @GetMapping("/top")
+    public ResponseEntity getTopPlayer() {
+        return ResponseEntity.ok(statisticPlayerService.getTopPlayerByTrophy());
+    }
+
+    @GetMapping("/top5/{game}")
+    public ResponseEntity getTop5Players(@PathVariable String game) {
+        return ResponseEntity.ok(statisticPlayerService.getTop5PlayersByGame(game));
     }
 }

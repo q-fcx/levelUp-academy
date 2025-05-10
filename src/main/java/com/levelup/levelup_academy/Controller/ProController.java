@@ -4,6 +4,7 @@ import com.levelup.levelup_academy.DTO.ProDTO;
 import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ProService;
+import com.levelup.levelup_academy.Service.StatisticProService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ProController {
     private final ProService proService;
+    private final StatisticProService statisticProService;
 
     //GET
     @GetMapping("/get")
@@ -56,6 +58,17 @@ public class ProController {
     public ResponseEntity<String> rejectPro(@PathVariable Integer adminId, @PathVariable Integer proId) {
         proService.rejectProByAdmin(adminId, proId);
         return ResponseEntity.ok("The professional player has been rejected and deleted.");
+    }
+
+
+    @GetMapping("/top")
+    public ResponseEntity getTopPro() {
+        return ResponseEntity.ok(statisticProService.getTopProByTrophy());
+    }
+
+    @GetMapping("/top5/{game}")
+    public ResponseEntity getTop5Pros(@PathVariable String game) {
+        return ResponseEntity.ok(statisticProService.getTop5ProsByGame(game));
     }
 
 

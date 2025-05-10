@@ -31,4 +31,10 @@ public class BookingController {
         return ResponseEntity.status(200).body(new ApiResponse("Status Checked"));
     }
 
+    @PutMapping("/cancel/{bookingId}/{userId}")
+    public ResponseEntity<String> cancelBooking(@PathVariable Integer userId,@PathVariable Integer bookingId) {
+        bookingService.cancelPendingBooking(userId,bookingId);
+        return ResponseEntity.ok("Booking cancelled successfully.");
+    }
+
 }

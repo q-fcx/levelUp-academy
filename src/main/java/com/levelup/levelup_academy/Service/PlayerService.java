@@ -39,7 +39,7 @@ public class PlayerService {
 
         User user = player.getUser();
         if (user == null) {
-            throw new RuntimeException("User not found for this player");
+            throw new ApiException("User not found for this player");
         }
 
         user.setUsername(playerDTO.getUsername());
@@ -53,7 +53,7 @@ public class PlayerService {
     }
     public void deletePlayer(Integer id) {
         Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Player not found"));
+                .orElseThrow(() -> new ApiException("Player not found"));
 
         User user = player.getUser();
         if (user != null) {

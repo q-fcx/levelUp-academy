@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -46,7 +47,7 @@ public class BookingService {
         Subscription subscription = subscriptionRepository.findSubscriptionById(subscriptionId);
         subscription.setSessionCount(subscription.getSessionCount() - 1);
         Booking booking = new Booking();
-        booking.setBookDate(LocalDate.now());
+        booking.setBookDate(LocalDateTime.now());
         booking.setUser(user);
         booking.setSession(session);
         booking.setSubscription(subscription);
@@ -68,4 +69,34 @@ public class BookingService {
         }
 
     }
+    public void cancelPendingBooking(Integer userId, Integer bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ApiException("Booking not found"));
+
+        User user = booking.getUser();
+
+        if (!user.getId().equals(userId)) {
+            throw new ApiException("You are not authorized to cancel this booking.");
+        }
+
+        String role = user.getRole();
+        if (!(role.equals("PLAYER") || role.equals("PRO") || role.equals("PARENT"))) {
+            throw new ApiException("Only players, pros, or parents can cancel bookings.");
+        }
+
+        if (!booking.getStatus().equalsIgnoreCase("PENDING")) {
+            throw new ApiException("Only bookings with status PENDING can be cancelled.");
+        }
+
+        LocalDateTime sessionStart = booking.getSession().getStartDate();
+        LocalDateTime now = LocalDateTime.now();
+
+        if (!now.isBefore(sessionStart.minusHours(1))) {
+            throw new RuntimeException("Cannot cancel booking less than 1 hour before the session.");
+        }
+
+        booking.setStatus("CANCELLED");
+        bookingRepository.save(booking);
+    }
+
 }
