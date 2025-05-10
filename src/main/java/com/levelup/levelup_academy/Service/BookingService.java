@@ -56,9 +56,20 @@ public class BookingService {
         }
 
     }
-    public void cancelPendingBooking(Integer bookingId) {
+    public void cancelPendingBooking(Integer userId, Integer bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ApiException("Booking not found"));
+
+        User user = booking.getUser();
+
+        if (!user.getId().equals(userId)) {
+            throw new ApiException("You are not authorized to cancel this booking.");
+        }
+
+        String role = user.getRole();
+        if (!(role.equals("PLAYER") || role.equals("PRO") || role.equals("PARENT"))) {
+            throw new ApiException("Only players, pros, or parents can cancel bookings.");
+        }
 
         if (!booking.getStatus().equalsIgnoreCase("PENDING")) {
             throw new ApiException("Only bookings with status PENDING can be cancelled.");
