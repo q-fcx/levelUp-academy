@@ -51,7 +51,7 @@ public class TrainerService {
             }
         }
         User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null,null,null,null,user, null,null);
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null,null,null,null);
         authRepository.save(user);
         trainerRepository.save(trainer);
     }
