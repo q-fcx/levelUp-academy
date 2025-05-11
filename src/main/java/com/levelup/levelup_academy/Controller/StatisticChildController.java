@@ -60,4 +60,10 @@ public class StatisticChildController {
         statisticChildService.addLoss(statId);
         return ResponseEntity.ok("Loss added successfully");
     }
+    @PostMapping("/notify-weak")
+    public ResponseEntity<String> notifyParents() {
+        statisticChildService.notifyParentsIfChildRateIsWeak();
+        return ResponseEntity.ok("Emails sent to parents of weak-performing children.");
+    }
+
 }

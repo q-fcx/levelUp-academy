@@ -63,4 +63,9 @@ public class StatisticPlayerController {
         statisticPlayerService.addLoss(statId);
         return ResponseEntity.ok("Loss added successfully");
     }
+    @PostMapping("/notify-weak")
+    public ResponseEntity<String> notifyPlayer() {
+        statisticPlayerService.notifyPlayerIfRateIsWeak();
+        return ResponseEntity.ok("Emails sent to player of weak-performing.");
+    }
 }

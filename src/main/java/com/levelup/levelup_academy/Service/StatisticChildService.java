@@ -1,6 +1,7 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Model.StatisticChild;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
-import java.awt.print.Pageable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class StatisticChildService {
     private final StatisticChildRepository statisticChildRepository;
     private final ChildRepository childRepository;
+    private final EmailNotificationService emailNotificationService;
 
 
     public StatisticChild getStatisticsByChildId(Integer childId) {
@@ -105,4 +106,22 @@ public class StatisticChildService {
                 .limit(5)
                 .collect(Collectors.toList());
     }
+    public void notifyParentsIfChildRateIsWeak() {
+        List<StatisticChild> allStats = statisticChildRepository.findAll();
+
+        for (StatisticChild stat : allStats) {
+            if (stat.getWinGame() <= 1 || stat.getLossGame() >= 5) {
+                Child child = stat.getChild();
+                if (child != null && child.getParent() != null && child.getParent().getUser() != null) {
+                    EmailRequest email = new EmailRequest();
+                    email.setRecipient(child.getParent().getUser().getEmail());
+                    email.setSubject( "Low Performance Alert for Your Child");
+                    email.setMessage( "Your child is performing poorly. Please review their training and progress.");
+
+                    emailNotificationService.sendEmail(email);
+                }
+            }
+        }
+    }
+
 }

@@ -3,8 +3,6 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.Model.Pro;
-import com.levelup.levelup_academy.Model.StatisticChild;
-import com.levelup.levelup_academy.Model.StatisticPlayer;
 import com.levelup.levelup_academy.Model.StatisticPro;
 import com.levelup.levelup_academy.Repository.ProRepository;
 import com.levelup.levelup_academy.Repository.StatisticProRepository;

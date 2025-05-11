@@ -1,7 +1,9 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
+import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.StatisticChild;
 import com.levelup.levelup_academy.Model.StatisticPlayer;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class StatisticPlayerService {
     private final StatisticPlayerRepository repository;
     private final PlayerRepository playerRepository;
+    private final EmailNotificationService emailNotificationService;
 
     public StatisticPlayer getStatisticsByPlayerId(Integer playerId) {
         StatisticPlayer stat = repository.findByPlayer_Id(playerId);
@@ -36,6 +39,7 @@ public class StatisticPlayerService {
 
         repository.save(stat);
     }
+
     public void updateStatistic(Integer statId, StatisticPlayerDTO dto) {
         StatisticPlayer stat = repository.findById(statId)
                 .orElseThrow(() -> new ApiException("Statistic not found"));
@@ -49,25 +53,28 @@ public class StatisticPlayerService {
 
         repository.save(stat);
     }
+
     public void deleteStatistic(Integer statId) {
         StatisticPlayer stat = repository.findStatisticPlayerById(statId);
-        if (stat==null){
+        if (stat == null) {
             throw new ApiException("Statistic not found");
         }
 
         repository.delete(stat);
     }
-    public void addWin(Integer statsId){
+
+    public void addWin(Integer statsId) {
         StatisticPlayer statisticPlayer = repository.findStatisticPlayerById(statsId);
-        if(statisticPlayer == null){
+        if (statisticPlayer == null) {
             throw new ApiException("Not found");
         }
         statisticPlayer.setWinGame(statisticPlayer.getWinGame() + 1);
         repository.save(statisticPlayer);
     }
+
     public void addLoss(Integer statId) {
         StatisticPlayer statisticPlayer = repository.findStatisticPlayerById(statId);
-        if(statisticPlayer == null){
+        if (statisticPlayer == null) {
             throw new ApiException("Not found");
         }
 
@@ -101,4 +108,22 @@ public class StatisticPlayerService {
                 .collect(Collectors.toList());
     }
 
+    public void notifyPlayerIfRateIsWeak() {
+        List<StatisticPlayer> allStats = repository.findAll();
+
+        for (StatisticPlayer stat : allStats) {
+            if (stat.getWinGame() <= 1 || stat.getLossGame() >= 5) {
+                Player player = stat.getPlayer();
+                if (player != null) {
+                    EmailRequest email = new EmailRequest();
+                    email.setRecipient(player.getUser().getEmail());
+                    email.setSubject("Low Performance Alert");
+                    email.setMessage("your rating is currently low");
+
+                    emailNotificationService.sendEmail(email);
+                }
+            }
+
+        }
+    }
 }
