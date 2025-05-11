@@ -16,13 +16,6 @@ public class UserController {
 
     private final UserService userService;
 
-
-    @PostMapping("/register")
-    public ResponseEntity registerAdmin(User user){
-      userService.register(user);
-       return ResponseEntity.status(200).body("Adding admin successfully");
-    }
-
     @PostMapping("generate/{adminId}/{moderatorId}")
     public ResponseEntity generateModeratorLogin(@PathVariable Integer adminId, @PathVariable Integer moderatorId){
         userService.generateModeratorLogin(adminId, moderatorId);
