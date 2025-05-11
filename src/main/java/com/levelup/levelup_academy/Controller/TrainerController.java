@@ -65,4 +65,16 @@ public class TrainerController {
         return new ResponseEntity<>(cvContent, headers, HttpStatus.OK);
     }
 
+
+    @PostMapping("/approve/{adminId}/{trainerId}")
+    public ResponseEntity<String> approvePro(@PathVariable Integer adminId, @PathVariable Integer trainerId) {
+        trainerService.approveTrainerByAdmin(adminId, trainerId);
+        return ResponseEntity.ok("The trainer has been approved.");
+    }
+    @PutMapping("/reject/{adminId}/{trainerId}")
+    public ResponseEntity<String> rejectPro(@PathVariable Integer adminId, @PathVariable Integer trainerId) {
+        trainerService.rejectTrainerByAdmin(adminId, trainerId);
+        return ResponseEntity.ok("The trainer has been rejected and deleted.");
+    }
+
 }

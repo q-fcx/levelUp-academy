@@ -1,6 +1,8 @@
 package com.levelup.levelup_academy.Service;
 
+import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
+import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
@@ -93,6 +95,45 @@ public class TrainerService {
         authRepository.delete(trainer.getUser());
         trainerRepository.delete(trainer);
     }
+
+
+
+    // Approving Trainer request by admin if the pdf match the requirement
+    public void approveTrainerByAdmin(Integer adminId, Integer trainerId) {
+        User admin = authRepository.findUserById(adminId);
+        if (!admin.getRole().equals("ADMIN")) {
+            throw new ApiException("Unauthorized: You must be an admin to approve players.");
+        }
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null) {
+            throw new ApiException("The Trainer you are looking for is not found.");
+        }
+        if (trainer.getIsApproved()) {
+            throw new ApiException("This trainer has already been approved.");
+        }
+        User user = trainer.getUser();
+        trainer.setIsApproved(true);
+        authRepository.save(user);
+        trainerRepository.save(trainer);
+    }
+
+    // rejecting the trainer  request by admin if the pdf not match the requirement
+    public void rejectTrainerByAdmin(Integer adminId, Integer trainerId) {
+        User admin = authRepository.findUserById(adminId);
+        if (!admin.getRole().equals("ADMIN")) {
+            throw new ApiException("Unauthorized: You must be an admin to reject players.");
+        }
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null) {
+            throw new ApiException("The trainer you are looking for is not found.");
+        }
+
+        User user = trainer.getUser();
+        trainer.setIsApproved(false);
+        trainerRepository.delete(trainer);
+        authRepository.delete(user);
+    }
+
 
 
 }

@@ -43,4 +43,6 @@ public class Contract {
     @JoinColumn
     @JsonIgnore
     private Pro pro;
+
+    private String contractStatus="pending";
 }

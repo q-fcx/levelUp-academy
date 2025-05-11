@@ -13,10 +13,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PlayerController {
     private final PlayerService playerService;
-//GET
-    @GetMapping("/get")
-    public ResponseEntity getAllPlayers(){
-        return ResponseEntity.status(200).body(playerService.getAllPlayers());
+
+
+     //GET
+    @GetMapping("/get/{moderatorId}")
+    public ResponseEntity getAllPlayers(@PathVariable Integer moderatorId){
+        return ResponseEntity.status(200).body(playerService.getAllPlayers(moderatorId));
+    }
+
+    //get player by moderator
+    @GetMapping("/get-player/{moderatorId}/{playerId}")
+    public ResponseEntity getPlayer(@PathVariable Integer moderatorId,@PathVariable Integer playerId){
+        return ResponseEntity.status(200).body(playerService.getPlayer(moderatorId, playerId));
     }
 
     //Register

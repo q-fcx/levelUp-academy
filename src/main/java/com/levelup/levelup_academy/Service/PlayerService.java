@@ -2,9 +2,12 @@ package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
+import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.Player;
+import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
+import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,13 +20,28 @@ import java.util.List;
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final AuthRepository authRepository;
+    private final ModeratorRepository moderatorRepository;
 
-    //GET
-
-    public List<Player> getAllPlayers(){
+    //GET All players by moderator
+    public List<Player> getAllPlayers(Integer moderatorId) {
+        Moderator moderator= moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
         return playerRepository.findAll();
     }
 
+    public Player getPlayer(Integer moderatorId,Integer playerId){
+        Moderator moderator= moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
+        Player player = playerRepository.findPlayerById(playerId);
+        if(player == null){
+            throw new ApiException("Player is not found");
+        }
+        return player;
+    }
     //Register player
 
     public void registerPlayer(PlayerDTO playerDTO){
@@ -62,6 +80,7 @@ public class PlayerService {
 
         playerRepository.delete(player);
     }
+
 
 
 }

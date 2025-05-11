@@ -3,12 +3,8 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ProDTO;
-import com.levelup.levelup_academy.Model.Moderator;
-import com.levelup.levelup_academy.Model.Pro;
-import com.levelup.levelup_academy.Model.User;
-import com.levelup.levelup_academy.Repository.AuthRepository;
-import com.levelup.levelup_academy.Repository.ModeratorRepository;
-import com.levelup.levelup_academy.Repository.ProRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,11 +24,30 @@ public class ProService {
     private final AuthRepository authRepository;
     private final EmailNotificationService emailNotificationService;
     private final ModeratorRepository moderatorRepository;
+    private final SessionRepository sessionRepository;
+    private final ContractRepository contractRepository;
 
-    //GET
-    public List<Pro> getAllPro() {
+    //GET All Pro players by moderator
+    public List<Pro> getAllPro(Integer moderatorId) {
+        Moderator moderator= moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
         return proRepository.findAll();
     }
+
+    public Pro getPro(Integer moderatorId,Integer proId){
+        Moderator moderator= moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
+        Pro pro = proRepository.findProById(proId);
+        if(pro == null){
+            throw new ApiException("Pro player is not found");
+        }
+        return pro;
+    }
+
 
     //Register pro player
 
@@ -147,7 +162,6 @@ public class ProService {
         }
 
         User user = pro.getUser();
-//        user.setIsApproved(false);
         pro.setIsApproved(false);
         proRepository.delete(pro);
         authRepository.delete(user);
@@ -187,5 +201,31 @@ public class ProService {
 
 
 
+    public void expireAccount() {
+        LocalDate oneYearAgo = LocalDate.now().minusYears(1);
+
+        List<Contract> contracts = contractRepository.findByStartDateBefore(oneYearAgo);
+
+        for (Contract contract : contracts) {
+            if (contract.getStartDate().isBefore(oneYearAgo) && contract.getContractStatus().equals("Accepted")) {
+                Pro pro = contract.getPro();
+                sendAccountDeletionEmail(pro);
+
+                contractRepository.save(contract);  // Save the updated contract
+            }
+        }
+    }
+    // Method to send email to pro player about account deleting the account
+    private void sendAccountDeletionEmail(Pro pro) {
+        String subject = "Your Account Has Been Deleted Due to Contract Expiry";
+        String body = String.format("Dear %s,\n\nYour contract has expired, and your account has been deleted as a result. If you have any questions, please contact support.\n\nBest regards,\nTeam",pro.getUser().getEmail());
+
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRecipient(pro.getUser().getEmail());
+        emailRequest.setSubject(subject);
+        emailRequest.setMessage(body);
+
+        emailNotificationService.sendEmail(emailRequest);
+    }
 
 }

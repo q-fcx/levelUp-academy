@@ -5,10 +5,7 @@ import com.levelup.levelup_academy.Service.ContractService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/contract")
@@ -20,6 +17,11 @@ public class ContractController {
     public ResponseEntity<String> addContract(@RequestBody @Valid ContractDTO contractDTO) {
         contractService.addContract(contractDTO);
         return ResponseEntity.ok("Contract added and email sent successfully.");
+    }
+
+    @GetMapping("/get-all-contract/{proId}")
+    public ResponseEntity getContractForPro(@PathVariable Integer proId){
+        return ResponseEntity.status(200).body(contractService.getAllContract(proId));
     }
 
 }
