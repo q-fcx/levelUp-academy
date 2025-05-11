@@ -26,7 +26,7 @@ public class BookingController {
     }
 
     @PostMapping("check/{bookingId}")
-    public ResponseEntity checkBookStatus(@PathVariable Integer bookingId) {
+    public ResponseEntity changeBookStatus(@PathVariable Integer bookingId) {
         bookingService.checkBookState(bookingId);
         return ResponseEntity.status(200).body(new ApiResponse("Status Checked"));
     }
