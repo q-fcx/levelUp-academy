@@ -61,6 +61,26 @@ public class StatisticProService {
 
         statisticProRepository.delete(stat);
     }
+
+    public void addWin(Integer statsId){
+        StatisticPro statisticPro = statisticProRepository.findStatisticProById(statsId);
+        if(statisticPro == null){
+            throw new ApiException("Not found");
+        }
+        statisticPro.setWinGame(statisticPro.getWinGame() + 1);
+        statisticProRepository.save(statisticPro);
+    }
+
+    public void addLoss(Integer statId) {
+        StatisticPro statisticPro = statisticProRepository.findStatisticProById(statId);
+        if (statisticPro == null) {
+            throw new ApiException("Statistic not found");
+        }
+
+        statisticPro.setLossGame(statisticPro.getLossGame() + 1);
+        statisticProRepository.save(statisticPro);
+    }
+
     public StatisticPro getProWithTopTrophy() {
         List<StatisticPro> all = statisticProRepository.findAll();
 

@@ -53,4 +53,14 @@ public class StatisticPlayerController {
         List<StatisticPlayer> top5 = statisticPlayerService.getTop5PlayersByGame(winGame);
         return ResponseEntity.ok(top5);
     }
+    @PutMapping("/add-win/{statId}")
+    public ResponseEntity<String> addWinToPlayer(@PathVariable Integer statId) {
+        statisticPlayerService.addWin(statId);
+        return ResponseEntity.ok("Win added successfully");
+    }
+    @PutMapping("/add-loss/{statId}")
+    public ResponseEntity<String> addLossToPlayer(@PathVariable Integer statId) {
+        statisticPlayerService.addLoss(statId);
+        return ResponseEntity.ok("Loss added successfully");
+    }
 }

@@ -50,4 +50,14 @@ public class StatisticChildController {
         List<StatisticChild> top5 = statisticChildService.getTop5ChildrenByGame(winGame);
         return ResponseEntity.ok(top5);
     }
+    @PutMapping("/add-win/{statId}")
+    public ResponseEntity<String> addWinToChild(@PathVariable Integer statId) {
+        statisticChildService.addWin(statId);
+        return ResponseEntity.ok("Win added successfully");
+    }
+    @PutMapping("/add-loss/{statId}")
+    public ResponseEntity<String> addLossToChild(@PathVariable Integer statId) {
+        statisticChildService.addLoss(statId);
+        return ResponseEntity.ok("Loss added successfully");
+    }
 }

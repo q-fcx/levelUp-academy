@@ -50,4 +50,14 @@ public class StatisticProController {
         List<StatisticPro> top5 = statisticProService.getTop5ProByGame(winGame);
         return ResponseEntity.ok(top5);
     }
+    @PutMapping("/add-win/{statId}")
+    public ResponseEntity<String> addWinToPro(@PathVariable Integer statId) {
+        statisticProService.addWin(statId);
+        return ResponseEntity.ok("Win added successfully");
+    }
+    @PutMapping("/add-loss/{statId}")
+    public ResponseEntity<String> addLossToPro(@PathVariable Integer statId) {
+        statisticProService.addLoss(statId);
+        return ResponseEntity.ok("Loss added successfully");
+    }
 }

@@ -60,6 +60,26 @@ public class StatisticChildService {
         }
         statisticChildRepository.delete(stat);
     }
+
+    public void addWin(Integer statsId){
+        StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statsId);
+        if(statisticChild == null){
+            throw new ApiException("Not found");
+        }
+        statisticChild.setWinGame(statisticChild.getWinGame() + 1);
+        statisticChildRepository.save(statisticChild);
+    }
+
+    public void addLoss(Integer statId) {
+        StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statId);
+        if (statisticChild == null) {
+            throw new ApiException("Statistic not found");
+        }
+
+        statisticChild.setLossGame(statisticChild.getLossGame() + 1);
+        statisticChildRepository.save(statisticChild);
+    }
+
     public StatisticChild getChildWithTopTrophy() {
         List<StatisticChild> all = statisticChildRepository.findAll();
 
@@ -85,4 +105,5 @@ public class StatisticChildService {
                 .limit(5)
                 .collect(Collectors.toList());
     }
+
 }

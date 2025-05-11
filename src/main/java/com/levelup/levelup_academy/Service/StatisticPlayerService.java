@@ -57,6 +57,24 @@ public class StatisticPlayerService {
 
         repository.delete(stat);
     }
+    public void addWin(Integer statsId){
+        StatisticPlayer statisticPlayer = repository.findStatisticPlayerById(statsId);
+        if(statisticPlayer == null){
+            throw new ApiException("Not found");
+        }
+        statisticPlayer.setWinGame(statisticPlayer.getWinGame() + 1);
+        repository.save(statisticPlayer);
+    }
+    public void addLoss(Integer statId) {
+        StatisticPlayer statisticPlayer = repository.findStatisticPlayerById(statId);
+        if(statisticPlayer == null){
+            throw new ApiException("Not found");
+        }
+
+        statisticPlayer.setLossGame(statisticPlayer.getLossGame() + 1);
+        repository.save(statisticPlayer);
+    }
+
     public StatisticPlayer getPlayerWithTopTrophy() {
         List<StatisticPlayer> all = repository.findAll();
 
