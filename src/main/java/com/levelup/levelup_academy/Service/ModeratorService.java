@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.hibernate.annotations.UuidGenerator.Style.RANDOM;
-
 @Service
 @RequiredArgsConstructor
 public class ModeratorService {
@@ -41,6 +39,7 @@ public class ModeratorService {
         Moderator moderator = new Moderator(null,user);
         authRepository.save(user);
         moderatorRepository.save(moderator);
+
     }
     public void updateModerator(Integer id, ModeratorDTO moderatorDTO){
         Moderator moderator = moderatorRepository.findById(id)

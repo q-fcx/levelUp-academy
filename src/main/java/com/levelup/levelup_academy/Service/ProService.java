@@ -162,6 +162,7 @@ public class ProService {
         }
 
         User user = pro.getUser();
+//        user.setIsApproved(false);
         pro.setIsApproved(false);
         proRepository.delete(pro);
         authRepository.delete(user);

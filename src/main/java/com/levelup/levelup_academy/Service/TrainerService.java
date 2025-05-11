@@ -1,10 +1,12 @@
 package com.levelup.levelup_academy.Service;
 
+import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.StatisticChildDTO;
+import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
+import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
-import com.levelup.levelup_academy.Model.Trainer;
-import com.levelup.levelup_academy.Model.User;
-import com.levelup.levelup_academy.Repository.AuthRepository;
-import com.levelup.levelup_academy.Repository.TrainerRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,12 @@ import java.util.UUID;
 public class TrainerService {
     private final TrainerRepository trainerRepository;
     private final AuthRepository authRepository;
+    private final StatisticChildService statisticChildService;
+    private final StatisticPlayerService statisticPlayerService;
+    private final StatisticProService statisticProService;
+    private final ChildRepository childRepository;
+    private final PlayerRepository playerRepository;
+    private final ProRepository proRepository;
 
     //GET
     public List<Trainer> getAllTrainers(){
@@ -42,8 +50,8 @@ public class TrainerService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),null,null,null,null, LocalDate.now());
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),null, user, null,false);
+        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),false, null,null,null,user, null, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
     }

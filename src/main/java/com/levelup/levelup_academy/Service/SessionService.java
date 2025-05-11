@@ -1,14 +1,8 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
-import com.levelup.levelup_academy.Model.Game;
-import com.levelup.levelup_academy.Model.Moderator;
-import com.levelup.levelup_academy.Model.Session;
-import com.levelup.levelup_academy.Model.Trainer;
-import com.levelup.levelup_academy.Repository.GameRepository;
-import com.levelup.levelup_academy.Repository.SessionRepository;
-import com.levelup.levelup_academy.Repository.ModeratorRepository;
-import com.levelup.levelup_academy.Repository.TrainerRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +15,7 @@ public class SessionService {
     private final TrainerRepository trainerRepository;
     private final ModeratorRepository moderatorRepository;
     private final GameRepository gameRepository;
+    private final BookingRepository bookingRepository;
 
     //GET
     public List<Session> getAllClasses(){
@@ -108,6 +103,13 @@ public class SessionService {
         }
 
         sessionRepository.delete(delSession);
+    }
+
+    public List<User> getAllPlayersInSession(Integer sessionId) {
+        Session session = sessionRepository.findSessionById(sessionId);
+        if (session == null) throw new ApiException("Session not found");
+
+        return bookingRepository.findUsersBySessionId(sessionId);
     }
 
 
