@@ -3,9 +3,13 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.Model.Child;
+import com.levelup.levelup_academy.Model.Parent;
 import com.levelup.levelup_academy.Model.StatisticChild;
+import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Repository.ChildRepository;
+import com.levelup.levelup_academy.Repository.ParentRepository;
 import com.levelup.levelup_academy.Repository.StatisticChildRepository;
+import com.levelup.levelup_academy.Repository.TrainerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +24,25 @@ import java.util.stream.Collectors;
 public class StatisticChildService {
     private final StatisticChildRepository statisticChildRepository;
     private final ChildRepository childRepository;
+    private final TrainerRepository trainerRepository;
+    private final ParentRepository parentRepository;
 
 
-    public StatisticChild getStatisticsByChildId(Integer childId) {
+    public StatisticChild getMyChildStatisticsByChildId(Integer parentId,Integer childId) {
+        Parent parent = parentRepository.findParentById(parentId);
+        if (parent == null){
+            throw new ApiException("Parent not found");
+        }
+        StatisticChild stat = statisticChildRepository.findByChild_Id(childId);
+        if (stat == null) throw new ApiException("Statistic not found for this child");
+        return stat;
+    }
+
+    public StatisticChild getStatisticsByChildId(Integer trainerId,Integer childId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticChild stat = statisticChildRepository.findByChild_Id(childId);
         if (stat == null) throw new ApiException("Statistic not found for this child");
         return stat;
@@ -31,7 +51,11 @@ public class StatisticChildService {
         return statisticChildRepository.findByChild_Trainer_Id(trainerId);
     }
 
-    public void createStatistic(Integer childId, StatisticChildDTO dto) {
+    public void createStatisticChild(Integer trainerId,Integer childId, StatisticChildDTO dto) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new ApiException("Child not found"));
 
@@ -41,7 +65,11 @@ public class StatisticChildService {
         statisticChildRepository.save(stat);
     }
 
-    public void updateStatistic(Integer statId, StatisticChildDTO dto) {
+    public void updateStatistic(Integer trainerId,Integer statId, StatisticChildDTO dto) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticChild stat = statisticChildRepository.findStatisticChildById(statId);
         if (stat==null){
             throw new ApiException("Statistic not found");
@@ -56,7 +84,11 @@ public class StatisticChildService {
 
         statisticChildRepository.save(stat);
     }
-    public void deleteStatistic(Integer statId) {
+    public void deleteStatistic(Integer trainerId,Integer statId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticChild stat = statisticChildRepository.findStatisticChildById(statId);
         if (stat==null){
             throw new ApiException("Statistic not found");

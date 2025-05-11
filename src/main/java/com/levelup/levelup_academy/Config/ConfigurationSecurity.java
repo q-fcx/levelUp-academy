@@ -36,7 +36,18 @@ public class ConfigurationSecurity {
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
-                .requestMatchers()
+                .requestMatchers("/api/v1/player/register").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .logout().logoutUrl("/api/v1/user/logout")
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .and()
+                .httpBasic();
+        return httpSecurity.build();
+
 
     }
+
+
 }

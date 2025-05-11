@@ -2,12 +2,10 @@ package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.StatisticProDTO;
-import com.levelup.levelup_academy.Model.Pro;
-import com.levelup.levelup_academy.Model.StatisticChild;
-import com.levelup.levelup_academy.Model.StatisticPlayer;
-import com.levelup.levelup_academy.Model.StatisticPro;
+import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.ProRepository;
 import com.levelup.levelup_academy.Repository.StatisticProRepository;
+import com.levelup.levelup_academy.Repository.TrainerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +18,21 @@ import java.util.stream.Collectors;
 public class StatisticProService {
     private final StatisticProRepository statisticProRepository;
     private final ProRepository proRepository;
+    private final TrainerRepository trainerRepository;
 
-    public StatisticPro getStatisticsByProfessionalId(Integer professionalId) {
+    //Get my statistic
+    public StatisticPro getMyStatisticsByProfessionalId(Integer professionalId) {
+        StatisticPro stat = statisticProRepository.findByPro_Id(professionalId);
+        if (stat == null) throw new ApiException("Statistic not found for this professional");
+        return stat;
+    }
+
+    //get one pro statistic by trainer
+    public StatisticPro getStatisticsByProfessionalId(Integer trainerId,Integer professionalId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticPro stat = statisticProRepository.findByPro_Id(professionalId);
         if (stat == null) throw new ApiException("Statistic not found for this professional");
         return stat;
@@ -32,17 +43,26 @@ public class StatisticProService {
     }
 
 
-    public void createStatistic(Integer proId, StatisticProDTO dto) {
-        Pro pro = proRepository.findById(proId)
-                .orElseThrow(() -> new ApiException("Pro not found"));
-
+    public void createStatistic(Integer trainerId,Integer proId, StatisticProDTO dto) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        Pro pro = proRepository.findProById(proId);
+        if(pro == null){
+       throw new ApiException("Pro not found");
+        }
         StatisticPro stat = new StatisticPro(null, dto.getRate(), dto.getWinGame(), dto.getLossGame(),
                 dto.getTrophy(), dto.getField(), dto.getDate(), pro);
 
         statisticProRepository.save(stat);
     }
 
-    public void updateStatistic(Integer statId, StatisticProDTO dto) {
+    public void updateStatistic(Integer trainerId,Integer statId, StatisticProDTO dto) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticPro stat = statisticProRepository.findStatisticProById(statId);
         if (stat==null){
             throw new ApiException("Statistic not found");
@@ -57,7 +77,11 @@ public class StatisticProService {
 
         statisticProRepository.save(stat);
     }
-    public void deleteStatistic(Integer statId) {
+    public void deleteStatistic(Integer trainerId,Integer statId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticPro stat = statisticProRepository.findStatisticProById(statId);
         if (stat==null){
             throw new ApiException("Statistic not found");
@@ -65,6 +89,8 @@ public class StatisticProService {
 
         statisticProRepository.delete(stat);
     }
+
+
     public StatisticPro getProWithTopTrophy() {
         List<StatisticPro> all = statisticProRepository.findAll();
 

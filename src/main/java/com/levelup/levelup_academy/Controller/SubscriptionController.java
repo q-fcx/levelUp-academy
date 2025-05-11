@@ -1,9 +1,11 @@
 package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
+import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,26 +15,26 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-    @GetMapping("get-all")
-    public ResponseEntity getAllSubscriptions() {
-        return ResponseEntity.status(200).body(subscriptionService.getAllSubscriptions());
+    @GetMapping("/get-all")
+    public ResponseEntity getAllSubscriptions(@AuthenticationPrincipal User moderatorId) {
+        return ResponseEntity.status(200).body(subscriptionService.getAllSubscriptions(moderatorId.getId()));
     }
 
-    @PostMapping("/basic/{userId}")
-    public ResponseEntity addBasicSubscription(@PathVariable Integer userId) {
-        subscriptionService.basicSubscription(userId);
+    @PostMapping("/basic")
+    public ResponseEntity addBasicSubscription(@AuthenticationPrincipal User userId) {
+        subscriptionService.basicSubscription(userId.getId());
         return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Basic Subscription"));
     }
 
-    @PostMapping("/standard/{userId}")
-    public ResponseEntity addStandardSubscription(@PathVariable Integer userId) {
-        subscriptionService.standardSubscription(userId);
+    @PostMapping("/standard")
+    public ResponseEntity addStandardSubscription(@AuthenticationPrincipal User userId) {
+        subscriptionService.standardSubscription(userId.getId());
         return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Standard Subscription"));
     }
 
-    @PostMapping("/premium/{userId}")
-    public ResponseEntity addPremiumSubscription(@PathVariable Integer userId) {
-        subscriptionService.premiumSubscription(userId);
+    @PostMapping("/premium")
+    public ResponseEntity addPremiumSubscription(@AuthenticationPrincipal User userId) {
+        subscriptionService.premiumSubscription(userId.getId());
         return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Premium Subscription"));
     }
 

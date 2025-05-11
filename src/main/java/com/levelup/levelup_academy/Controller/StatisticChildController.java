@@ -2,10 +2,12 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.Model.StatisticChild;
+import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.StatisticChildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,30 +19,36 @@ public class StatisticChildController {
     private final StatisticChildService statisticChildService;
 
     @PostMapping("/create/{childId}")
-    public ResponseEntity createStatistic(@PathVariable Integer childId, @RequestBody @Valid StatisticChildDTO dto) {
-        statisticChildService.createStatistic(childId, dto);
+    public ResponseEntity createStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer childId, @RequestBody @Valid StatisticChildDTO dto) {
+        statisticChildService.createStatisticChild(trainerId.getId(), childId, dto);
         return ResponseEntity.status(201).body("Child statistic created");
     }
 
     @PutMapping("/update/{statId}")
-    public ResponseEntity updateStatistic(@PathVariable Integer statId, @RequestBody @Valid StatisticChildDTO dto) {
-        statisticChildService.updateStatistic(statId, dto);
+    public ResponseEntity updateStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer statId, @RequestBody @Valid StatisticChildDTO dto) {
+        statisticChildService.updateStatistic(trainerId.getId(),statId, dto);
         return ResponseEntity.ok("Child statistic updated");
     }
 
-    @GetMapping("/by-child/{childId}")
-    public ResponseEntity<StatisticChild> getChildStatistics(@PathVariable Integer childId) {
-        return ResponseEntity.ok(statisticChildService.getStatisticsByChildId(childId));
+    @GetMapping("/get-child-stati-by-parent/{childId}")
+    public ResponseEntity<StatisticChild> getChildStatisticsByParent(@AuthenticationPrincipal User parentId, @PathVariable Integer childId) {
+        return ResponseEntity.ok(statisticChildService.getMyChildStatisticsByChildId(parentId.getId(), childId));
     }
 
-    @GetMapping("/by-trainer/{trainerId}")
-    public ResponseEntity<List<StatisticChild>> getAllStatsByTrainer(@PathVariable Integer trainerId) {
-        return ResponseEntity.ok(statisticChildService.getAllStatisticsByTrainerId(trainerId));
+
+    @GetMapping("/get-child-stati-by-trainer/{childId}")
+    public ResponseEntity<StatisticChild> getChildStatisticsByTainer(@AuthenticationPrincipal User trainerId, @PathVariable Integer childId) {
+        return ResponseEntity.ok(statisticChildService.getStatisticsByChildId(trainerId.getId(), childId));
+    }
+
+    @GetMapping("/by-trainer")
+    public ResponseEntity<List<StatisticChild>> getAllStatsByTrainer(@AuthenticationPrincipal User trainerId) {
+        return ResponseEntity.ok(statisticChildService.getAllStatisticsByTrainerId(trainerId.getId()));
     }
 
     @DeleteMapping("/delete/{statId}")
-    public ResponseEntity deleteStatistic(@PathVariable Integer statId) {
-        statisticChildService.deleteStatistic(statId);
+    public ResponseEntity deleteStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer statId) {
+        statisticChildService.deleteStatistic(trainerId.getId(),statId);
         return ResponseEntity.ok("Child statistic deleted");
     }
     @GetMapping("/top-trophy")

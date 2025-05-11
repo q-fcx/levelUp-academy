@@ -10,6 +10,7 @@ import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -46,6 +47,8 @@ public class PlayerService {
 
     public void registerPlayer(PlayerDTO playerDTO){
         playerDTO.setRole("PLAYER");
+        String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
+        playerDTO.setPassword(hashPassword);
         User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
         Player player = new Player(null,user,null,null);
         authRepository.save(user);

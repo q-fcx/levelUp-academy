@@ -8,6 +8,7 @@ import com.levelup.levelup_academy.DTO.TrainerDTO;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +51,8 @@ public class TrainerService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
+        String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
+        trainerDTO.setPassword(hashPassword);
         User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
         Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),false, null,null,null,user, null, null);
         authRepository.save(user);
@@ -82,7 +85,10 @@ public class TrainerService {
         Trainer trainer = trainerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
+
         User user = trainer.getUser();
+        String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
+        user.setPassword(hashPassword);
         user.setUsername(trainerDTO.getUsername());
         user.setPassword(trainerDTO.getPassword());
         user.setEmail(trainerDTO.getEmail());
@@ -113,7 +119,7 @@ public class TrainerService {
             throw new ApiException("Child not found");
         }
 
-        statisticChildService.createStatistic(childId,statisticChildDTO);
+        statisticChildService.createStatisticChild(trainerId,childId,statisticChildDTO);
     }
 
     //for player
@@ -126,7 +132,7 @@ public class TrainerService {
         if (player == null){
             throw new ApiException("Player not found");
         }
-        statisticPlayerService.createStatistic(playerId,statisticPlayerDTO);
+        statisticPlayerService.createStatisticPlayer(trainerId,playerId,statisticPlayerDTO);
 
     }
 
@@ -139,7 +145,7 @@ public class TrainerService {
         if(pro == null){
             throw new ApiException("Pro not found");
         }
-        statisticProService.createStatistic(proId,statisticProDTO);
+        statisticProService.createStatistic(trainerId,proId,statisticProDTO);
     }
 
     public void giveTrophyToPlayer(Integer trainerId, Integer playerId) {
