@@ -41,7 +41,7 @@ public class TrainerService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),false,null,null,null,null,null,null,null);
+        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),false,null,null,null,null,null,null,null,null);
         Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),user,null,null);
         authRepository.save(user);
         trainerRepository.save(trainer);

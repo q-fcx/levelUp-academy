@@ -2,12 +2,8 @@ package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.ParentDTO;
-import com.levelup.levelup_academy.Model.Child;
-import com.levelup.levelup_academy.Model.Parent;
-import com.levelup.levelup_academy.Model.User;
-import com.levelup.levelup_academy.Repository.AuthRepository;
-import com.levelup.levelup_academy.Repository.ChildRepository;
-import com.levelup.levelup_academy.Repository.ParentRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +16,8 @@ public class ParentService {
     private final ParentRepository parentRepository;
     private final AuthRepository authRepository;
     private final ChildRepository childRepository;
+    private final GameRepository gameRepository;
+    private final StatisticChildRepository statisticChildRepository;
 
     public List<Parent> getAllParents() {
         return parentRepository.findAll();
@@ -101,5 +99,22 @@ public class ParentService {
         }
 
         childRepository.delete(child);
+    }
+
+    public StatisticChild getChildStatistic(Integer childId) {
+        Child child = childRepository.findChildById(childId);
+        if (child == null) throw new ApiException("Child not found");
+
+        StatisticChild statistic = child.getStatistics();
+        if (statistic == null) throw new ApiException("Statistics not found for this child");
+
+        return statistic;
+    }
+
+    public List<Game> getGamesByChildAge(Integer childId) {
+        Child child = childRepository.findChildById(childId);
+        if(child == null) throw new ApiException("Child not found");
+
+        return gameRepository.findGamesByAgeIsLessThanEqual(child.getAge());
     }
 }

@@ -7,10 +7,7 @@ import com.levelup.levelup_academy.Service.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -24,6 +21,12 @@ public class UserController {
     public ResponseEntity registerAdmin(User user){
       userService.register(user);
        return ResponseEntity.status(200).body("Adding admin successfully");
+    }
+
+    @PostMapping("generate/{adminId}/{moderatorId}")
+    public ResponseEntity generateModeratorLogin(@PathVariable Integer adminId, @PathVariable Integer moderatorId){
+        userService.generateModeratorLogin(adminId, moderatorId);
+        return ResponseEntity.status(200).body(new ApiResponse("Username and Password generated for moderator"));
     }
 
 

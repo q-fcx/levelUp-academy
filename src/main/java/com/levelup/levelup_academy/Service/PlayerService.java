@@ -27,7 +27,7 @@ public class PlayerService {
 
     public void registerPlayer(PlayerDTO playerDTO){
 
-        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), "PLAYER", false,null,null,null,null,null,null,null);
+        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), "PLAYER", false,null,null,null,null,null,null,null,null);
 
         Player player = new Player(null,user,null);
         authRepository.save(user);

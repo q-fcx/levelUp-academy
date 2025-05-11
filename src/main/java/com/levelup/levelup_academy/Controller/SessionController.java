@@ -56,5 +56,11 @@ public class SessionController {
     }
 
 
+    @GetMapping("/get-players/{sessionId}")
+    public ResponseEntity getAllPlayersInSession(@PathVariable Integer sessionId) {
+        return ResponseEntity.status(200).body(sessionService.getAllPlayersInSession(sessionId));
+    }
+
+
 
 }
