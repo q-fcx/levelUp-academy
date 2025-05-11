@@ -95,6 +95,4 @@ public class AdviceController {
         return ResponseEntity.status(400).body(new ApiResponse(msg));
     }
 
-
-
 }

@@ -32,9 +32,9 @@ public class Session {
     private Integer availableSets;
     @Column(columnDefinition = "varchar(20) not null")
     private String time;
-    @NotEmpty(message = "Game can not be empty")
-    @Column(columnDefinition = "varchar(30) not null")
-    private String games;
+//    @NotEmpty(message = "Game can not be empty")
+//    @Column(columnDefinition = "varchar(30) not null")
+//    private String games;
 
     @ManyToOne
     @JoinColumn(name = "trainer_id" , referencedColumnName = "id")

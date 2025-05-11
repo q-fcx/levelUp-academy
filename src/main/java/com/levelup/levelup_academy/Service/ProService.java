@@ -30,13 +30,13 @@ public class ProService {
     private final ModeratorRepository moderatorRepository;
 
     //GET
-    public List<Pro> getAllPro() {
+    public List<Pro> getAllPro(){
         return proRepository.findAll();
     }
 
     //Register pro player
 
-    public void registerPro(ProDTO proDTO, MultipartFile file) {
+    public void registerPro(ProDTO proDTO, MultipartFile file){
         proDTO.setRole("PRO");
         String filePath = null;
         if (file != null && !file.isEmpty()) {
@@ -57,9 +57,9 @@ public class ProService {
     }
 
 
-    public void edit(Integer proId, ProDTO proDTO) {
+    public void edit(Integer proId,ProDTO proDTO){
         Pro pro = proRepository.findProById(proId);
-        if (pro == null) {
+        if(pro == null){
             throw new ApiException("The Professional Player you search for is not found ");
         }
 
