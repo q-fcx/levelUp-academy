@@ -57,16 +57,16 @@ public class ProService {
         if (file != null && !file.isEmpty()) {
             try {
                 String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-                Path path = Paths.get("uploads/PDF/" + fileName);
+                Path path = Paths.get("uploads/cvs/" + fileName);
                 Files.createDirectories(path.getParent());
                 Files.write(path, file.getBytes());
                 filePath = path.toString();
             } catch (IOException e) {
-                throw new RuntimeException("Failed to save PDF file.");
+                throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null, proDTO.getUsername(), proDTO.getPassword(), proDTO.getEmail(), proDTO.getFirstName(), proDTO.getLastName(), proDTO.getRole(), null, null, null, null, LocalDate.now());
-        Pro pro = new Pro(null, filePath, user, null, null,false);
+        User user = new User(null, proDTO.getUsername(), proDTO.getPassword(), proDTO.getEmail(), proDTO.getFirstName(), proDTO.getLastName(), proDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
+        Pro pro = new Pro(null, filePath, user, null, null,null,false);
         authRepository.save(user);
         proRepository.save(pro);
     }

@@ -1,5 +1,9 @@
 package com.levelup.levelup_academy.Controller;
 
+import com.levelup.levelup_academy.Api.ApiResponse;
+import com.levelup.levelup_academy.DTO.StatisticChildDTO;
+import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
+import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
 import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Repository.AuthRepository;
@@ -64,6 +68,46 @@ public class TrainerController {
 
         return new ResponseEntity<>(cvContent, headers, HttpStatus.OK);
     }
+    @PutMapping("/{trainerId}/trophy/{playerId}")
+    public ResponseEntity<String> giveTrophyToPlayer(@PathVariable Integer trainerId,
+                                                     @PathVariable Integer playerId) {
+        trainerService.giveTrophyToPlayer(trainerId, playerId);
+        return ResponseEntity.ok("Trophy granted to player if eligible.");
+    }
+
+    @PutMapping("/{trainerId}/give/{proId}")
+    public ResponseEntity<String> giveTrophyToProfessional(@PathVariable Integer trainerId,
+                                                           @PathVariable Integer proId) {
+        trainerService.giveTrophyToProfessional(trainerId, proId);
+        return ResponseEntity.ok("Trophy granted to professional if eligible.");
+    }
+
+    @PutMapping("/{trainerId}/give/{childId}")
+    public ResponseEntity<String> giveTrophyToChild(@PathVariable Integer trainerId,
+                                                    @PathVariable Integer childId) {
+        trainerService.giveTrophyToChild(trainerId, childId);
+        return ResponseEntity.ok("Trophy granted to child if eligible.");
+    }
+
+
+    @PostMapping("/addStatisticToChild/{trainerId}/{childId}")
+    public ResponseEntity addStatisticToChild(@PathVariable Integer trainerId, @PathVariable Integer childId, @RequestBody @Valid StatisticChildDTO statisticChildDTO) {
+        trainerService.addStatisticToChild(trainerId, childId, statisticChildDTO);
+        return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
+    }
+
+    @PostMapping("/addStatisticToPlayer/{trainerId}/{playerId}")
+    public ResponseEntity addStatisticToChild(@PathVariable Integer trainerId, @PathVariable Integer playerId, @RequestBody @Valid StatisticPlayerDTO statisticPlayerDTO) {
+        trainerService.addStatisticToPlayer(trainerId, playerId, statisticPlayerDTO);
+        return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
+    }
+
+    @PostMapping("/addStatisticToPro/{trainerId}/{proId}")
+    public ResponseEntity addStatisticToPro(@PathVariable Integer trainerId, @PathVariable Integer proId, @RequestBody @Valid StatisticProDTO statisticProDTO) {
+        trainerService.addStatisticToPro(trainerId, proId, statisticProDTO);
+        return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
+    }
+
 
 
     @PostMapping("/approve/{adminId}/{trainerId}")

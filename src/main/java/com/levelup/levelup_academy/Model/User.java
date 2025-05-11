@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Check;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -42,6 +43,8 @@ public class User {
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS|TRAINER)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;
 
+    private LocalDate registration= LocalDate.now() ;
+
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Trainer trainer;
@@ -56,10 +59,21 @@ public class User {
 
     //Moderator
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Moderator moderator;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Booking> booking;
 
-    private LocalDate registration= LocalDate.now() ;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Subscription> subscriptions;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Review> reviews;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Parent parent;
 
 
 

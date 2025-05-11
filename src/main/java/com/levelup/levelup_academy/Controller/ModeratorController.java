@@ -42,6 +42,14 @@ public class ModeratorController {
         return ResponseEntity.ok("Moderator deleted successfully");
     }
 
+    @PostMapping("/review-contract/{contractId}/{proId}")
+    public ResponseEntity reviewContract(
+            @PathVariable Integer contractId,@PathVariable Integer proId) {
+
+        moderatorService.reviewContract(contractId,proId);
+        return ResponseEntity.ok("Contract reviewed and Pro has been notified.");
+    }
+
     //Get all pro requests to check
     @GetMapping("/get-all-pro/{moderatorId}")
     public ResponseEntity getAllProRequests(@PathVariable Integer moderatorId){

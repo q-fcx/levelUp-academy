@@ -51,7 +51,7 @@ public class SessionService {
     //Assign Trainer
     public void assignTrainerToSession(Integer trainerId,Integer sessionId){
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
-        Session session = sessionRepository.findClassById(sessionId);
+        Session session = sessionRepository.findSessionById(sessionId);
 
         if(trainer == null){
             throw new ApiException("Trainer not found");
@@ -65,7 +65,7 @@ public class SessionService {
 
     public void assignGameToTrainer(Integer sessionId ){
 
-        Session session = sessionRepository.findClassById(sessionId);
+        Session session = sessionRepository.findSessionById(sessionId);
 
 //        if(games == null){
 //            throw new ApiException("Game not found");
@@ -78,6 +78,38 @@ public class SessionService {
         sessionRepository.save(session);
 
     }
+
+    //update session
+    public void updateSession(Integer moderatorId, Session session, Integer sessionId){
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
+        Session oldSession = sessionRepository.findSessionById(sessionId);
+        if(oldSession == null){
+            throw new ApiException("Session not found");
+        }
+
+        oldSession.setGame(session.getGame());
+        oldSession.setName(session.getName());
+        oldSession.setTrainer(session.getTrainer());
+        oldSession.setTime(session.getTime());
+        sessionRepository.save(oldSession);
+    }
+
+    public void deleteSession(Integer moderatorId, Integer sessionId){
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
+        Session delSession = sessionRepository.findSessionById(sessionId);
+        if(delSession == null){
+            throw new ApiException("Session not found");
+        }
+
+        sessionRepository.delete(delSession);
+    }
+
 
 
 }

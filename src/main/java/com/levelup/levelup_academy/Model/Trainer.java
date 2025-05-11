@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Check;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -25,12 +26,19 @@ public class Trainer {
     private Integer id;
     private String cvPath;
     private Boolean isAvailable = false;
+    private Boolean isApproved=false;
 
 //    @Lob
 //    private byte[] cv;
 
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "trainer")
-    private Set<Review> reviews;
+    @OneToMany(mappedBy = "trainer")
+    private List<Child> children;
+
+    @OneToMany(mappedBy = "trainer")
+    private List<Player> players;
+
+    @OneToMany(mappedBy = "trainer")
+    private List<Pro> professionals;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -38,10 +46,12 @@ public class Trainer {
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
-    @JsonIgnore
     private Set<Session> sessions;
 
-    private Boolean isApproved=false;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
+    private Set<Review> reviews;
+
 
 
 }

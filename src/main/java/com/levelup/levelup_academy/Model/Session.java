@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -24,9 +25,9 @@ public class Session {
     @Column(columnDefinition = "varchar(40) not null")
     private String name;
     @Column(columnDefinition = "DATE")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @Column(columnDefinition = "DATE")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     @Column(columnDefinition = "int not null")
     private Integer availableSets;
     @Column(columnDefinition = "varchar(20) not null")
@@ -34,14 +35,18 @@ public class Session {
     @NotEmpty(message = "Game can not be empty")
     @Column(columnDefinition = "varchar(30) not null")
     private String games;
+
     @ManyToOne
     @JoinColumn(name = "trainer_id" , referencedColumnName = "id")
-
+    @JsonIgnore
     private Trainer trainer;
     @ManyToOne
     @JoinColumn(name = "game_id" , referencedColumnName = "id")
-
+    @JsonIgnore
     private Game game;
+
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "session")
+    private Set<Review> reviews;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "session")
     private Set<Booking> bookings;

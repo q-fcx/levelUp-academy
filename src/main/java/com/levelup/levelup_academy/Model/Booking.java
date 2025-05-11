@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,12 +25,23 @@ public class Booking {
     private Integer id;
 
     @JsonFormat(pattern="yyyy-MM-dd")
-    private LocalDate bookDate;
+    private LocalDateTime bookDate;
 
     @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "^(PENDING|ACTIVE)$", message = "Booking must be PENDING OR ACTIVE only")
+    @Pattern(regexp = "^(PENDING|ACTIVE|CANCELLED)$", message = "Booking must be PENDING OR ACTIVE only")
     @Column(columnDefinition = "varchar(20) not null")
-    private String status;
+    private String status = "PENDING";
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "subscription_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Subscription subscription;
 
     @ManyToOne
     @JoinColumn(name = "session_id", referencedColumnName = "id")

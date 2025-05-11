@@ -3,16 +3,17 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.ContractDTO;
 import com.levelup.levelup_academy.DTO.EmailRequest;
-import com.levelup.levelup_academy.DTO.ProDTO;
 import com.levelup.levelup_academy.Model.Contract;
+import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Repository.ContractRepository;
+import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.ProRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class ContractService {
     private final ContractRepository contractRepository;
     private final EmailNotificationService emailNotificationService;
     private final ProRepository proRepository;
+    private final ModeratorRepository moderatorRepository;
 
     //GET
     public List<Contract> getAllContract(Integer proId) {
@@ -31,12 +33,26 @@ public class ContractService {
     }
 
     //ADD
-    public void addContract(ContractDTO contractDTO) {
-        Pro pro = proRepository.findProById(contractDTO.getProId());
-        if (pro == null) {
-            throw new ApiException("Pro not found");
-        }
-        Contract contract = new Contract(null, contractDTO.getTeam(), pro.getUser().getEmail(), contractDTO.getCommercialRegister(), contractDTO.getGame(), contractDTO.getStartDate(), contractDTO.getEndDate(), contractDTO.getAmount(), null,"pending");
+    public void addContract(ContractDTO contractDTO, Integer moderatorId) {
+
+        // Proceed with creating and saving the contract
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+              if(moderator == null) {new ApiException("Moderator not found with ID: " + contractDTO.getModeratorId());
+              }
+        Contract contract = new Contract(
+                null,
+                contractDTO.getTeam(),
+                contractDTO.getEmail(),
+                contractDTO.getCommercialRegister(),
+                contractDTO.getGame(),
+                contractDTO.getStartDate(),
+                contractDTO.getEndDate(),
+                contractDTO.getAmount(),false
+                ,false,null,null
+                // Pro is still null
+        );
+              contract.setModeratorStatus(false);
+
         contractRepository.save(contract);
 
         // Save contract first to generate the ID
@@ -58,42 +74,4 @@ public class ContractService {
         emailNotificationService.sendEmail(emailRequest);
 
     }
-
-    // Accept contract by professional
-    public void acceptContract(Integer proId,Integer contractId) {
-        Pro pro = proRepository.findProById(proId);
-        Contract contract = contractRepository.findContractById(contractId);
-        if(contract == null){
-             throw  new ApiException("Contract not found");
-        }
-        if(pro == null){
-            throw new ApiException("The professional player is not found");
-        }
-        contract.setContractStatus("Accepted");
-        List<Contract> otherContracts = contractRepository.findAllByPro(pro);
-        for (Contract otherContract : otherContracts) {
-            if (!otherContract.getId().equals(contractId)) {
-                otherContract.setContractStatus("Rejected");
-                contractRepository.save(otherContract);
-            }
-        }
-        contractRepository.save(contract);
-    }
-
-    // reject the contract
-    public void rejectContract(Integer proId,Integer contractId) {
-        Pro pro = proRepository.findProById(proId);
-        Contract contract = contractRepository.findContractById(contractId);
-        if(contract == null) {
-            throw new ApiException("Contract not found");
-        }
-        if(pro == null){
-            throw new ApiException("The professional player is not found");
-        }
-        contract.setContractStatus("rejected");
-        contractRepository.save(contract);
-    }
-
-
 }
-

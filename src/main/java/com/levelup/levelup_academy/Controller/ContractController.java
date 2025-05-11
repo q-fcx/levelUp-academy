@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class ContractController {
     private final ContractService contractService;
 
+    @GetMapping("/get")
+    public ResponseEntity gatAllContract(){
+        return ResponseEntity.status(200).body(contractService.getAllContract());
+    }
+
     @PostMapping("/add")
     public ResponseEntity<String> addContract(@RequestBody @Valid ContractDTO contractDTO) {
         contractService.addContract(contractDTO);
