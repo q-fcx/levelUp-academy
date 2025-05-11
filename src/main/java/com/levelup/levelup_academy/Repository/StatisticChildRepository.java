@@ -10,7 +10,6 @@ import java.util.List;
 public interface StatisticChildRepository extends JpaRepository<StatisticChild,Integer> {
     StatisticChild findStatisticChildById(Integer id);
     StatisticChild findByChild_Id(Integer childId);
-    List<StatisticChild> findByChild_Trainer_Id(Integer childTrainerId);
     List<StatisticChild> findAll();
     List<StatisticChild> findStatisticChildByWinGame( Integer winGame);
 }

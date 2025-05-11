@@ -27,10 +27,6 @@ public class StatisticProService {
         return stat;
     }
 
-    public List<StatisticPro> getAllStatisticsByTrainerId(Integer trainerId) {
-        return statisticProRepository.findByPro_Trainer_Id(trainerId);
-    }
-
 
     public void createStatistic(Integer proId, StatisticProDTO dto) {
         Pro pro = proRepository.findById(proId)

@@ -26,10 +26,6 @@ public class StatisticPlayerService {
         return stat;
     }
 
-    public List<StatisticPlayer> getAllStatisticsByTrainerId(Integer trainerId) {
-        return repository.findByPlayer_Trainer_Id(trainerId);
-    }
-
 
     public void createStatistic(Integer playerId, StatisticPlayerDTO dto) {
         Player player = playerRepository.findById(playerId)

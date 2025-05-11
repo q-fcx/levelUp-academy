@@ -35,10 +35,6 @@ public class StatisticPlayerController {
         return ResponseEntity.ok(statisticPlayerService.getStatisticsByPlayerId(playerId));
     }
 
-    @GetMapping("/player/trainer/{trainerId}")
-    public ResponseEntity<List<StatisticPlayer>> getPlayerStatsByTrainer(@PathVariable Integer trainerId) {
-        return ResponseEntity.ok(statisticPlayerService.getAllStatisticsByTrainerId(trainerId));
-    }
 
 
     @DeleteMapping("/delete/{statId}")

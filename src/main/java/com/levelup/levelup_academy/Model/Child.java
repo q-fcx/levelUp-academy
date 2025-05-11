@@ -39,10 +39,6 @@ public class Child {
     @JsonIgnore
     private Parent parent;
 
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private Trainer trainer;
-
     @OneToOne(mappedBy = "child",cascade = CascadeType.ALL)
     private StatisticChild statistics;
 }

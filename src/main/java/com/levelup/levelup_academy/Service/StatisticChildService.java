@@ -27,9 +27,6 @@ public class StatisticChildService {
         if (stat == null) throw new ApiException("Statistic not found for this child");
         return stat;
     }
-    public List<StatisticChild> getAllStatisticsByTrainerId(Integer trainerId) {
-        return statisticChildRepository.findByChild_Trainer_Id(trainerId);
-    }
 
     public void createStatistic(Integer childId, StatisticChildDTO dto) {
         Child child = childRepository.findById(childId)

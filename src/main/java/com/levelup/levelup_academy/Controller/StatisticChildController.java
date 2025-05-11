@@ -33,10 +33,6 @@ public class StatisticChildController {
         return ResponseEntity.ok(statisticChildService.getStatisticsByChildId(childId));
     }
 
-    @GetMapping("/by-trainer/{trainerId}")
-    public ResponseEntity<List<StatisticChild>> getAllStatsByTrainer(@PathVariable Integer trainerId) {
-        return ResponseEntity.ok(statisticChildService.getAllStatisticsByTrainerId(trainerId));
-    }
 
     @DeleteMapping("/delete/{statId}")
     public ResponseEntity deleteStatistic(@PathVariable Integer statId) {

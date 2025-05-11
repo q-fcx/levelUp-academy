@@ -34,12 +34,6 @@ public class StatisticProController {
         return ResponseEntity.ok(statisticProService.getStatisticsByProfessionalId(professionalId));
     }
 
-    @GetMapping("/professional/trainer/{trainerId}")
-    public ResponseEntity<List<StatisticPro>> getProfessionalStatsByTrainer(@PathVariable Integer trainerId) {
-        return ResponseEntity.ok(statisticProService.getAllStatisticsByTrainerId(trainerId));
-    }
-
-
     @DeleteMapping("/delete/{statId}")
     public ResponseEntity deleteStatistic(@PathVariable Integer statId) {
         statisticProService.deleteStatistic(statId);

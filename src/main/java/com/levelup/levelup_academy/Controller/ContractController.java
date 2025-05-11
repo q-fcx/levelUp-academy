@@ -18,9 +18,9 @@ public class ContractController {
         return ResponseEntity.status(200).body(contractService.getAllContract());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addContract(@RequestBody @Valid ContractDTO contractDTO) {
-        contractService.addContract(contractDTO);
+    @PostMapping("/add/{moderatorId}")
+    public ResponseEntity<String> addContract(@RequestBody @Valid ContractDTO contractDTO,@PathVariable Integer moderatorId) {
+        contractService.addContract(contractDTO,moderatorId);
         return ResponseEntity.ok("Contract added and email sent successfully.");
     }
 
