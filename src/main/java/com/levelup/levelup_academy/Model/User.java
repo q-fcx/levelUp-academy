@@ -6,8 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Check;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -16,8 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -38,7 +41,6 @@ public class User {
     @NotEmpty(message = "lastName can not be empty")
     @Column(columnDefinition = "varchar(40) not null")
     private String lastName;
-
     @Column(columnDefinition = "varchar(40) not null")
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS|TRAINER)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;
@@ -48,15 +50,12 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Trainer trainer;
-
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Player player;
-
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Pro pro;
-
     //Moderator
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -75,7 +74,28 @@ public class User {
     @PrimaryKeyJoinColumn
     private Parent parent;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(this.role));
+    }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
