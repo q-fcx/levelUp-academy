@@ -49,7 +49,7 @@ public class ContractService {
                 contractDTO.getStartDate(),
                 contractDTO.getEndDate(),
                 contractDTO.getAmount(),false
-                ,false,null,null
+                ,false,null,null,null
                 // Pro is still null
         );
               contract.setModeratorStatus(false);

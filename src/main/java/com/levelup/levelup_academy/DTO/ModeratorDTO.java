@@ -13,7 +13,6 @@ import lombok.Data;
 public class ModeratorDTO {
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3,max = 200,message = "Username length must be between 3 and 30 characters")
-
     private String username;
     @NotEmpty(message = "Password can not be empty")
     @Size(min = 8,max = 200,message = "Password length must be more than 8 character")
@@ -31,4 +30,6 @@ public class ModeratorDTO {
     @Column(columnDefinition = "varchar(40) not null")
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
     private String role;
+
+
 }

@@ -37,6 +37,8 @@ public class ProDTO {
 
     private MultipartFile cv;
 
+    private String phoneNumber;
+
 
     @OneToOne
     private Contract contract;

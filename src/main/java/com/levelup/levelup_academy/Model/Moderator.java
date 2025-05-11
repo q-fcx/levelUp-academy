@@ -25,7 +25,6 @@ public class Moderator {
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "moderator")
-    @JoinColumn
     private List<Contract> contract;
 
 
