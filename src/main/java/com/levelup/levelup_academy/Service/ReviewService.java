@@ -1,6 +1,7 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.Model.Review;
 import com.levelup.levelup_academy.Model.Session;
 import com.levelup.levelup_academy.Model.Trainer;
@@ -24,6 +25,7 @@ public class ReviewService {
     private final AuthRepository authRepository;
     private final SessionRepository sessionRepository;
     private final TrainerRepository trainerRepository;
+    private final EmailNotificationService emailNotificationService;
 
 
     public List<Review> getAllReviews() {
@@ -54,6 +56,24 @@ public class ReviewService {
         rev.setTitle(review.getTitle());
         reviewRepository.save(rev);
 
+        String trainerEmail = trainer.getUser().getEmail();
+        String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>"
+                + "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>"
+                + "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>"
+                + "<h2>🌟 You Got a New Review!</h2>"
+                + "<p style='font-size: 16px;'>Hi <strong>" + trainer.getUser().getFirstName() + "</strong>,</p>"
+                + "<p style='font-size: 16px;'>You just received a new review from <strong>" + user.getFirstName() + "</strong>:</p>"
+                + "<p style='font-size: 16px;'><strong>Title:</strong> " + review.getTitle() + "<br>"
+                + "<strong>Rating:</strong> " + review.getRate() + "/5<br>"
+                + "<strong>Comment:</strong> " + review.getComment() + "</p>"
+                + "<p style='font-size: 14px;'>Keep up the great work!<br>– The LevelUp Academy Team</p>"
+                + "</div></body></html>";
+
+        EmailRequest email = new EmailRequest();
+        email.setRecipient(trainerEmail);
+        email.setSubject("🌟 New Review Received on LevelUp Academy");
+        email.setMessage(message);
+        emailNotificationService.sendEmail(email);
 
         authRepository.save(user);
         sessionRepository.save(session);
