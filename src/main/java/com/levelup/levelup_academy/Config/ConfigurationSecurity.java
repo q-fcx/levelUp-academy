@@ -36,15 +36,7 @@ public class ConfigurationSecurity {
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/user/generate").hasAuthority("ADMIN")
-                .requestMatchers("/api/v1/parent/register").permitAll()
-                .requestMatchers("/api/v1/player/register").permitAll()
-                .requestMatchers("/api/v1/pro/register").hasAuthority("ADMIN")
-                .requestMatchers("/api/v1/trainer/register").hasAuthority("ADMIN")
-                .requestMatchers("/api/v1/game/add").hasAuthority("MODERATOR")
-                .requestMatchers("/api/v1/session/add").hasAuthority("MODERATOR")
-                .requestMatchers("/api/v1/parent/add-child/").hasAuthority("PARENTS")
-                .requestMatchers("/api/v1/booking/add").hasAnyAuthority("PLAYER","PRO","PARENT")
-                .requestMatchers("/api/v1/review/add").hasAnyAuthority("PLAYER","PRO","PARENT")
+                .requestMatchers()
 
+    }
 }
