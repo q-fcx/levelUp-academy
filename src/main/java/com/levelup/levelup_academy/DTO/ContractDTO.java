@@ -17,7 +17,7 @@ public class ContractDTO {
     @Column(columnDefinition = "varchar(50) not null")
     private String team;
     @Email
-    @Column(columnDefinition = "varchar(40) not null")
+    @Column(columnDefinition = "varchar(40) not null unique")
     private String email;
     @NotNull(message = "Commercial register can not be null")
     @Column(columnDefinition = "int not null")
@@ -31,5 +31,16 @@ public class ContractDTO {
     private LocalDate endDate;
     @Column(columnDefinition = "double not null")
     private Double amount;
-    private Integer moderatorId;
+    private Integer proId;
+
+
+    @OneToOne
+    @JoinColumn
+    @JsonIgnore
+    private Pro pro;
+
+    @ManyToOne
+    @JoinColumn(name = "moderator_id")
+    @JsonIgnore
+    private Moderator moderator;
 }

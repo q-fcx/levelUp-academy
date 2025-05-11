@@ -1,8 +1,11 @@
 package com.levelup.levelup_academy.Controller;
 
+import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ProDTO;
 import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.User;
+import com.levelup.levelup_academy.Repository.ContractRepository;
+import com.levelup.levelup_academy.Service.ContractService;
 import com.levelup.levelup_academy.Service.ProService;
 import com.levelup.levelup_academy.Service.StatisticProService;
 import jakarta.validation.Valid;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProController {
     private final ProService proService;
     private final StatisticProService statisticProService;
+    private final ContractService contractService;
 
     //GET
     @GetMapping("/get/{moderatorId}")

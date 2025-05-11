@@ -1,6 +1,8 @@
 package com.levelup.levelup_academy.DTO;
 
+import com.levelup.levelup_academy.Model.Contract;
 import jakarta.persistence.Column;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -36,4 +38,6 @@ public class ProDTO {
     private MultipartFile cv;
 
 
+    @OneToOne
+    private Contract contract;
 }
