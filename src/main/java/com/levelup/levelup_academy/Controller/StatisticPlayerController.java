@@ -1,9 +1,7 @@
 package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
-import com.levelup.levelup_academy.Model.StatisticChild;
 import com.levelup.levelup_academy.Model.StatisticPlayer;
-import com.levelup.levelup_academy.Model.StatisticPro;
 import com.levelup.levelup_academy.Service.StatisticPlayerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

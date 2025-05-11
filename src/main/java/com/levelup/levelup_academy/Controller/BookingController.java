@@ -1,7 +1,6 @@
 package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
-import com.levelup.levelup_academy.Repository.BookingRepository;
 import com.levelup.levelup_academy.Service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

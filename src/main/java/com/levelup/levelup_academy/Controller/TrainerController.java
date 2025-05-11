@@ -6,19 +6,13 @@ import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
 import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
 import com.levelup.levelup_academy.Model.Trainer;
-import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Service.TrainerService;
-import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
