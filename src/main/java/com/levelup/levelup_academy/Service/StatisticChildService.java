@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Service;
 
+import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Model.StatisticChild;
@@ -48,5 +49,14 @@ public class StatisticChildService {
                 .orElseThrow(() -> new RuntimeException("Statistic not found"));
 
         statisticChildRepository.delete(stat);
+    }
+
+    public void addWin(Integer statsId){
+        StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statsId);
+        if(statisticChild == null){
+            throw new ApiException("Not found");
+        }
+        statisticChild.setWinGame(statisticChild.getWinGame() + 1);
+        statisticChildRepository.save(statisticChild);
     }
 }

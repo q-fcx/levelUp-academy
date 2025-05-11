@@ -1,6 +1,7 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.Model.Booking;
 import com.levelup.levelup_academy.Model.Session;
 import com.levelup.levelup_academy.Model.Subscription;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -21,6 +24,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final SessionRepository sessionRepository;
     private final AuthRepository authRepository;
+    private final EmailNotificationService emailNotificationService;
 
 
     public List<Booking> getAllBookings() {
@@ -55,4 +59,5 @@ public class BookingService {
         }
 
     }
+
 }

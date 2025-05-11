@@ -6,8 +6,7 @@ import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ProService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,5 +57,20 @@ public class ProController {
         return ResponseEntity.ok("The professional player has been rejected and deleted.");
     }
 
+
+    @GetMapping("/{proId}/cv")
+    public ResponseEntity<byte[]> downloadProCv(@PathVariable Integer proId) {
+        byte[] fileContent = proService.downloadProCv(proId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);  // Set content type as PDF
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("Pro_CV_" + proId + ".pdf")
+                .build());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(fileContent);
+    }
 
 }

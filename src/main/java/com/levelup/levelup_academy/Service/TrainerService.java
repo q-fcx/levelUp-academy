@@ -1,10 +1,7 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
-import com.levelup.levelup_academy.DTO.StatisticChildDTO;
-import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
-import com.levelup.levelup_academy.DTO.StatisticProDTO;
-import com.levelup.levelup_academy.DTO.TrainerDTO;
+import com.levelup.levelup_academy.DTO.*;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +26,8 @@ public class TrainerService {
     private final ChildRepository childRepository;
     private final PlayerRepository playerRepository;
     private final ProRepository proRepository;
+    private final StatisticProRepository statisticProRepository;
+    private final EmailNotificationService emailNotificationService;
 
     //GET
     public List<Trainer> getAllTrainers(){
@@ -53,6 +52,25 @@ public class TrainerService {
         Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),user,null,null);
         authRepository.save(user);
         trainerRepository.save(trainer);
+        User admin = authRepository.findUserByRole("ADMIN"); // Replace with actual method if different
+        if (admin != null) {
+            String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                    "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                    "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                    "<h2>📋 New Trainer Registration</h2>" +
+                    "<p><b>" + user.getFirstName() + " " + user.getLastName() + "</b> has registered as a Trainer.</p>" +
+                    "<p>Email: " + user.getEmail() + "</p>" +
+                    "<p>The trainer is awaiting your approval.</p>" +
+                    "<p style='font-size: 14px;'>– LevelUp Academy System</p>" +
+                    "</div></body></html>";
+
+            EmailRequest emailRequest = new EmailRequest();
+            emailRequest.setRecipient(admin.getEmail());
+            emailRequest.setSubject("New Trainer Awaiting Approval");
+            emailRequest.setMessage(message);
+
+            emailNotificationService.sendEmail(emailRequest);
+        }
     }
 
     //download
@@ -140,6 +158,7 @@ public class TrainerService {
         }
         statisticProService.createStatistic(proId,statisticProDTO);
     }
+
 
 
 }

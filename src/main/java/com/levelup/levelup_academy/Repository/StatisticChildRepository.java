@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StatisticChildRepository extends JpaRepository<StatisticChild,Integer> {
     StatisticChild findStatisticChildByChild(Child child);
+    StatisticChild findStatisticChildById(Integer id);
 }

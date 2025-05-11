@@ -55,6 +55,11 @@ public class SessionController {
         return ResponseEntity.status(200).body(new ApiResponse("Session Deleted"));
     }
 
+    @GetMapping("/sessions/{sessionId}/notify-start")
+    public ResponseEntity<String> notifyUsersOfSessionStart(@PathVariable Integer sessionId) {
+        sessionService.notifyUsersIfSessionStarting(sessionId);
+        return ResponseEntity.ok("Emails sent to all booked users for session ID: " + sessionId);
+    }
 
 
 }

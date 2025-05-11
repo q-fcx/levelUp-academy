@@ -1,6 +1,7 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ProDTO;
 import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.User;
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class ProService {
     private final ProRepository proRepository;
     private final AuthRepository authRepository;
+    private final EmailNotificationService emailNotificationService;
 
     //GET
     public List<Pro> getAllPro(){
@@ -48,6 +50,25 @@ public class ProService {
         Pro pro = new Pro(null,filePath,user,null,null);
         authRepository.save(user);
         proRepository.save(pro);
+
+        String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                "<h2>🎓 Welcome to <b>LevelUp Academy</b>, " + proDTO.getFirstName() + "!</h2>" +
+                "<p style='font-size: 16px;'>We're thrilled to have you on board as a Pro.</p>" +
+                "<p style='font-size: 16px;'>Please wait while our team reviews your profile and approves your registration.</p>" +
+                "<p style='font-size: 14px;'>– The LevelUp Academy Team</p>" +
+                "</div></body></html>";
+
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRecipient(proDTO.getEmail());
+        emailRequest.setSubject("Welcome to LevelUp Academy!");
+        emailRequest.setMessage(message);
+
+        emailNotificationService.sendEmail(emailRequest);
+
+
+
     }
 
 
@@ -127,6 +148,23 @@ public class ProService {
         pro.getUser().setIaApproved(true);
         authRepository.save(user);
         proRepository.save(pro);
+
+        String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                "<h2>✅ You're Approved, " + user.getFirstName() + "!</h2>" +
+                "<p style='font-size: 16px;'>Welcome officially to <b>LevelUp Academy</b> as a Pro! 🎉</p>" +
+                "<p style='font-size: 16px;'>We're thrilled to have you. You can now connect with other players and join activities in our community.</p>" +
+                "<p><a href='https://discord.gg/3KQPVdrv' style='color: #ffffff; background-color: #7289DA; padding: 10px 20px; text-decoration: none; border-radius: 8px;'>Join our Discord Community</a></p>" +
+                "<p style='font-size: 14px;'>– The LevelUp Academy Team</p>" +
+                "</div></body></html>";
+
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRecipient(user.getEmail());
+        emailRequest.setSubject("You've Been Approved – Welcome to LevelUp Academy!");
+        emailRequest.setMessage(message);
+
+        emailNotificationService.sendEmail(emailRequest);
     }
 
     // rejecting the professional player request by admin if the pdf not match the requirement
@@ -145,5 +183,21 @@ public class ProService {
         pro.getUser().setIaApproved(false);
         proRepository.delete(pro);
         authRepository.delete(user);
+        String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                "<h2>❌ Application Update, " + user.getFirstName() + "</h2>" +
+                "<p style='font-size: 16px;'>Thank you for applying to <b>LevelUp Academy</b>.</p>" +
+                "<p style='font-size: 16px;'>After careful consideration, we regret to inform you that your application was not approved at this time.</p>" +
+                "<p style='font-size: 16px;'>We believe in growth and potential – and we encourage you to keep improving and try again in the future. 💪</p>" +
+                "<p style='font-size: 14px;'>– The LevelUp Academy Team</p>" +
+                "</div></body></html>";
+
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRecipient(user.getEmail());
+        emailRequest.setSubject("LevelUp Academy – Application Status");
+        emailRequest.setMessage(message);
+
+        emailNotificationService.sendEmail(emailRequest);
     }
 }
