@@ -1,11 +1,14 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -16,6 +19,7 @@ public class SessionService {
     private final ModeratorRepository moderatorRepository;
     private final GameRepository gameRepository;
     private final BookingRepository bookingRepository;
+    private final EmailNotificationService emailNotificationService;
 
     //GET
     public List<Session> getAllClasses(){
@@ -103,6 +107,41 @@ public class SessionService {
         }
 
         sessionRepository.delete(delSession);
+    }
+    public void notifyUsersIfSessionStarting(Integer sessionId) {
+        Session session = sessionRepository.findSessionById(sessionId);
+        if (session == null) throw new ApiException("Session not found");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime sessionTime = LocalTime.parse(session.getTime(), formatter);
+        LocalTime now = LocalTime.now().withSecond(0).withNano(0);
+
+        if (!now.equals(sessionTime)) {
+            throw new ApiException("Session has not started yet.");
+        }
+
+        List<Booking> bookings = bookingRepository.findBookingBySessionId(sessionId);
+        if (bookings.isEmpty()) throw new ApiException("No users booked for this session.");
+
+        for (Booking booking : bookings) {
+            User user = booking.getUser();
+            String message = "<html><body style='font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;'>" +
+                    "<h2> Session Starting Now!</h2>" +
+                    "<p>Hi " + user.getFirstName() + ",</p>" +
+                    "<p>Your session <b>" + session.getName() + "</b> is starting now.</p>" +
+                    "<p><b>Game:</b> " + session.getGame() + "<br>" +
+                    "<b>Start Time:</b> " + session.getTime() + "<br>" +
+                    "<b>Date:</b> " + session.getStartDate() + "</p>" +
+                    "<p>Good luck!<br>– LevelUp Academy</p>" +
+                    "</body></html>";
+
+            EmailRequest email = new EmailRequest();
+            email.setRecipient(user.getEmail());
+            email.setSubject("🎮 Your Session is Starting Now!");
+            email.setMessage(message);
+
+            emailNotificationService.sendEmail(email);
+        }
     }
 
     public List<User> getAllPlayersInSession(Integer sessionId) {

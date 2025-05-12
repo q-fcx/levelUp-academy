@@ -2,10 +2,12 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.Model.Game;
+import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.GameService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,26 +18,26 @@ public class GameController {
 
     //GET
     @GetMapping("/get")
-    public ResponseEntity getAllGames(){
-        return ResponseEntity.status(200).body(gameService.getAllGames());
+    public ResponseEntity getAllGames(@AuthenticationPrincipal User moderator){
+        return ResponseEntity.status(200).body(gameService.getAllGames(moderator.getId()));
     }
 
     //ADD
-    @PostMapping("/add/{moderatorId}")
-    public ResponseEntity addGame(@PathVariable Integer moderatorId,@RequestBody @Valid Game game){
-        gameService.addGame(moderatorId, game);
+    @PostMapping("/add")
+    public ResponseEntity addGame(@AuthenticationPrincipal User moderator, @RequestBody @Valid Game game){
+        gameService.addGame(moderator.getId(), game);
         return ResponseEntity.status(200).body(new ApiResponse("Game Added"));
     }
 
-    @PutMapping("/edit/{moderatorId}/{gameId}")
-    public ResponseEntity editingGame(@PathVariable Integer moderatorId,@PathVariable Integer gameId,@RequestBody @Valid Game game){
-        gameService.editGame(moderatorId, gameId, game);
+    @PutMapping("/edit/{gameId}")
+    public ResponseEntity editingGame(@AuthenticationPrincipal User moderator,@PathVariable Integer gameId,@RequestBody @Valid Game game){
+        gameService.editGame(moderator.getId(), gameId, game);
         return ResponseEntity.status(200).body(new ApiResponse("The Game edited successfully"));
     }
 
-    @DeleteMapping("/delete/{moderatorId}/{gameId}")
-    public ResponseEntity deletingGame(@PathVariable Integer moderatorId,@PathVariable Integer gameId){
-        gameService.deleteGame(moderatorId, gameId);
+    @DeleteMapping("/delete/{gameId}")
+    public ResponseEntity deletingGame(@AuthenticationPrincipal User moderator,@PathVariable Integer gameId){
+        gameService.deleteGame(moderator.getId(), gameId);
         return ResponseEntity.status(200).body(new ApiResponse("The Game deleted successfully"));
     }
 

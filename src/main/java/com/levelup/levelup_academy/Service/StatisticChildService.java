@@ -120,4 +120,13 @@ public class StatisticChildService {
                 .limit(5)
                 .collect(Collectors.toList());
     }
+
+    public void addWin(Integer statsId){
+        StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statsId);
+        if(statisticChild == null){
+            throw new ApiException("Not found");
+        }
+        statisticChild.setWinGame(statisticChild.getWinGame() + 1);
+        statisticChildRepository.save(statisticChild);
+    }
 }

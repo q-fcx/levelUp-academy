@@ -18,7 +18,9 @@ public class GameService {
 
 
     //GET
-    public List<Game> getAllGames(){
+    public List<Game> getAllGames(Integer moderatorId){
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         return gameRepository.findAll();
     }
 

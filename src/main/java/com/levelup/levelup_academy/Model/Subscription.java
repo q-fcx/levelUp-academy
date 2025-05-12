@@ -48,7 +48,7 @@ public class Subscription {
     private Integer price;
 
     @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "^(PENDING|ACTIVE)$", message = "Booking must be PENDING OR ACTIVE only")
+    @Pattern(regexp = "^(PENDING|ACTIVE)$", message = "Subscription must be PENDING OR ACTIVE only")
     @Column(columnDefinition = "varchar(20) not null")
     private String status = "PENDING";
 

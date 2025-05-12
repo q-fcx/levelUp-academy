@@ -13,6 +13,7 @@ public interface AuthRepository extends JpaRepository<User,Integer> {
     User findUserById(Integer id);
 
     User findUserByUsername(String username);
+    User findUserByRole(String role);
 
     Boolean existsByEmail(String email);
 

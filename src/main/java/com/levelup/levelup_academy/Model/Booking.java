@@ -28,7 +28,7 @@ public class Booking {
     private LocalDateTime bookDate;
 
     @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "^(PENDING|ACTIVE|CANCELLED)$", message = "Booking must be PENDING OR ACTIVE only")
+    @Pattern(regexp = "^(PENDING|ACTIVE|CANCELLED)$", message = "Booking must be PENDING, ACTIVE or CANCELED only")
     @Column(columnDefinition = "varchar(20) not null")
     private String status = "PENDING";
 

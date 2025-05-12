@@ -1,14 +1,19 @@
 package com.levelup.levelup_academy.Controller;
 
+import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ParentDTO;
 import com.levelup.levelup_academy.Model.Child;
+import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.StatisticChild;
+import com.levelup.levelup_academy.Model.User;
+import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Service.ParentService;
 import com.levelup.levelup_academy.Service.StatisticChildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +24,12 @@ import java.util.List;
 public class ParentController {
 
     private final ParentService parentService;
-    private final StatisticChildService statisticChildService;
+
 
 
     @GetMapping("/get")
-    public ResponseEntity getAllParents() {
-        return ResponseEntity.status(200).body(parentService.getAllParents());
+    public ResponseEntity getAllParents(@AuthenticationPrincipal User moderator) {
+        return ResponseEntity.status(200).body(parentService.getAllParents(moderator.getId()));
     }
 
     @PostMapping("/register")
@@ -33,45 +38,45 @@ public class ParentController {
         return ResponseEntity.status(200).body(new ApiResponse("Parent registered"));
     }
 
-    @PutMapping("/edit/{parentId}")
-    public ResponseEntity editParent(@PathVariable Integer parentId, @RequestBody ParentDTO parentDTO) {
-            parentService.editParent(parentId, parentDTO);
+    @PutMapping("/edit")
+    public ResponseEntity editParent(@AuthenticationPrincipal User parent, @RequestBody ParentDTO parentDTO) {
+            parentService.editParent(parent.getId(), parentDTO);
             return ResponseEntity.status(200).body("Parent details updated successfully");
 
     }
 
-    @DeleteMapping("/delete/{parentId}")
-    public ResponseEntity deleteParent(@PathVariable Integer parentId) {
-        parentService.deleteParent(parentId);
+    @DeleteMapping("/delete")
+    public ResponseEntity deleteParent(@AuthenticationPrincipal User parent) {
+        parentService.deleteParent(parent.getId());
         return ResponseEntity.status(200).body("Parent deleted successfully");
     }
 
-    @PostMapping("/add-child/{parentId}")
-    public ResponseEntity registerChild(@RequestBody @Valid Child child, @PathVariable Integer parentId){
-        parentService.addChildToParent(child,parentId);
+    @PostMapping("/add-child")
+    public ResponseEntity registerChild(@AuthenticationPrincipal User parent, @RequestBody @Valid Child child){
+        parentService.addChildToParent(parent.getId(),child);
         return ResponseEntity.status(200).body(new ApiResponse("Child registered"));
     }
 
-    @PutMapping("/update-child/{parentId}, {childId}")
-    public ResponseEntity updateChild(@RequestBody @Valid Child child,  @PathVariable Integer parentId, @PathVariable Integer childId){
-        parentService.updateChild(child,parentId,childId);
+    @PutMapping("/update-child,{childId}")
+    public ResponseEntity updateChild(@AuthenticationPrincipal User parent, @PathVariable Integer childId, @RequestBody @Valid Child child ){
+        parentService.updateChild(parent.getId(),childId, child);
         return ResponseEntity.status(200).body(new ApiResponse("Child updated"));
     }
 
-    @DeleteMapping("/delete-child/{parentId}, {childId}")
-    public ResponseEntity deleteChild( @PathVariable Integer parentId, @PathVariable Integer childId){
-        parentService.deleteChild(parentId,childId);
+    @DeleteMapping("/delete-child/{childId}")
+    public ResponseEntity deleteChild(@AuthenticationPrincipal User parent, @PathVariable Integer childId){
+        parentService.deleteChild(parent.getId(),childId);
         return ResponseEntity.status(200).body(new ApiResponse("Child deleted"));
     }
 
     @GetMapping("/child-statistic/{childId}")
-    public ResponseEntity getChildStatistic(@PathVariable Integer childId) {
-        return ResponseEntity.status(200).body(parentService.getChildStatistic(childId));
+    public ResponseEntity getChildStatistic(@AuthenticationPrincipal User parent,@PathVariable Integer childId) {
+        return ResponseEntity.status(200).body(parentService.getChildStatistic(parent.getId(), childId));
     }
 
     @GetMapping("/get-games/{childId}")
-    public ResponseEntity getGamesByChildAge(@PathVariable Integer childId) {
-        return ResponseEntity.status(200).body(parentService.getGamesByChildAge(childId));
+    public ResponseEntity getGamesByChildAge(@AuthenticationPrincipal User parent, @PathVariable Integer childId) {
+        return ResponseEntity.status(200).body(parentService.getGamesByChildAge(parent.getId(), childId));
     }
 
 
