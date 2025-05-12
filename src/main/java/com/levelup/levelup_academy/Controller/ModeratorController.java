@@ -2,11 +2,15 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ModeratorDTO;
+import com.levelup.levelup_academy.Model.User;
+import com.levelup.levelup_academy.Repository.PlayerRepository;
 import com.levelup.levelup_academy.Service.ModeratorService;
+import com.levelup.levelup_academy.Service.PlayerService;
 import com.levelup.levelup_academy.Service.ProService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class ModeratorController {
     private final ModeratorService moderatorService;
     private final ProService proService;
+    private final PlayerService playerService;
 
     //GET
     @GetMapping("/get")
@@ -56,11 +61,17 @@ public class ModeratorController {
         return ResponseEntity.status(200).body(proService.getAllProRequests(moderatorId));
     }
 
-    //To send an exam in pro email to test her real skills
-    @PostMapping("/send-exam/{moderatorId}/{proId}")
-    public ResponseEntity<String> sendDiscordExam(@PathVariable Integer moderatorId,@PathVariable Integer proId) {
-        proService.sendDiscordExamLink(moderatorId,proId);
+    //To send an exam in pro email to test real skills
+    @PostMapping("/send-exam/{proId}")
+    public ResponseEntity<String> sendDiscordExam(@AuthenticationPrincipal User moderatorId, @PathVariable Integer proId) {
+        proService.sendDiscordExamLink(moderatorId.getId(),proId);
         return ResponseEntity.status(200).body("Discord exam link has been sent to the Pro.");
+    }
+
+    @PostMapping("/promote/{playerId}")
+    public ResponseEntity promotePlayerToPro(@AuthenticationPrincipal User moderatorId,@PathVariable Integer playerId){
+        playerService.promotePlayerToPro(moderatorId.getId(),playerId);
+        return ResponseEntity.status(200).body(new ApiResponse("Player "+playerId+" have been promoted successfully"));
     }
 
 }
