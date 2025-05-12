@@ -22,9 +22,6 @@ public class Player {
     @JsonIgnore
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private Trainer trainer;
 
     @OneToOne(mappedBy = "player",cascade = CascadeType.ALL)
     private StatisticPlayer statistics;

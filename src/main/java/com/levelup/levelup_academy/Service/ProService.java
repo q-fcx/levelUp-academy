@@ -38,6 +38,9 @@ public class ProService {
     //GET
     public List<ProDTOOut> getAllPro(Integer moderatorId){
         Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator==null){
+            throw new ApiException("Moderator not found");
+        }
         List<Pro> pros = proRepository.findAll();
 
         List<ProDTOOut> dtoList = new ArrayList<>();

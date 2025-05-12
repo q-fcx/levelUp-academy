@@ -23,9 +23,6 @@ public class Pro {
     @JsonIgnore
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private Trainer trainer;
 
     @OneToOne(mappedBy = "pro",cascade = CascadeType.ALL)
     private StatisticPro statistics;

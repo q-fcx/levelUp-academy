@@ -12,7 +12,6 @@ import java.util.List;
 public interface StatisticProRepository extends JpaRepository<StatisticPro,Integer> {
     StatisticPro findStatisticProById(Integer id);
     StatisticPro findByPro_Id(Integer professionalId);
-    List<StatisticPro> findByPro_Trainer_Id(Integer trainerId);
     List<StatisticPro> findAll();
     List<StatisticPro> findStatisticProByWinGame( Integer winGame);
 }

@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,10 +37,6 @@ public class Child {
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonIgnore
     private Parent parent;
-
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private Trainer trainer;
 
     @OneToOne(mappedBy = "child",cascade = CascadeType.ALL)
     private StatisticChild statistics;
