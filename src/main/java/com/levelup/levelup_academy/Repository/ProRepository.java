@@ -11,4 +11,5 @@ public interface ProRepository extends JpaRepository<Pro,Integer> {
     Pro findProById(Integer id);
 
     List<Pro> findByIsApproved(Boolean isApproved);
+
 }

@@ -18,7 +18,7 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final AuthRepository authRepository;
 
-    public List<Subscription> getAllSubscriptions() {
+    public List<Subscription> getAllSubscriptions(Integer moderatorId) {
         return subscriptionRepository.findAll();
     }
 

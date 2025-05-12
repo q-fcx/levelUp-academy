@@ -33,4 +33,5 @@ public class Game {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "game")
     private Set<Session> sessions;
 
+
 }

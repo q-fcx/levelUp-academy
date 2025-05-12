@@ -5,8 +5,10 @@ import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
 import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.StatisticChild;
 import com.levelup.levelup_academy.Model.StatisticPlayer;
+import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Repository.PlayerRepository;
 import com.levelup.levelup_academy.Repository.StatisticPlayerRepository;
+import com.levelup.levelup_academy.Repository.TrainerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +21,19 @@ import java.util.stream.Collectors;
 public class StatisticPlayerService {
     private final StatisticPlayerRepository repository;
     private final PlayerRepository playerRepository;
+    private final TrainerRepository trainerRepository;
 
-    public StatisticPlayer getStatisticsByPlayerId(Integer playerId) {
+    public StatisticPlayer getMyStatisticsByPlayerId(Integer playerId) {
+        StatisticPlayer stat = repository.findByPlayer_Id(playerId);
+        if (stat == null) throw new ApiException("Statistic not found for this player");
+        return stat;
+    }
+
+    public StatisticPlayer getStatisticsByPlayerId(Integer trainerId,Integer playerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticPlayer stat = repository.findByPlayer_Id(playerId);
         if (stat == null) throw new ApiException("Statistic not found for this player");
         return stat;
@@ -31,16 +44,26 @@ public class StatisticPlayerService {
     }
 
 
-    public void createStatistic(Integer playerId, StatisticPlayerDTO dto) {
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new ApiException("Player not found"));
+    public void createStatisticPlayer(Integer trainerId ,Integer playerId, StatisticPlayerDTO dto) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        Player player = playerRepository.findPlayerById(playerId);
+        if(player == null){
+            throw new ApiException("Player not fount");
+        }
 
         StatisticPlayer stat = new StatisticPlayer(null, dto.getRate(), dto.getWinGame(), dto.getLossGame(),
                 dto.getTrophy(), dto.getField(), dto.getDate(), player);
 
         repository.save(stat);
     }
-    public void updateStatistic(Integer statId, StatisticPlayerDTO dto) {
+    public void updateStatistic(Integer trainerId,Integer statId, StatisticPlayerDTO dto) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticPlayer stat = repository.findById(statId)
                 .orElseThrow(() -> new ApiException("Statistic not found"));
 
@@ -53,7 +76,11 @@ public class StatisticPlayerService {
 
         repository.save(stat);
     }
-    public void deleteStatistic(Integer statId) {
+    public void deleteStatistic(Integer trainerId,Integer statId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticPlayer stat = repository.findStatisticPlayerById(statId);
         if (stat==null){
             throw new ApiException("Statistic not found");

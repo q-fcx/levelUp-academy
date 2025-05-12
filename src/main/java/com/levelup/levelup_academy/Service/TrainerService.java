@@ -8,6 +8,7 @@ import com.levelup.levelup_academy.DTO.TrainerDTO;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,7 +51,8 @@ public class TrainerService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
+        String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
+        User user = new User(null,trainerDTO.getUsername(),hashPassword,trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
         Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),false, null,null,null,user, null, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
@@ -82,9 +84,11 @@ public class TrainerService {
         Trainer trainer = trainerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
+
         User user = trainer.getUser();
+        String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
+        user.setPassword(hashPassword);
         user.setUsername(trainerDTO.getUsername());
-        user.setPassword(trainerDTO.getPassword());
         user.setEmail(trainerDTO.getEmail());
         user.setFirstName(trainerDTO.getFirstName());
         user.setLastName(trainerDTO.getLastName());
@@ -113,7 +117,7 @@ public class TrainerService {
             throw new ApiException("Child not found");
         }
 
-        statisticChildService.createStatistic(childId,statisticChildDTO);
+        statisticChildService.createStatisticChild(trainerId,childId,statisticChildDTO);
     }
 
     //for player
@@ -126,7 +130,7 @@ public class TrainerService {
         if (player == null){
             throw new ApiException("Player not found");
         }
-        statisticPlayerService.createStatistic(playerId,statisticPlayerDTO);
+        statisticPlayerService.createStatisticPlayer(trainerId,playerId,statisticPlayerDTO);
 
     }
 
@@ -139,7 +143,7 @@ public class TrainerService {
         if(pro == null){
             throw new ApiException("Pro not found");
         }
-        statisticProService.createStatistic(proId,statisticProDTO);
+        statisticProService.createStatistic(trainerId,proId,statisticProDTO);
     }
 
     public void giveTrophyToPlayer(Integer trainerId, Integer playerId) {
@@ -211,6 +215,45 @@ public class TrainerService {
         } else {
             throw new ApiException("Child not eligible for trophy.");
         }
+    }
+
+
+
+
+    // Approving Trainer request by admin if the pdf match the requirement
+    public void approveTrainerByAdmin(Integer adminId, Integer trainerId) {
+        User admin = authRepository.findUserById(adminId);
+        if (!admin.getRole().equals("ADMIN")) {
+            throw new ApiException("Unauthorized: You must be an admin to approve players.");
+        }
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null) {
+            throw new ApiException("The Trainer you are looking for is not found.");
+        }
+        if (trainer.getIsApproved()) {
+            throw new ApiException("This trainer has already been approved.");
+        }
+        User user = trainer.getUser();
+        trainer.setIsApproved(true);
+        authRepository.save(user);
+        trainerRepository.save(trainer);
+    }
+
+    // rejecting the trainer  request by admin if the pdf not match the requirement
+    public void rejectTrainerByAdmin(Integer adminId, Integer trainerId) {
+        User admin = authRepository.findUserById(adminId);
+        if (!admin.getRole().equals("ADMIN")) {
+            throw new ApiException("Unauthorized: You must be an admin to reject players.");
+        }
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null) {
+            throw new ApiException("The trainer you are looking for is not found.");
+        }
+
+        User user = trainer.getUser();
+        trainer.setIsApproved(false);
+        trainerRepository.delete(trainer);
+        authRepository.delete(user);
     }
 
 

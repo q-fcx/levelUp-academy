@@ -6,6 +6,7 @@ import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
 import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
 import com.levelup.levelup_academy.Model.Trainer;
+import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Service.TrainerService;
 import jakarta.annotation.Resource;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,73 +42,82 @@ public class TrainerController {
         List<Trainer> trainers = trainerService.getAllTrainers();
         return ResponseEntity.ok(trainers);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateTrainer(@PathVariable Integer id,
+    @PutMapping("/edit")
+    public ResponseEntity updateTrainer(@AuthenticationPrincipal User trainerId,
                                                 @RequestBody @Valid TrainerDTO trainerDTO){
-        trainerService.updateTrainer(id, trainerDTO);
+        trainerService.updateTrainer(trainerId.getId(), trainerDTO);
         return ResponseEntity.ok("Trainer updated successfully");
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTrainer(@PathVariable Integer id){
-        trainerService.deleteTrainer(id);
+    @DeleteMapping("/delete")
+    public ResponseEntity deleteTrainer(@AuthenticationPrincipal User trainerId){
+        trainerService.deleteTrainer(trainerId.getId());
         return ResponseEntity.ok("Trainer deleted successfully");
     }
 
 
 
-    @GetMapping("/{id}/cv")
-    public ResponseEntity<byte[]> downloadTrainerCv(@PathVariable Integer id) {
-        byte[] cvContent = trainerService.downloadTrainerCv(id);
+    @GetMapping("/cv")
+    public ResponseEntity<byte[]> downloadTrainerCv(@AuthenticationPrincipal User trainerId) {
+        byte[] cvContent = trainerService.downloadTrainerCv(trainerId.getId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDisposition(ContentDisposition
                 .builder("attachment")
-                .filename("trainer_cv_" + id + ".pdf")
+                .filename("trainer_cv_" + trainerId.getId() + ".pdf")
                 .build());
 
         return new ResponseEntity<>(cvContent, headers, HttpStatus.OK);
     }
-    @PutMapping("/{trainerId}/trophy/{playerId}")
-    public ResponseEntity<String> giveTrophyToPlayer(@PathVariable Integer trainerId,
-                                                     @PathVariable Integer playerId) {
-        trainerService.giveTrophyToPlayer(trainerId, playerId);
+    @PutMapping("/trophy/{playerId}")
+    public ResponseEntity giveTrophyToPlayer(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId) {
+        trainerService.giveTrophyToPlayer(trainerId.getId(), playerId);
         return ResponseEntity.ok("Trophy granted to player if eligible.");
     }
 
-    @PutMapping("/{trainerId}/give/{proId}")
-    public ResponseEntity<String> giveTrophyToProfessional(@PathVariable Integer trainerId,
-                                                           @PathVariable Integer proId) {
-        trainerService.giveTrophyToProfessional(trainerId, proId);
+    @PutMapping("/give/{proId}")
+    public ResponseEntity<String> giveTrophyToProfessional(@AuthenticationPrincipal User trainerId, @PathVariable Integer proId) {
+        trainerService.giveTrophyToProfessional(trainerId.getId(), proId);
         return ResponseEntity.ok("Trophy granted to professional if eligible.");
     }
 
-    @PutMapping("/{trainerId}/give/{childId}")
-    public ResponseEntity<String> giveTrophyToChild(@PathVariable Integer trainerId,
-                                                    @PathVariable Integer childId) {
-        trainerService.giveTrophyToChild(trainerId, childId);
+    @PutMapping("/give/{childId}")
+    public ResponseEntity<String> giveTrophyToChild(@AuthenticationPrincipal User trainerId,@PathVariable Integer childId) {
+        trainerService.giveTrophyToChild(trainerId.getId(), childId);
         return ResponseEntity.ok("Trophy granted to child if eligible.");
     }
 
 
-    @PostMapping("/addStatisticToChild/{trainerId}/{childId}")
-    public ResponseEntity addStatisticToChild(@PathVariable Integer trainerId, @PathVariable Integer childId, @RequestBody @Valid StatisticChildDTO statisticChildDTO) {
-        trainerService.addStatisticToChild(trainerId, childId, statisticChildDTO);
+    @PostMapping("/addStatisticToChild/{childId}")
+    public ResponseEntity addStatisticToChild(@AuthenticationPrincipal User trainerId, @PathVariable Integer childId, @RequestBody @Valid StatisticChildDTO statisticChildDTO) {
+        trainerService.addStatisticToChild(trainerId.getId(), childId, statisticChildDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
     }
 
-    @PostMapping("/addStatisticToPlayer/{trainerId}/{playerId}")
-    public ResponseEntity addStatisticToChild(@PathVariable Integer trainerId, @PathVariable Integer playerId, @RequestBody @Valid StatisticPlayerDTO statisticPlayerDTO) {
-        trainerService.addStatisticToPlayer(trainerId, playerId, statisticPlayerDTO);
+    @PostMapping("/addStatisticToPlayer/{playerId}")
+    public ResponseEntity addStatisticToChild(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId, @RequestBody @Valid StatisticPlayerDTO statisticPlayerDTO) {
+        trainerService.addStatisticToPlayer(trainerId.getId(), playerId, statisticPlayerDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
     }
 
-    @PostMapping("/addStatisticToPro/{trainerId}/{proId}")
-    public ResponseEntity addStatisticToPro(@PathVariable Integer trainerId, @PathVariable Integer proId, @RequestBody @Valid StatisticProDTO statisticProDTO) {
-        trainerService.addStatisticToPro(trainerId, proId, statisticProDTO);
+    @PostMapping("/addStatisticToPro/{proId}")
+    public ResponseEntity addStatisticToPro(@AuthenticationPrincipal User trainerId, @PathVariable Integer proId, @RequestBody @Valid StatisticProDTO statisticProDTO) {
+        trainerService.addStatisticToPro(trainerId.getId(), proId, statisticProDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
     }
 
+
+
+    @PostMapping("/approve/{trainerId}")
+    public ResponseEntity<String> approvePro(@AuthenticationPrincipal User adminId, @PathVariable Integer trainerId) {
+        trainerService.approveTrainerByAdmin(adminId.getId(), trainerId);
+        return ResponseEntity.ok("The trainer has been approved.");
+    }
+    @PutMapping("/reject/{trainerId}")
+    public ResponseEntity<String> rejectPro(@PathVariable User adminId, @PathVariable Integer trainerId) {
+        trainerService.rejectTrainerByAdmin(adminId.getId(), trainerId);
+        return ResponseEntity.ok("The trainer has been rejected and deleted.");
+    }
 
 }

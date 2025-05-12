@@ -40,7 +40,7 @@ public class ModeratorService {
         if(admin == null) throw new ApiException("Admin not found");
         moderatorDTO.setRole("MODERATOR");
         User user = new User(null, moderatorDTO.getUsername(), moderatorDTO.getPassword(), moderatorDTO.getEmail(), moderatorDTO.getFirstName(), moderatorDTO.getLastName(), moderatorDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
-        Moderator moderator = new Moderator(null,user);
+        Moderator moderator = new Moderator(null,user,null);
         authRepository.save(user);
         moderatorRepository.save(moderator);
 
