@@ -6,6 +6,7 @@ import com.levelup.levelup_academy.DTO.ProDTO;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,7 +66,8 @@ public class ProService {
                 throw new RuntimeException("Failed to save CV file.");
             }
         }
-        User user = new User(null, proDTO.getUsername(), proDTO.getPassword(), proDTO.getEmail(), proDTO.getFirstName(), proDTO.getLastName(), proDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
+        String hashPassword = new BCryptPasswordEncoder().encode(proDTO.getPassword());
+        User user = new User(null, proDTO.getUsername(), hashPassword, proDTO.getEmail(), proDTO.getFirstName(), proDTO.getLastName(), proDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
         Pro pro = new Pro(null, filePath, user, null, null,null,false);
         authRepository.save(user);
         proRepository.save(pro);
@@ -89,6 +91,8 @@ public class ProService {
         if (authRepository.existsByUsername(proDTO.getUsername()) && !pro.getUser().getUsername().equals(proDTO.getUsername())) {
             throw new ApiException("Username is already in use");
         }
+        String hashPassword = new BCryptPasswordEncoder().encode(proDTO.getPassword());
+        pro.getUser().setPassword(hashPassword);
         pro.getUser().setEmail(proDTO.getEmail());
         pro.getUser().setUsername(proDTO.getUsername());
 
@@ -103,13 +107,19 @@ public class ProService {
             throw new ApiException("The player is not found");
         }
         User user = pro.getUser();
-
+        if (pro.getIsApproved().equals(false)) {
+            throw new ApiException("The Professional Player is not approved yet ");
+        }
         proRepository.delete(pro);
         authRepository.delete(user);
     }
 
 
-    public byte[] downloadProCv(Integer proId) {
+    public byte[] downloadProPDF(Integer moderateId,Integer proId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderateId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
         Pro pro = proRepository.findById(proId)
                 .orElseThrow(() -> new RuntimeException("Pro not found"));
 
@@ -144,7 +154,6 @@ public class ProService {
             throw new ApiException("This player has already been approved.");
         }
         User user = pro.getUser();
-//        user.setIsApproved(true);
         pro.setIsApproved(true);
         authRepository.save(user);
         proRepository.save(pro);
@@ -162,7 +171,6 @@ public class ProService {
         }
 
         User user = pro.getUser();
-//        user.setIsApproved(false);
         pro.setIsApproved(false);
         proRepository.delete(pro);
         authRepository.delete(user);
@@ -170,6 +178,10 @@ public class ProService {
 
 //moderator can see all the requests
     public List<Pro> getAllProRequests(Integer moderatorId){
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
         return proRepository.findByIsApproved(false);
     }
 

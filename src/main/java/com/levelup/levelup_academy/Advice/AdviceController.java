@@ -103,4 +103,10 @@ public class AdviceController {
         return ResponseEntity.status(400).body(new ApiResponse(msg));
     }
 
+    @ExceptionHandler(value = NullPointerException.class)
+    public ResponseEntity<ApiResponse> NullPointerException(NullPointerException e){
+        String msg = e.getMessage();
+        return ResponseEntity.status(400).body(new ApiResponse(msg));
+    }
+
 }

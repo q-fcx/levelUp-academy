@@ -52,8 +52,7 @@ public class TrainerService {
             }
         }
         String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
-        trainerDTO.setPassword(hashPassword);
-        User user = new User(null,trainerDTO.getUsername(),trainerDTO.getPassword(),trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
+        User user = new User(null,trainerDTO.getUsername(),hashPassword,trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
         Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),false, null,null,null,user, null, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
@@ -90,7 +89,6 @@ public class TrainerService {
         String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
         user.setPassword(hashPassword);
         user.setUsername(trainerDTO.getUsername());
-        user.setPassword(trainerDTO.getPassword());
         user.setEmail(trainerDTO.getEmail());
         user.setFirstName(trainerDTO.getFirstName());
         user.setLastName(trainerDTO.getLastName());

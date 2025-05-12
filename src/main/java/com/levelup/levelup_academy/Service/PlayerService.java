@@ -48,23 +48,22 @@ public class PlayerService {
     public void registerPlayer(PlayerDTO playerDTO){
         playerDTO.setRole("PLAYER");
         String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
-        playerDTO.setPassword(hashPassword);
-        User user = new User(null, playerDTO.getUsername(), playerDTO.getPassword(), playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
+        User user = new User(null, playerDTO.getUsername(), hashPassword, playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
         Player player = new Player(null,user,null,null);
         authRepository.save(user);
         playerRepository.save(player);
     }
-    public void updatePlayer(Integer id, PlayerDTO playerDTO) {
-        Player player = playerRepository.findById(id)
+    public void updatePlayer(Integer playerId, PlayerDTO playerDTO) {
+        Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new ApiException("Player not found"));
 
         User user = player.getUser();
         if (user == null) {
             throw new RuntimeException("User not found for this player");
         }
-
+        String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
+        user.setPassword(hashPassword);
         user.setUsername(playerDTO.getUsername());
-        user.setPassword(playerDTO.getPassword());
         user.setEmail(playerDTO.getEmail());
         user.setFirstName(playerDTO.getFirstName());
         user.setLastName(playerDTO.getLastName());
@@ -72,8 +71,8 @@ public class PlayerService {
         authRepository.save(user);
         playerRepository.save(player);
     }
-    public void deletePlayer(Integer id) {
-        Player player = playerRepository.findById(id)
+    public void deletePlayer(Integer playerId) {
+        Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
         User user = player.getUser();
