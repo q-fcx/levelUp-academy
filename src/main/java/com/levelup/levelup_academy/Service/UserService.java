@@ -3,9 +3,11 @@ package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.Model.Moderator;
+import com.levelup.levelup_academy.Model.Subscription;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.ModeratorRepository;
+import com.levelup.levelup_academy.Repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class UserService {
 
     private final AuthRepository authRepository;
     private final ModeratorRepository moderatorRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
     public void register(User user) {
         User user1 = new User();
@@ -30,6 +33,12 @@ public class UserService {
         user1.setRole("ADMIN");
         authRepository.save(user1);
 
+    }
+
+    public List<Subscription> getAllSubscriptions(Integer adminId) {
+        User admin = authRepository.findUserById(adminId);
+        if(admin == null) throw new ApiException("Admin not found");
+        return subscriptionRepository.findAll();
     }
 
     public void generateModeratorLogin(Integer adminId, Integer moderatorId) {

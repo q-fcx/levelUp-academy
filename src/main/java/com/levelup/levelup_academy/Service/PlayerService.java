@@ -4,13 +4,11 @@ import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
 import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
-import com.levelup.levelup_academy.Model.Moderator;
-import com.levelup.levelup_academy.Model.Player;
-import com.levelup.levelup_academy.Model.Pro;
-import com.levelup.levelup_academy.Model.User;
+import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.PlayerRepository;
+import com.levelup.levelup_academy.Repository.StatisticPlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,7 @@ public class PlayerService {
     private final ModeratorRepository moderatorRepository;
     private final EmailNotificationService emailNotificationService;
     private final UltraMsgService ultraMsgService;
+    private final StatisticPlayerRepository statisticPlayerRepository;
 
     //GET
 
@@ -114,6 +113,12 @@ public class PlayerService {
         }
 
         playerRepository.delete(player);
+    }
+
+    public StatisticPlayer getMyStatisticsByPlayerId(Integer playerId) {
+        StatisticPlayer stat = statisticPlayerRepository.findByPlayer_Id(playerId);
+        if (stat == null) throw new ApiException("Statistic not found for this player");
+        return stat;
     }
 
 

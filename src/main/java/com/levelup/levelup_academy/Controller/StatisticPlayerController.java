@@ -31,11 +31,6 @@ public class StatisticPlayerController {
         return ResponseEntity.ok("Player statistic updated");
     }
 
-    @GetMapping("/player")
-    public ResponseEntity<StatisticPlayer> getPlayerStatistics(@AuthenticationPrincipal User playerId) {
-        return ResponseEntity.ok(statisticPlayerService.getMyStatisticsByPlayerId(playerId.getId()));
-    }
-
     @GetMapping("/player/{playerId}")
     public ResponseEntity<StatisticPlayer> getPlayerStatistics(@AuthenticationPrincipal User trainerId,@PathVariable Integer playerId) {
         return ResponseEntity.ok(statisticPlayerService.getStatisticsByPlayerId(trainerId.getId(),playerId));
@@ -53,19 +48,19 @@ public class StatisticPlayerController {
         return ResponseEntity.ok("Player statistic deleted");
     }
     @GetMapping("/top-player-by-rating")
-    public ResponseEntity<String> getTopPlayerByRating() {
-        return ResponseEntity.ok(statisticPlayerService.getTopPlayerByRating());
+    public ResponseEntity<String> getTopPlayerByRating(@AuthenticationPrincipal User trainer) {
+        return ResponseEntity.ok(statisticPlayerService.getTopPlayerByRating(trainer.getId()));
     }
 
     @GetMapping("/player/{playerId}/{trainerId}")
     public ResponseEntity<StatisticPlayer> getPlayerStatistics(@PathVariable Integer trainerId,@PathVariable Integer playerId) {
         return ResponseEntity.ok(statisticPlayerService.getStatisticsByPlayerId(trainerId,playerId));
     }
-    @GetMapping("/top5")
-    public ResponseEntity<List<StatisticPlayer>> getTop5ByWinGame(@RequestParam Integer winGame) {
-        List<StatisticPlayer> top5 = statisticPlayerService.getTop5PlayersByGame(winGame);
-        return ResponseEntity.ok(top5);
-    }
+//    @GetMapping("/top5")
+//    public ResponseEntity<List<StatisticPlayer>> getTop5ByWinGame(@RequestParam Integer winGame) {
+//        List<StatisticPlayer> top5 = statisticPlayerService.getTop5PlayersByGame(winGame);
+//        return ResponseEntity.ok(top5);
+//    }
     @PutMapping("/add-win/{statId}/{trainerId}")
     public ResponseEntity<String> addWinToPlayer(@PathVariable Integer statId,@PathVariable Integer trainerId) {
         statisticPlayerService.addWin(statId,trainerId);
@@ -84,8 +79,8 @@ public class StatisticPlayerController {
     }
 
     @PostMapping("/notify-weak")
-    public ResponseEntity<String> notifyPlayer() {
-        statisticPlayerService.notifyPlayerIfRateIsWeak();
+    public ResponseEntity<String> notifyPlayer(@AuthenticationPrincipal User trainer) {
+        statisticPlayerService.notifyPlayerIfRateIsWeak(trainer.getId());
         return ResponseEntity.ok("Emails sent to player of weak-performing.");
     }
 }

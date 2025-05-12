@@ -30,11 +30,6 @@ public class StatisticProController {
         return ResponseEntity.ok("Pro statistic updated");
     }
 
-    @GetMapping("/professional")
-    public ResponseEntity<StatisticPro> getProfessionalStatistics(@AuthenticationPrincipal User professionalId) {
-        return ResponseEntity.ok(statisticProService.getMyStatisticsByProfessionalId(professionalId.getId()));
-    }
-
     @GetMapping("/professional/{professionalId}")
     public ResponseEntity<StatisticPro> getProfessionalStatistics(@AuthenticationPrincipal User trainerId ,@PathVariable Integer professionalId) {
         return ResponseEntity.ok(statisticProService.getStatisticsByProfessionalId(trainerId.getId(), professionalId));

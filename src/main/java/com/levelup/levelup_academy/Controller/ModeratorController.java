@@ -58,7 +58,7 @@ public class ModeratorController {
         return ResponseEntity.status(200).body(proService.getAllProRequests(moderator.getId()));
     }
 
-    //To send an exam in pro email to test her real skills
+
     @PostMapping("/send-exam/{proId}")
     public ResponseEntity<String> sendDiscordExam(@AuthenticationPrincipal Moderator moderator,@PathVariable Integer proId) {
         proService.sendDiscordExamLink(moderator.getId(),proId);

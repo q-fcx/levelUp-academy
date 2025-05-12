@@ -24,13 +24,6 @@ public class StatisticProService {
     private final ProRepository proRepository;
     private final TrainerRepository trainerRepository;
 
-    //Get my statistic
-    public StatisticPro getMyStatisticsByProfessionalId(Integer professionalId) {
-        StatisticPro stat = statisticProRepository.findByPro_Id(professionalId);
-        if (stat == null) throw new ApiException("Statistic not found for this professional");
-        return stat;
-    }
-
     //get one pro statistic by trainer
     public StatisticPro getStatisticsByProfessionalId(Integer trainerId,Integer professionalId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
