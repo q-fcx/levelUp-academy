@@ -1,6 +1,7 @@
 package com.levelup.levelup_academy.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,10 +22,8 @@ public class StatisticChild {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    @Min(0)
-    @Column(columnDefinition = "Integer not null")
-    private Integer rate;
+    @Max(10)
+    private Double rate=1.0;
 
     @NotNull
     @Min(0)

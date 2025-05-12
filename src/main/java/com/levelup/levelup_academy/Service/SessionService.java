@@ -151,6 +151,29 @@ public class SessionService {
         return bookingRepository.findUsersBySessionId(sessionId);
     }
 
+    public void changeTrainerSession(Integer trainerId, Integer newSessionId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        Session newSession = sessionRepository.findSessionById(newSessionId);
+
+        if (trainer == null) {
+            throw new ApiException("Trainer not found");
+        }
+
+        if (newSession == null) {
+            throw new ApiException("New session not found");
+        }
+
+        Session oldSession = sessionRepository.findSessionsByTrainer_Id(trainerId);
+        if (oldSession != null) {
+            oldSession.setTrainer(null);
+            sessionRepository.save(oldSession);
+        }
+
+        newSession.setTrainer(trainer);
+        sessionRepository.save(newSession);
+    }
+
+
 
 
 }
