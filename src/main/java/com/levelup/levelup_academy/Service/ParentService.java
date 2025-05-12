@@ -27,7 +27,9 @@ public class ParentService {
     private final ModeratorRepository moderatorRepository;
     private final EmailNotificationService emailNotificationService;
 
-    public List<ParentDTOOut> getAllParents(Integer moderator) {
+    public List<ParentDTOOut> getAllParents(Integer moderatorId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         List<Parent> parents = parentRepository.findAll();
         List<ParentDTOOut> parentDTOOuts = new ArrayList<>();
 

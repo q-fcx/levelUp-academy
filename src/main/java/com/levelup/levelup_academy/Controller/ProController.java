@@ -104,20 +104,4 @@ public class ProController {
         proService.expireAccount();
         return ResponseEntity.status(200).body(new ApiResponse("Expired Pro accounts have been processed."));
     }
-
-    @GetMapping("/{proId}/cv")
-    public ResponseEntity<byte[]> downloadProCv(@PathVariable Integer proId) {
-        byte[] fileContent = proService.downloadProCv(proId);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);  // Set content type as PDF
-        headers.setContentDisposition(ContentDisposition.builder("attachment")
-                .filename("Pro_CV_" + proId + ".pdf")
-                .build());
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .headers(headers)
-                .body(fileContent);
-    }
-
 }

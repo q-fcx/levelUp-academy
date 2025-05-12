@@ -129,7 +129,7 @@ public class SessionService {
                     "<h2> Session Starting Now!</h2>" +
                     "<p>Hi " + user.getFirstName() + ",</p>" +
                     "<p>Your session <b>" + session.getName() + "</b> is starting now.</p>" +
-                    "<p><b>Game:</b> " + session.getGames() + "<br>" +
+                    "<p><b>Game:</b> " + session.getGame() + "<br>" +
                     "<b>Start Time:</b> " + session.getTime() + "<br>" +
                     "<b>Date:</b> " + session.getStartDate() + "</p>" +
                     "<p>Good luck!<br>– LevelUp Academy</p>" +

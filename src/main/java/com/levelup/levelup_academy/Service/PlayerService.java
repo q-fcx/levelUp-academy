@@ -1,6 +1,7 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
 import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
 import com.levelup.levelup_academy.Model.Moderator;
@@ -29,7 +30,10 @@ public class PlayerService {
 
     //GET
 
-    public List<PlayerDTOOut> getAllPlayers(){
+    public List<PlayerDTOOut> getAllPlayers(Integer moderatorId){
+
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         List<Player> players = playerRepository.findAll();
 
         List<PlayerDTOOut> dtoList = new ArrayList<>();
@@ -58,8 +62,7 @@ public class PlayerService {
         String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
         User user = new User(null, playerDTO.getUsername(), hashPassword, playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
         Player player = new Player(null,user,null,null);
-        authRepository.save(user);
-        playerRepository.save(player);
+
 
         String subject = "Welcome to LevelUp Academy ";
         String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; line-height: 1.6; background-color: #A53A10; padding: 40px 20px;'>" +
@@ -75,6 +78,8 @@ public class PlayerService {
         EmailRequest emailRequest = new EmailRequest(playerDTO.getEmail(),message, subject);
         emailNotificationService.sendEmail(emailRequest);
 
+        authRepository.save(user);
+        playerRepository.save(player);
 //        String proPhoneNumber = "+447723275615";
 //        String whatsAppMessage = " New player registered: " + playerDTO.getFirstName() + " " + playerDTO.getLastName() + ".";
 //        ultraMsgService.sendWhatsAppMessage(proPhoneNumber, whatsAppMessage);

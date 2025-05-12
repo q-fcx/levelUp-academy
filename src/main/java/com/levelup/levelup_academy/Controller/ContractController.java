@@ -16,11 +16,11 @@ public class ContractController {
     private final ContractService contractService;
 
     @GetMapping("/get")
-    public ResponseEntity gatAllContract(){
-        return ResponseEntity.status(200).body(contractService.getAllContract());
+    public ResponseEntity gatAllContract(@AuthenticationPrincipal User moderator){
+        return ResponseEntity.status(200).body(contractService.getAllContract(moderator.getId()));
     }
 
-    @PostMapping("/add/{moderatorId}")
+    @PostMapping("/add")
     public ResponseEntity<String> addContract(@AuthenticationPrincipal User moderator, @RequestBody @Valid ContractDTO contractDTO) {
         contractService.addContract(moderator.getId(),contractDTO);
         return ResponseEntity.ok("Contract added and email sent successfully.");

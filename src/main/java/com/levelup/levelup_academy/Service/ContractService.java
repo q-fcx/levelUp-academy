@@ -38,7 +38,7 @@ public class ContractService {
     public void addContract(Integer moderatorId, ContractDTO contractDTO) {
 
         Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
-              if(moderator == null) {new ApiException("Moderator not found with ID: " + contractDTO.getModeratorId());
+              if(moderator == null) {new ApiException("Moderator not found with ID: " + contractDTO.getModerator().getId());
               }
         Contract contract = new Contract(
                 null,
@@ -49,7 +49,7 @@ public class ContractService {
                 contractDTO.getStartDate(),
                 contractDTO.getEndDate(),
                 contractDTO.getAmount(),false
-                ,false,null,null
+                ,false,null,null,null
         );
               contract.setModeratorStatus(false);
 
