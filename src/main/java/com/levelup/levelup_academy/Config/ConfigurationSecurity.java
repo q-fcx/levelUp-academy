@@ -36,7 +36,22 @@ public class ConfigurationSecurity {
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
-                .requestMatchers()
+                .requestMatchers("/api/v1/parent/register", "/api/v1/contract/add").permitAll()
+                .requestMatchers("/api/v1/parent/edit","/api/v1/parent/delete", "/api/v1/parent/add-child",
+                                    "/api/v1/parent/update-child", "/api/v1/parent/delete-child", "/api/v1/parent/child-statistic","/api/v1/parent/get-games").hasAuthority("PARENTS")
+                .requestMatchers("/api/v1/booking/add", "api/v1/booking/cancel", "api/v1/booking/check").hasAnyAuthority("PLAYER", "PARENTS")
+                .requestMatchers("/api/v1/game/**","/api/v1/contract/**", "/api/v1/moderator/edit", "/api/v1/moderator/delete", "/api/v1/moderator/get-all-pro",
+                                    "/api/v1/moderator/get-all-pro", "/api/v1/moderator/review-contract","/api/v1/moderator/send-exam").hasAuthority("MODERATOR")
+
+                .anyRequest().authenticated()
+                .and()
+                .logout().logoutUrl("/api/v1/auth/logout")
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .and()
+                .httpBasic();
+
+        return httpSecurity.build();
 
     }
 }

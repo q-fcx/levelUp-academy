@@ -2,11 +2,14 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ModeratorDTO;
+import com.levelup.levelup_academy.Model.Moderator;
+import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ModeratorService;
 import com.levelup.levelup_academy.Service.ProService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,48 +21,47 @@ public class ModeratorController {
 
     //GET
     @GetMapping("/get")
-    public ResponseEntity gatAllModerator(){
-        return ResponseEntity.status(200).body(moderatorService.getAllModerator());
+    public ResponseEntity gatAllModerator(@AuthenticationPrincipal User admin){
+        return ResponseEntity.status(200).body(moderatorService.getAllModerator(admin.getId()));
     }
     @PostMapping("/register")
-    public ResponseEntity registerModerator(@RequestBody @Valid ModeratorDTO moderatorDTO){
-        moderatorService.registerModerator(moderatorDTO);
+    public ResponseEntity registerModerator(@AuthenticationPrincipal User admin,@RequestBody @Valid ModeratorDTO moderatorDTO){
+        moderatorService.registerModerator(admin.getId(), moderatorDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Moderator registered"));
 
     }
 
     // Update moderator
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<String> updateModerator(@PathVariable Integer id, @RequestBody @Valid ModeratorDTO moderatorDTO) {
-        moderatorService.updateModerator(id, moderatorDTO);
+    @PutMapping("/edit")
+    public ResponseEntity<String> updateModerator(@AuthenticationPrincipal Moderator moderator, @RequestBody @Valid ModeratorDTO moderatorDTO) {
+        moderatorService.updateModerator(moderator.getId(), moderatorDTO);
         return ResponseEntity.ok("Moderator updated successfully");
     }
 
     // Delete moderator
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteModerator(@PathVariable Integer id) {
-        moderatorService.deleteModerator(id);
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteModerator(@AuthenticationPrincipal User moderator) {
+        moderatorService.deleteModerator(moderator.getId());
         return ResponseEntity.ok("Moderator deleted successfully");
     }
 
     @PostMapping("/review-contract/{contractId}/{proId}")
-    public ResponseEntity reviewContract(
-            @PathVariable Integer contractId,@PathVariable Integer proId) {
+    public ResponseEntity reviewContract(@AuthenticationPrincipal User moderator, @PathVariable Integer contractId, @PathVariable Integer proId) {
 
-        moderatorService.reviewContract(contractId,proId);
+        moderatorService.reviewContract(moderator.getId(),contractId,proId);
         return ResponseEntity.ok("Contract reviewed and Pro has been notified.");
     }
 
-    //Get all pro requests to check
-    @GetMapping("/get-all-pro/{moderatorId}")
-    public ResponseEntity getAllProRequests(@PathVariable Integer moderatorId){
-        return ResponseEntity.status(200).body(proService.getAllProRequests(moderatorId));
+
+    @GetMapping("/get-all-pro")
+    public ResponseEntity getAllProRequests(@AuthenticationPrincipal Moderator moderator){
+        return ResponseEntity.status(200).body(proService.getAllProRequests(moderator.getId()));
     }
 
     //To send an exam in pro email to test her real skills
-    @PostMapping("/send-exam/{moderatorId}/{proId}")
-    public ResponseEntity<String> sendDiscordExam(@PathVariable Integer moderatorId,@PathVariable Integer proId) {
-        proService.sendDiscordExamLink(moderatorId,proId);
+    @PostMapping("/send-exam/{proId}")
+    public ResponseEntity<String> sendDiscordExam(@AuthenticationPrincipal Moderator moderator,@PathVariable Integer proId) {
+        proService.sendDiscordExamLink(moderator.getId(),proId);
         return ResponseEntity.status(200).body("Discord exam link has been sent to the Pro.");
     }
 

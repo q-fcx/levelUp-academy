@@ -28,12 +28,16 @@ public class ModeratorService {
     private final ProRepository proRepository;
 
     //GET
-    public List<Moderator> getAllModerator(){
+    public List<Moderator> getAllModerator(Integer adminId){
+        User admin = authRepository.findUserById(adminId);
+        if(admin == null) throw new ApiException("Admin not found");
         return moderatorRepository.findAll();
     }
 
     //Register Moderator
-    public void registerModerator(ModeratorDTO moderatorDTO){
+    public void registerModerator(Integer adminId, ModeratorDTO moderatorDTO){
+        User admin = authRepository.findUserById(adminId);
+        if(admin == null) throw new ApiException("Admin not found");
         moderatorDTO.setRole("MODERATOR");
         User user = new User(null, moderatorDTO.getUsername(), moderatorDTO.getPassword(), moderatorDTO.getEmail(), moderatorDTO.getFirstName(), moderatorDTO.getLastName(), moderatorDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
         Moderator moderator = new Moderator(null,user);
@@ -64,33 +68,31 @@ public class ModeratorService {
 
     //
 
-    // Add the Pro ID as a PathVariable
-    public void reviewContract(Integer contractId, Integer proId) {
-        // Retrieve the contract
+
+    public void reviewContract(Integer moderatorId, Integer contractId, Integer proId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
+
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new ApiException("Contract not found"));
 
-        // Retrieve the Pro using the provided Pro ID
+
         Pro pro = proRepository.findById(proId)
                 .orElseThrow(() -> new ApiException("Pro not found"));
 
-        // Check if the contract has already been reviewed
         if (contract.getModeratorStatus()) {
             throw new ApiException("Contract has already been reviewed");
         }
 
-        // Mark the contract as reviewed
         contract.setModeratorStatus(true);
         contractRepository.save(contract);
 
 
-            // Create email notification
             EmailRequest email = new EmailRequest();
             email.setRecipient(pro.getUser().getEmail());
             email.setSubject("Contract Reviewed");
             email.setMessage("Your contract has been reviewed by the moderator. Please check your dashboard for further actions.");
 
-            // Send email to the selected Pro
             emailNotificationService.sendEmail(email);
 
     }

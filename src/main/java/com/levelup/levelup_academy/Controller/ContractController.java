@@ -1,10 +1,12 @@
 package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.DTO.ContractDTO;
+import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ContractService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,9 +20,9 @@ public class ContractController {
         return ResponseEntity.status(200).body(contractService.getAllContract());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addContract(@RequestBody @Valid ContractDTO contractDTO) {
-        contractService.addContract(contractDTO);
+    @PostMapping("/add/{moderatorId}")
+    public ResponseEntity<String> addContract(@AuthenticationPrincipal User moderator, @RequestBody @Valid ContractDTO contractDTO) {
+        contractService.addContract(moderator.getId(),contractDTO);
         return ResponseEntity.ok("Contract added and email sent successfully.");
     }
 

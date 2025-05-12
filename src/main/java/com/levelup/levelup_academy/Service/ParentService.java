@@ -5,6 +5,7 @@ import com.levelup.levelup_academy.DTO.ParentDTO;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,18 +20,36 @@ public class ParentService {
     private final ChildRepository childRepository;
     private final GameRepository gameRepository;
     private final StatisticChildRepository statisticChildRepository;
+    private final ModeratorRepository moderatorRepository;
 
-    public List<Parent> getAllParents() {
+    public List<Parent> getAllParents(Integer moderatorId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         return parentRepository.findAll();
     }
 
     public void registerParent(ParentDTO parentDTO) {
         parentDTO.setRole("PARENTS");
-        User user = new User(null, parentDTO.getUsername(), parentDTO.getPassword(), parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
+        String hashPassword = new BCryptPasswordEncoder().encode(parentDTO.getPassword());
+        User user = new User(null, parentDTO.getUsername(), hashPassword, parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
 
         Parent parent = new Parent(null, user,null, null);
         authRepository.save(user);
         parentRepository.save(parent);
+
+//        User user = new User();
+//        user.setRole("PARENTS");
+//        user.setFirstName(parentDTO.getFirstName());
+//        user.setLastName(parentDTO.getLastName());
+//        user.setEmail(parentDTO.getEmail());
+//        String hashPassword = new BCryptPasswordEncoder().encode(parentDTO.getPassword());
+//        user.setPassword(hashPassword);
+//
+//        Parent parent = new Parent(null, user,null, null);
+//        user.setParent(parent);
+//        parentRepository.save(parent);
+//        authRepository.save(user);
+//
 
     }
 
@@ -46,7 +65,8 @@ public class ParentService {
         user.setEmail(parentDTO.getEmail());
         user.setFirstName(parentDTO.getFirstName());
         user.setLastName(parentDTO.getLastName());
-        user.setPassword(parentDTO.getPassword());
+        String hashPassword = new BCryptPasswordEncoder().encode(parentDTO.getPassword());
+        user.setPassword(hashPassword);
 
         authRepository.save(user);
         parentRepository.save(parent);
@@ -62,7 +82,7 @@ public class ParentService {
         authRepository.delete(user);
     }
 
-    public void addChildToParent( Child child, Integer parentId) {
+    public void addChildToParent(Integer parentId, Child child) {
         Parent parent = parentRepository.findParentById(parentId);
         if(parent == null) throw new ApiException("Parent not found");
 
@@ -70,7 +90,7 @@ public class ParentService {
         childRepository.save(child);
     }
 
-    public void updateChild( Child child, Integer parentId, Integer childId) {
+    public void updateChild(Integer parentId, Integer childId,Child child) {
         Parent parent = parentRepository.findParentById(parentId);
         if(parent == null) throw new ApiException("Parent not found");
 
@@ -102,9 +122,12 @@ public class ParentService {
         childRepository.delete(child);
     }
 
-    public StatisticChild getChildStatistic(Integer childId) {
+    public StatisticChild getChildStatistic(Integer parentId,Integer childId) {
         Child child = childRepository.findChildById(childId);
         if (child == null) throw new ApiException("Child not found");
+
+        Parent parent = parentRepository.findParentById(parentId);
+        if(parent == null) throw new ApiException("Parent not found");
 
         StatisticChild statistic = child.getStatistics();
         if (statistic == null) throw new ApiException("Statistics not found for this child");
@@ -112,7 +135,10 @@ public class ParentService {
         return statistic;
     }
 
-    public List<Game> getGamesByChildAge(Integer childId) {
+    public List<Game> getGamesByChildAge(Integer parentId, Integer childId) {
+        Parent parent = parentRepository.findParentById(parentId);
+        if(parent == null) throw new ApiException("Parent not found");
+
         Child child = childRepository.findChildById(childId);
         if(child == null) throw new ApiException("Child not found");
 

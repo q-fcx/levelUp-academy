@@ -26,8 +26,11 @@ public class BookingService {
     private final SubscriptionRepository subscriptionRepository;
 
 
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public List<Booking> getMyBookings(Integer userId) {
+        User user = authRepository.findUserById(userId);
+        if(user == null) throw new ApiException("User not found");
+
+        return bookingRepository.findMyBookings(userId);
     }
 
     public void addBooking(Integer userId, Integer sessionId, Integer subscriptionId){
@@ -59,11 +62,12 @@ public class BookingService {
 
     }
 
-    public void checkBookState(Integer bookingId) {
+    public void checkBookState(Integer userId,Integer bookingId) {
         Booking booking = bookingRepository.findBookingById(bookingId);
         if(booking == null) throw new ApiException("Booking not found");
         Session session = sessionRepository.findSessionById(booking.getSession().getId());
-
+        User user = authRepository.findUserById(userId);
+        if(user == null) throw new ApiException("User not found");
         if(booking.getBookDate().isEqual(session.getStartDate())) {
             booking.setStatus("ACTIVE");
         }

@@ -29,7 +29,7 @@ public class ContractService {
     }
 
     //ADD
-    public void addContract(ContractDTO contractDTO, Integer moderatorId) {
+    public void addContract(Integer moderatorId, ContractDTO contractDTO) {
 
         // Proceed with creating and saving the contract
         Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
