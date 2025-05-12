@@ -2,6 +2,7 @@ package com.levelup.levelup_academy.Service;
 
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.ModeratorDTO;
 import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
@@ -9,6 +10,7 @@ import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -52,5 +54,18 @@ public class UserService {
 
         authRepository.save(user);
         moderatorRepository.save(moderator);
+    }
+
+
+    //Register Moderator
+    public void registerModerator(Integer adminId, ModeratorDTO moderatorDTO){
+        User admin = authRepository.findUserById(adminId);
+        if(admin == null) throw new ApiException("Admin not found");
+        moderatorDTO.setRole("MODERATOR");
+        User user = new User(null, moderatorDTO.getUsername(), moderatorDTO.getPassword(), moderatorDTO.getEmail(), moderatorDTO.getFirstName(), moderatorDTO.getLastName(), moderatorDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
+        Moderator moderator = new Moderator(null,user,null);
+        authRepository.save(user);
+        moderatorRepository.save(moderator);
+
     }
 }

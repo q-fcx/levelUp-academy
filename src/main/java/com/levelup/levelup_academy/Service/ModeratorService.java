@@ -34,17 +34,7 @@ public class ModeratorService {
         return moderatorRepository.findAll();
     }
 
-    //Register Moderator
-    public void registerModerator(Integer adminId, ModeratorDTO moderatorDTO){
-        User admin = authRepository.findUserById(adminId);
-        if(admin == null) throw new ApiException("Admin not found");
-        moderatorDTO.setRole("MODERATOR");
-        User user = new User(null, moderatorDTO.getUsername(), moderatorDTO.getPassword(), moderatorDTO.getEmail(), moderatorDTO.getFirstName(), moderatorDTO.getLastName(), moderatorDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
-        Moderator moderator = new Moderator(null,user,null);
-        authRepository.save(user);
-        moderatorRepository.save(moderator);
 
-    }
     public void updateModerator(Integer id, ModeratorDTO moderatorDTO){
         Moderator moderator = moderatorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Moderator not found"));

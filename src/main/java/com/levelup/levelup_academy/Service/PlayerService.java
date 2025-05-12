@@ -1,7 +1,9 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
+import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
 import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.Pro;
@@ -9,11 +11,13 @@ import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.PlayerRepository;
+import com.levelup.levelup_academy.Repository.ProRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,14 +28,16 @@ public class PlayerService {
     private final ModeratorRepository moderatorRepository;
     private final ProRepository proRepository;
     private final EmailNotificationService emailNotificationService;
-    private final EmailNotificationService emailNotificationService;
     private final UltraMsgService ultraMsgService;
 
     //GET
 
-    public List<PlayerDTOOut> getAllPlayers(){
+    public List<PlayerDTOOut> getAllPlayers(Integer moderatorId){
         List<Player> players = playerRepository.findAll();
-
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
         List<PlayerDTOOut> dtoList = new ArrayList<>();
         for (Player player : players) {
             User user = player.getUser();
@@ -51,8 +57,8 @@ public class PlayerService {
         }
         return player;
     }
-    //Register player
 
+    //Register player
     public void registerPlayer(PlayerDTO playerDTO){
         playerDTO.setRole("PLAYER");
         String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
@@ -110,17 +116,17 @@ public class PlayerService {
     }
 
 //Promote
-    public void promotePlayerToPro(Integer moderateId,Integer playerId){
+    public void promotePlayerToPro(Integer moderateId,Integer playerId) {
         Player player = playerRepository.findPlayerById(playerId);
-        if(player == null){
-             throw new ApiException("Player is not found");
+        if (player == null) {
+            throw new ApiException("Player is not found");
         }
         Moderator moderator = moderatorRepository.findModeratorById(moderateId);
-        if(moderator == null){
+        if (moderator == null) {
             throw new ApiException("Moderate is not found");
         }
         Integer requireRate = 10;
-        if(player.getStatistics().getRate() < requireRate){
+        if (player.getStatistics().getRate() < requireRate) {
             throw new ApiException("Player does not reach enough rate to be promoted to Pro");
         }
         String hashPassword = new BCryptPasswordEncoder().encode(player.getUser().getPassword());
@@ -152,6 +158,8 @@ public class PlayerService {
 
         playerRepository.delete(player);
         proRepository.save(pro);
+
+    }
 
 
 

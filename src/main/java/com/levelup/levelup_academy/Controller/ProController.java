@@ -24,7 +24,7 @@ public class ProController {
     private final ContractService contractService;
 
     //GET
-    @GetMapping("/get")
+    @GetMapping("/get-all-pro")
     public ResponseEntity getAllPro(@AuthenticationPrincipal User moderatorId) {
         return ResponseEntity.status(200).body(proService.getAllPro(moderatorId.getId()));
     }
@@ -118,6 +118,11 @@ public class ProController {
         return ResponseEntity.status(HttpStatus.OK)
                 .headers(headers)
                 .body(fileContent);
+    }
+
+    @GetMapping("/get-all-contract/{proId}")
+    public ResponseEntity getContractForPro(@AuthenticationPrincipal User proId){
+        return ResponseEntity.status(200).body(contractService.getAllContract(proId.getId()));
     }
 
 }

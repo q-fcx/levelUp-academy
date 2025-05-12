@@ -47,6 +47,7 @@ public class ConfigurationSecurity {
                 .requestMatchers("/api/v1/player/edit","/api/v1/player/delete").hasAuthority("PLAYER")
                 .requestMatchers("/api/v1/pro/register").permitAll()
                 .requestMatchers("/api/v1/pro/edit","/api/v1/pro/delete").hasAuthority("PRO")
+                .requestMatchers("/api/v1/pro/get/**","/api/v1/pro/get-all-pro").hasAuthority("MODERATOR")
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutUrl("/api/v1/user/logout")

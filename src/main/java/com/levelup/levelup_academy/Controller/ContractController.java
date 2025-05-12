@@ -26,9 +26,6 @@ public class ContractController {
         return ResponseEntity.ok("Contract added and email sent successfully.");
     }
 
-    @GetMapping("/get-all-contract/{proId}")
-    public ResponseEntity getContractForPro(@PathVariable Integer proId){
-        return ResponseEntity.status(200).body(contractService.getAllContract(proId));
-    }
+
 
 }

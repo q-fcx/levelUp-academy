@@ -2,6 +2,7 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ModeratorDTO;
+import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ModeratorService;
 import com.levelup.levelup_academy.Service.PlayerService;
 import com.levelup.levelup_academy.Service.ProService;
@@ -33,7 +34,7 @@ public class ModeratorController {
 
     // Update moderator
     @PutMapping("/edit")
-    public ResponseEntity<String> updateModerator(@AuthenticationPrincipal Moderator moderator, @RequestBody @Valid ModeratorDTO moderatorDTO) {
+    public ResponseEntity<String> updateModerator(@AuthenticationPrincipal User moderator, @RequestBody @Valid ModeratorDTO moderatorDTO) {
         moderatorService.updateModerator(moderator.getId(), moderatorDTO);
         return ResponseEntity.ok("Moderator updated successfully");
     }
@@ -54,7 +55,7 @@ public class ModeratorController {
 
 
     @GetMapping("/get-all-pro")
-    public ResponseEntity getAllProRequests(@AuthenticationPrincipal Moderator moderator){
+    public ResponseEntity getAllProRequests(@AuthenticationPrincipal User moderator){
         return ResponseEntity.status(200).body(proService.getAllProRequests(moderator.getId()));
     }
 
