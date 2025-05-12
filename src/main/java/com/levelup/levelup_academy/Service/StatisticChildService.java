@@ -1,10 +1,13 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Model.Parent;
 import com.levelup.levelup_academy.Model.StatisticChild;
+import com.levelup.levelup_academy.Model.Trainer;
+import com.levelup.levelup_academy.Model.StatisticPlayer;
 import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Repository.ChildRepository;
 import com.levelup.levelup_academy.Repository.ParentRepository;
@@ -14,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
-import java.awt.print.Pageable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +28,8 @@ public class StatisticChildService {
     private final ChildRepository childRepository;
     private final TrainerRepository trainerRepository;
     private final ParentRepository parentRepository;
+    private final EmailNotificationService emailNotificationService;
+
 
 
     public StatisticChild getMyChildStatisticsByChildId(Integer parentId,Integer childId) {
@@ -46,9 +50,6 @@ public class StatisticChildService {
         StatisticChild stat = statisticChildRepository.findByChild_Id(childId);
         if (stat == null) throw new ApiException("Statistic not found for this child");
         return stat;
-    }
-    public List<StatisticChild> getAllStatisticsByTrainerId(Integer trainerId) {
-        return statisticChildRepository.findByChild_Trainer_Id(trainerId);
     }
 
     public void createStatisticChild(Integer trainerId,Integer childId, StatisticChildDTO dto) {
@@ -95,22 +96,77 @@ public class StatisticChildService {
         }
         statisticChildRepository.delete(stat);
     }
-    public StatisticChild getChildWithTopTrophy() {
-        List<StatisticChild> all = statisticChildRepository.findAll();
 
-        return all.stream()
-                .filter(child -> child.getTrophy() != null)
-                .max(Comparator.comparingInt(child -> getTrophyRank(child.getTrophy())))
-                .orElseThrow(() -> new ApiException("No child has a trophy"));
+    public void addWin(Integer statsId,Integer trainerId){
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statsId);
+        if(statisticChild == null){
+            throw new ApiException("Not found");
+        }
+        statisticChild.setWinGame(statisticChild.getWinGame() + 1);
+        statisticChildRepository.save(statisticChild);
     }
 
-    private int getTrophyRank(String trophy) {
-        return switch (trophy.toUpperCase()) {
-            case "GOLD" -> 3;
-            case "SILVER" -> 2;
-            case "BRONZE" -> 1;
-            default -> 0;
-        };
+    public void addLoss(Integer statId,Integer trainerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statId);
+        if (statisticChild == null) {
+            throw new ApiException("Statistic not found");
+        }
+
+        statisticChild.setLossGame(statisticChild.getLossGame() + 1);
+        statisticChildRepository.save(statisticChild);
+    }
+    public void updateRatingForChild(Integer trainerId,Integer statId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        StatisticChild stat = statisticChildRepository.findById(statId)
+                .orElseThrow(() -> new ApiException("Statistic not found"));
+
+        int win = stat.getWinGame() != null ? stat.getWinGame() : 0;
+        int loss = stat.getLossGame() != null ? stat.getLossGame() : 0;
+
+        double rating = 0.0;
+        if (win + loss > 0) {
+            rating = (win * 1.0) / (win + loss) * 10;
+            rating = Math.min(rating, 10.0);
+        }
+
+        stat.setRate(rating);
+        statisticChildRepository.save(stat);
+    }
+
+
+    public String getTopChildByRating() {
+        List<StatisticChild> all = statisticChildRepository.findAll();
+
+        StatisticChild topChild = all.stream()
+                .filter(child -> child.getRate() != null)
+                .max(Comparator.comparingDouble(StatisticChild::getRate))
+                .orElseThrow(() -> new ApiException("No child has a rating"));
+
+        String trophy = getTrophyFromRating(topChild.getRate());
+        return topChild.getChild().getParent().getUser().getUsername() + ": " + trophy + " (" + topChild.getRate() + ")";
+    }
+
+    public static String getTrophyFromRating(double rating) {
+        if (rating >= 9.0) {
+            return "GOLD";
+        } else if (rating >= 6.0) {
+            return "SILVER";
+        } else if (rating > 0.0) {
+            return "BRONZE";
+        } else {
+            return "NO_TROPHY";
+        }
     }
 
     public List<StatisticChild> getTop5ChildrenByGame(Integer winGame) {
@@ -129,4 +185,22 @@ public class StatisticChildService {
         statisticChild.setWinGame(statisticChild.getWinGame() + 1);
         statisticChildRepository.save(statisticChild);
     }
+    public void notifyParentsIfChildRateIsWeak() {
+        List<StatisticChild> allStats = statisticChildRepository.findAll();
+
+        for (StatisticChild stat : allStats) {
+            if (stat.getWinGame() <= 1 || stat.getLossGame() >= 5) {
+                Child child = stat.getChild();
+                if (child != null && child.getParent() != null && child.getParent().getUser() != null) {
+                    EmailRequest email = new EmailRequest();
+                    email.setRecipient(child.getParent().getUser().getEmail());
+                    email.setSubject( "Low Performance Alert for Your Child");
+                    email.setMessage( "Your child is performing poorly. Please review their training and progress.");
+
+                    emailNotificationService.sendEmail(email);
+                }
+            }
+        }
+    }
+
 }

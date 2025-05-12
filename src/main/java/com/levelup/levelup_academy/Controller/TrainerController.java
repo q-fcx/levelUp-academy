@@ -9,18 +9,13 @@ import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Service.TrainerService;
-import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -75,10 +70,11 @@ public class TrainerController {
         return ResponseEntity.ok("Trophy granted to player if eligible.");
     }
 
-    @PutMapping("/give/{proId}")
-    public ResponseEntity<String> giveTrophyToProfessional(@AuthenticationPrincipal User trainerId, @PathVariable Integer proId) {
-        trainerService.giveTrophyToProfessional(trainerId.getId(), proId);
-        return ResponseEntity.ok("Trophy granted to professional if eligible.");
+    @PutMapping("/{trainerId}/give/{proId}")
+    public ResponseEntity<String> giveTrophyToProfessional(@PathVariable Integer trainerId,
+                                                           @PathVariable Integer proId) {
+        trainerService.giveTrophyToPro(trainerId, proId);
+        return ResponseEntity.ok("Trophy granted to professional .");
     }
 
     @PutMapping("/give/{childId}")

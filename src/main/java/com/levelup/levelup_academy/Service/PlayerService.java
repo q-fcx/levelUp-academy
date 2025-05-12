@@ -26,9 +26,9 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final AuthRepository authRepository;
     private final ModeratorRepository moderatorRepository;
-    private final ProRepository proRepository;
     private final EmailNotificationService emailNotificationService;
     private final UltraMsgService ultraMsgService;
+    private final ProRepository proRepository;
 
     //GET
 
@@ -59,6 +59,7 @@ public class PlayerService {
     }
 
     //Register player
+
     public void registerPlayer(PlayerDTO playerDTO){
         playerDTO.setRole("PLAYER");
         String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
@@ -81,6 +82,8 @@ public class PlayerService {
         EmailRequest emailRequest = new EmailRequest(playerDTO.getEmail(),message, subject);
         emailNotificationService.sendEmail(emailRequest);
 
+        authRepository.save(user);
+        playerRepository.save(player);
 //        String proPhoneNumber = "+447723275615";
 //        String whatsAppMessage = " New player registered: " + playerDTO.getFirstName() + " " + playerDTO.getLastName() + ".";
 //        ultraMsgService.sendWhatsAppMessage(proPhoneNumber, whatsAppMessage);

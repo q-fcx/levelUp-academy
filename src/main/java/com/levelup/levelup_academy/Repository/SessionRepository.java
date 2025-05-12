@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface SessionRepository extends JpaRepository<Session,Integer> {
     Session findSessionById(Integer id);
+
+    Session findSessionsByTrainer_Id(Integer trainerId);
 }

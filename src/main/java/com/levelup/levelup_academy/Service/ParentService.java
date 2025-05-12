@@ -29,9 +29,7 @@ public class ParentService {
 
     public List<ParentDTOOut> getAllParents(Integer moderatorId) {
         Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
-        if(moderator == null){
-            throw new ApiException("Moderator not found");
-        }
+        if(moderator == null) throw new ApiException("Moderator not found");
         List<Parent> parents = parentRepository.findAll();
         List<ParentDTOOut> parentDTOOuts = new ArrayList<>();
 

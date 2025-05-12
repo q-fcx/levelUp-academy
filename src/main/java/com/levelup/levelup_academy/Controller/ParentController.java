@@ -3,6 +3,7 @@ package com.levelup.levelup_academy.Controller;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ParentDTO;
+import com.levelup.levelup_academy.DTO.PlayerDTO;
 import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.StatisticChild;
