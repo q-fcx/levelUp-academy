@@ -66,21 +66,21 @@ public class TrainerController {
     public ResponseEntity<String> giveTrophyToPlayer(@PathVariable Integer trainerId,
                                                      @PathVariable Integer playerId) {
         trainerService.giveTrophyToPlayer(trainerId, playerId);
-        return ResponseEntity.ok("Trophy granted to player if eligible.");
+        return ResponseEntity.ok("Trophy granted to player .");
     }
 
     @PutMapping("/{trainerId}/give/{proId}")
     public ResponseEntity<String> giveTrophyToProfessional(@PathVariable Integer trainerId,
                                                            @PathVariable Integer proId) {
-        trainerService.giveTrophyToProfessional(trainerId, proId);
-        return ResponseEntity.ok("Trophy granted to professional if eligible.");
+        trainerService.giveTrophyToPro(trainerId, proId);
+        return ResponseEntity.ok("Trophy granted to professional .");
     }
 
     @PutMapping("/{trainerId}/give/{childId}")
     public ResponseEntity<String> giveTrophyToChild(@PathVariable Integer trainerId,
                                                     @PathVariable Integer childId) {
         trainerService.giveTrophyToChild(trainerId, childId);
-        return ResponseEntity.ok("Trophy granted to child if eligible.");
+        return ResponseEntity.ok("Trophy granted to child .");
     }
 
 

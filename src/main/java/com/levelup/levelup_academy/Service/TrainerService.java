@@ -30,6 +30,9 @@ public class TrainerService {
     private final ChildRepository childRepository;
     private final PlayerRepository playerRepository;
     private final ProRepository proRepository;
+    private final StatisticPlayerRepository statisticPlayerRepository;
+    private final StatisticChildRepository statisticChildRepository;
+    private final StatisticProRepository statisticProRepository;
 
     //GET
     public List<Trainer> getAllTrainers(){
@@ -113,7 +116,7 @@ public class TrainerService {
             throw new ApiException("Child not found");
         }
 
-        statisticChildService.createStatistic(childId,statisticChildDTO);
+        statisticChildService.createStatistic(trainerId,childId,statisticChildDTO);
     }
 
     //for player
@@ -126,7 +129,7 @@ public class TrainerService {
         if (player == null){
             throw new ApiException("Player not found");
         }
-        statisticPlayerService.createStatistic(playerId,statisticPlayerDTO);
+        statisticPlayerService.createStatistic(trainerId,playerId,statisticPlayerDTO);
 
     }
 
@@ -139,78 +142,73 @@ public class TrainerService {
         if(pro == null){
             throw new ApiException("Pro not found");
         }
-        statisticProService.createStatistic(proId,statisticProDTO);
+        statisticProService.createStatistic(trainerId,proId,statisticProDTO);
     }
 
     public void giveTrophyToPlayer(Integer trainerId, Integer playerId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
-        if (trainer==null){
-            throw new ApiException("Trainer not found");
-        }
+        if (trainer == null) throw new ApiException("Trainer not found");
 
         Player player = playerRepository.findPlayerById(playerId);
-        if (player==null){
-            throw new ApiException("Player not found");
+        if (player == null) throw new ApiException("Player not found");
+
+        StatisticPlayer stat = player.getStatistics();
+        if (stat == null) throw new ApiException("Player statistics not found");
+
+        Double rating = stat.getRate();
+        if (rating == null) {
+            throw new ApiException("Rating not calculated yet.");
         }
 
-        StatisticPlayer stats = player.getStatistics();
-        if (stats == null) {
-            throw new ApiException("Player statistics not found.");
-        }
+        String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
-        if (stats.getWinGame() > 5 || stats.getLossGame() < 3) {
-            stats.setTrophy("GOLD");
-            playerRepository.save(player);
-        } else {
-            throw new ApiException("Player not eligible for trophy.");
-        }
+        stat.setTrophy(trophy);
+        statisticPlayerRepository.save(stat);
     }
 
-    public void giveTrophyToProfessional(Integer trainerId, Integer professionalId) {
+
+
+
+    public void giveTrophyToPro(Integer trainerId, Integer proId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
-        if (trainer==null){
-            throw new ApiException("Trainer not found");
-        }
-        Pro pro = proRepository.findProById(professionalId);
-        if (pro==null){
-            throw new ApiException("Professional not found");
+        if (trainer == null) throw new ApiException("Trainer not found");
+
+        Pro pro = proRepository.findProById(proId);
+        if (pro == null) throw new ApiException("pro not found");
+
+        StatisticPro stat = pro.getStatistics();
+        if (stat == null) throw new ApiException("pro statistics not found");
+
+        Double rating = stat.getRate();
+        if (rating == null) {
+            throw new ApiException("Rating not calculated yet.");
         }
 
-        StatisticPro stats = pro.getStatistics();
-        if (stats == null) {
-            throw new ApiException("Professional statistics not found.");
-        }
+        String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
-        if (stats.getWinGame() > 10 || stats.getLossGame() < 2) {
-            stats.setTrophy("GOLD");
-            proRepository.save(pro);
-        } else {
-            throw new ApiException("Professional not eligible for trophy.");
-        }
+        stat.setTrophy(trophy);
+        statisticProRepository.save(stat);
     }
 
     public void giveTrophyToChild(Integer trainerId, Integer childId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
-        if (trainer==null){
-            throw new ApiException("Trainer not found");
-        }
+        if (trainer == null) throw new ApiException("Trainer not found");
 
         Child child = childRepository.findChildById(childId);
-        if (child==null){
-            throw new ApiException("Child not found");
+        if (child == null) throw new ApiException("Child not found");
+
+        StatisticChild stat = child.getStatistics();
+        if (stat == null) throw new ApiException("Child statistics not found");
+
+        Double rating = stat.getRate();
+        if (rating == null) {
+            throw new ApiException("Rating not calculated yet.");
         }
 
-        StatisticChild stats = child.getStatistics();
-        if (stats == null) {
-            throw new ApiException("Child statistics not found.");
-        }
+        String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
-        if (stats.getWinGame() > 3 || stats.getLossGame() < 5) {
-            stats.setTrophy("GOLD");
-            childRepository.save(child);
-        } else {
-            throw new ApiException("Child not eligible for trophy.");
-        }
+        stat.setTrophy(trophy);
+        statisticChildRepository.save(stat);
     }
 
 

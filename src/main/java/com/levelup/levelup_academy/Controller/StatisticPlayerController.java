@@ -16,15 +16,15 @@ import java.util.List;
 public class StatisticPlayerController {
     private final StatisticPlayerService statisticPlayerService;
 
-    @PostMapping("/create/{playerId}")
-    public ResponseEntity createStatistic(@PathVariable Integer playerId, @RequestBody @Valid StatisticPlayerDTO dto) {
-        statisticPlayerService.createStatistic(playerId, dto);
+    @PostMapping("/create/{playerId}/{trainerId}")
+    public ResponseEntity createStatistic(@PathVariable Integer playerId, @PathVariable Integer trainerId,@RequestBody @Valid StatisticPlayerDTO dto) {
+        statisticPlayerService.createStatistic(trainerId,playerId, dto);
         return ResponseEntity.status(201).body("Player statistic created");
     }
 
-    @PutMapping("/update/{statId}")
-    public ResponseEntity updateStatistic(@PathVariable Integer statId, @RequestBody @Valid StatisticPlayerDTO dto) {
-        statisticPlayerService.updateStatistic(statId, dto);
+    @PutMapping("/update/{statId}/{trainerId}")
+    public ResponseEntity updateStatistic(@PathVariable Integer statId,@PathVariable Integer trainerId, @RequestBody @Valid StatisticPlayerDTO dto) {
+        statisticPlayerService.updateStatistic(statId,trainerId,dto);
         return ResponseEntity.ok("Player statistic updated");
     }
 
@@ -36,35 +36,38 @@ public class StatisticPlayerController {
 
 
     @DeleteMapping("/delete/{statId}")
-    public ResponseEntity deleteStatistic(@PathVariable Integer statId) {
-        statisticPlayerService.deleteStatistic(statId);
+    public ResponseEntity deleteStatistic(@PathVariable Integer trainerId,@PathVariable Integer statId) {
+        statisticPlayerService.deleteStatistic(trainerId,statId);
         return ResponseEntity.ok("Player statistic deleted");
     }
-    @GetMapping("/top-trophy")
-    public ResponseEntity<StatisticPlayer> getTopTrophyPlayer() {
-        StatisticPlayer top = statisticPlayerService.getPlayerWithTopTrophy();
-        return ResponseEntity.ok(top);
+    @GetMapping("/top-player-by-rating")
+    public ResponseEntity<String> getTopPlayerByRating() {
+        return ResponseEntity.ok(statisticPlayerService.getTopPlayerByRating());
     }
 
+    @GetMapping("/player/{playerId}/{trainerId}")
+    public ResponseEntity<StatisticPlayer> getPlayerStatistics(@PathVariable Integer trainerId,@PathVariable Integer playerId) {
+        return ResponseEntity.ok(statisticPlayerService.getStatisticsByPlayerId(trainerId,playerId));
+    }
     @GetMapping("/top5")
     public ResponseEntity<List<StatisticPlayer>> getTop5ByWinGame(@RequestParam Integer winGame) {
         List<StatisticPlayer> top5 = statisticPlayerService.getTop5PlayersByGame(winGame);
         return ResponseEntity.ok(top5);
     }
-    @PutMapping("/add-win/{statId}")
-    public ResponseEntity<String> addWinToPlayer(@PathVariable Integer statId) {
-        statisticPlayerService.addWin(statId);
+    @PutMapping("/add-win/{statId}/{trainerId}")
+    public ResponseEntity<String> addWinToPlayer(@PathVariable Integer statId,@PathVariable Integer trainerId) {
+        statisticPlayerService.addWin(statId,trainerId);
         return ResponseEntity.ok("Win added successfully");
     }
-    @PutMapping("/add-loss/{statId}")
-    public ResponseEntity<String> addLossToPlayer(@PathVariable Integer statId) {
-        statisticPlayerService.addLoss(statId);
+    @PutMapping("/add-loss/{statId}/{trainerId}")
+    public ResponseEntity<String> addLossToPlayer(@PathVariable Integer statId,@PathVariable Integer trainerId) {
+        statisticPlayerService.addLoss(statId,trainerId);
         return ResponseEntity.ok("Loss added successfully");
 
     }
-    @PutMapping("/update-rating/{statId}")
-    public ResponseEntity<String> updatePlayerRating(@PathVariable Integer statId) {
-        statisticPlayerService.updateRatingForPlayer(statId);
+    @PutMapping("/update-rating/{trainerId}/{statId}")
+    public ResponseEntity<String> updatePlayerRating(@PathVariable Integer trainerId,@PathVariable Integer statId) {
+        statisticPlayerService.updateRatingForPlayer(trainerId,statId);
         return ResponseEntity.ok("Player rating updated successfully.");
     }
 

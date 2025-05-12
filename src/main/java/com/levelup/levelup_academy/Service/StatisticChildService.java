@@ -5,8 +5,11 @@ import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Model.StatisticChild;
+import com.levelup.levelup_academy.Model.StatisticPlayer;
+import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Repository.ChildRepository;
 import com.levelup.levelup_academy.Repository.StatisticChildRepository;
+import com.levelup.levelup_academy.Repository.TrainerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ public class StatisticChildService {
     private final StatisticChildRepository statisticChildRepository;
     private final ChildRepository childRepository;
     private final EmailNotificationService emailNotificationService;
+    private final TrainerRepository trainerRepository;
 
 
     public StatisticChild getStatisticsByChildId(Integer childId) {
@@ -29,7 +33,11 @@ public class StatisticChildService {
         return stat;
     }
 
-    public void createStatistic(Integer childId, StatisticChildDTO dto) {
+    public void createStatistic(Integer trainerId,Integer childId, StatisticChildDTO dto) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new ApiException("Child not found"));
 
@@ -39,7 +47,11 @@ public class StatisticChildService {
         statisticChildRepository.save(stat);
     }
 
-    public void updateStatistic(Integer statId, StatisticChildDTO dto) {
+    public void updateStatistic(Integer trainerId,Integer statId, StatisticChildDTO dto) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticChild stat = statisticChildRepository.findStatisticChildById(statId);
         if (stat==null){
             throw new ApiException("Statistic not found");
@@ -54,7 +66,11 @@ public class StatisticChildService {
 
         statisticChildRepository.save(stat);
     }
-    public void deleteStatistic(Integer statId) {
+    public void deleteStatistic(Integer trainerId,Integer statId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticChild stat = statisticChildRepository.findStatisticChildById(statId);
         if (stat==null){
             throw new ApiException("Statistic not found");
@@ -62,7 +78,11 @@ public class StatisticChildService {
         statisticChildRepository.delete(stat);
     }
 
-    public void addWin(Integer statsId){
+    public void addWin(Integer statsId,Integer trainerId){
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statsId);
         if(statisticChild == null){
             throw new ApiException("Not found");
@@ -71,7 +91,11 @@ public class StatisticChildService {
         statisticChildRepository.save(statisticChild);
     }
 
-    public void addLoss(Integer statId) {
+    public void addLoss(Integer statId,Integer trainerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statId);
         if (statisticChild == null) {
             throw new ApiException("Statistic not found");
@@ -80,40 +104,50 @@ public class StatisticChildService {
         statisticChild.setLossGame(statisticChild.getLossGame() + 1);
         statisticChildRepository.save(statisticChild);
     }
-    public void updateRatingForChild(Integer statId) {
+    public void updateRatingForChild(Integer trainerId,Integer statId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         StatisticChild stat = statisticChildRepository.findById(statId)
                 .orElseThrow(() -> new ApiException("Statistic not found"));
 
         int win = stat.getWinGame() != null ? stat.getWinGame() : 0;
         int loss = stat.getLossGame() != null ? stat.getLossGame() : 0;
 
-        double rating;
-        if (win + loss == 0) {
-            rating = 0.0; 
-        } else {
+        double rating = 0.0;
+        if (win + loss > 0) {
             rating = (win * 1.0) / (win + loss) * 10;
+            rating = Math.min(rating, 10.0);
         }
 
         stat.setRate(rating);
         statisticChildRepository.save(stat);
     }
 
-    public StatisticChild getChildWithTopTrophy() {
+
+    public String getTopChildByRating() {
         List<StatisticChild> all = statisticChildRepository.findAll();
 
-        return all.stream()
-                .filter(child -> child.getTrophy() != null)
-                .max(Comparator.comparingInt(child -> getTrophyRank(child.getTrophy())))
-                .orElseThrow(() -> new ApiException("No child has a trophy"));
+        StatisticChild topChild = all.stream()
+                .filter(child -> child.getRate() != null)
+                .max(Comparator.comparingDouble(StatisticChild::getRate))
+                .orElseThrow(() -> new ApiException("No child has a rating"));
+
+        String trophy = getTrophyFromRating(topChild.getRate());
+        return topChild.getChild().getParent().getUser().getUsername() + ": " + trophy + " (" + topChild.getRate() + ")";
     }
 
-    private int getTrophyRank(String trophy) {
-        return switch (trophy.toUpperCase()) {
-            case "GOLD" -> 3;
-            case "SILVER" -> 2;
-            case "BRONZE" -> 1;
-            default -> 0;
-        };
+    public static String getTrophyFromRating(double rating) {
+        if (rating >= 9.0) {
+            return "GOLD";
+        } else if (rating >= 6.0) {
+            return "SILVER";
+        } else if (rating > 0.0) {
+            return "BRONZE";
+        } else {
+            return "NO_TROPHY";
+        }
     }
 
     public List<StatisticChild> getTop5ChildrenByGame(Integer winGame) {
