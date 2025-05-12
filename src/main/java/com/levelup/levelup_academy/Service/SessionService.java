@@ -19,7 +19,6 @@ public class SessionService {
     private final ModeratorRepository moderatorRepository;
     private final GameRepository gameRepository;
     private final BookingRepository bookingRepository;
-    private final BookingRepository bookingRepository;
     private final EmailNotificationService emailNotificationService;
 
     //GET

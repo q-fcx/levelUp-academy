@@ -2,6 +2,7 @@ package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
+import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
 import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.Pro;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service

@@ -33,7 +33,7 @@ public class ProService {
     private final ModeratorRepository moderatorRepository;
     private final SessionRepository sessionRepository;
     private final ContractRepository contractRepository;
-    private final EmailNotificationService emailNotificationService;
+
 
     //GET
     public List<ProDTOOut> getAllPro(){

@@ -5,6 +5,7 @@ import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
 import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.DTO.TrainerDTO;
+import com.levelup.levelup_academy.DTOOut.TrainerDTOOut;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,6 @@ public class TrainerService {
     private final ChildRepository childRepository;
     private final PlayerRepository playerRepository;
     private final ProRepository proRepository;
-    private final StatisticProRepository statisticProRepository;
     private final EmailNotificationService emailNotificationService;
 
     //GET

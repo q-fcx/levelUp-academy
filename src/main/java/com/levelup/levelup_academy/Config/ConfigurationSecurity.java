@@ -43,7 +43,7 @@ public class ConfigurationSecurity {
                 .requestMatchers("/api/v1/game/**","/api/v1/contract/**", "/api/v1/moderator/edit", "/api/v1/moderator/delete", "/api/v1/moderator/get-all-pro",
                                     "/api/v1/moderator/get-all-pro", "/api/v1/moderator/review-contract","/api/v1/moderator/send-exam").hasAuthority("MODERATOR")
 
-                .requestMatchers("/api/v1/player/register").permitAll()
+                .requestMatchers("/api/v1/player/register", "/api/v1/trainer/register").permitAll()
                 .requestMatchers("/api/v1/player/edit","/api/v1/player/delete").hasAuthority("PLAYER")
                 .requestMatchers("/api/v1/pro/register").permitAll()
                 .requestMatchers("/api/v1/pro/edit","/api/v1/pro/delete").hasAuthority("PRO")

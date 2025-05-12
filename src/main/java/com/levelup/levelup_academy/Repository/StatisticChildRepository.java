@@ -15,5 +15,5 @@ public interface StatisticChildRepository extends JpaRepository<StatisticChild,I
     List<StatisticChild> findAll();
     List<StatisticChild> findStatisticChildByWinGame( Integer winGame);
     StatisticChild findStatisticChildByChild(Child child);
-    StatisticChild findStatisticChildById(Integer id);
+
 }
