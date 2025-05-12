@@ -58,7 +58,7 @@ public class PlayerService {
         playerDTO.setRole("PLAYER");
         String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
         User user = new User(null, playerDTO.getUsername(), hashPassword, playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
-        Player player = new Player(null,user,null,null);
+        Player player = new Player(null,user,null);
         authRepository.save(user);
         playerRepository.save(player);
 

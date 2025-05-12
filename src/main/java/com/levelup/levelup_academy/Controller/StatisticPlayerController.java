@@ -41,10 +41,10 @@ public class StatisticPlayerController {
         return ResponseEntity.ok(statisticPlayerService.getStatisticsByPlayerId(trainerId.getId(),playerId));
     }
 
-    @GetMapping("/player/trainer")
-    public ResponseEntity<List<StatisticPlayer>> getPlayerStatsByTrainer(@AuthenticationPrincipal User trainerId) {
-        return ResponseEntity.ok(statisticPlayerService.getAllStatisticsByTrainerId(trainerId.getId()));
-    }
+//    @GetMapping("/player/trainer")
+//    public ResponseEntity<List<StatisticPlayer>> getPlayerStatsByTrainer(@AuthenticationPrincipal User trainerId) {
+//        return ResponseEntity.ok(statisticPlayerService.getAllStatisticsByTrainerId(trainerId.getId()));
+//    }
 
 
     @DeleteMapping("/delete/{statId}")

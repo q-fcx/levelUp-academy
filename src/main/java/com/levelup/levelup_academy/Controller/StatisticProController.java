@@ -40,10 +40,10 @@ public class StatisticProController {
         return ResponseEntity.ok(statisticProService.getStatisticsByProfessionalId(trainerId.getId(), professionalId));
     }
 
-    @GetMapping("/professional/trainer/{trainerId}")
-    public ResponseEntity<List<StatisticPro>> getProfessionalStatsByTrainer(@AuthenticationPrincipal User trainerId) {
-        return ResponseEntity.ok(statisticProService.getAllStatisticsByTrainerId(trainerId.getId()));
-    }
+//    @GetMapping("/professional/trainer/{trainerId}")
+//    public ResponseEntity<List<StatisticPro>> getProfessionalStatsByTrainer(@AuthenticationPrincipal User trainerId) {
+//        return ResponseEntity.ok(statisticProService.getAllStatisticsByTrainerId(trainerId.getId()));
+//    }
 
 
     @DeleteMapping("/delete/{statId}")

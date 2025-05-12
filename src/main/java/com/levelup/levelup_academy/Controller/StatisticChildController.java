@@ -41,10 +41,10 @@ public class StatisticChildController {
         return ResponseEntity.ok(statisticChildService.getStatisticsByChildId(trainerId.getId(), childId));
     }
 
-    @GetMapping("/by-trainer")
-    public ResponseEntity<List<StatisticChild>> getAllStatsByTrainer(@AuthenticationPrincipal User trainerId) {
-        return ResponseEntity.ok(statisticChildService.getAllStatisticsByTrainerId(trainerId.getId()));
-    }
+//    @GetMapping("/by-trainer")
+//    public ResponseEntity<List<StatisticChild>> getAllStatsByTrainer(@AuthenticationPrincipal User trainerId) {
+//        return ResponseEntity.ok(statisticChildService.getAllStatisticsByTrainerId(trainerId.getId()));
+//    }
 
     @DeleteMapping("/delete/{statId}")
     public ResponseEntity deleteStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer statId) {

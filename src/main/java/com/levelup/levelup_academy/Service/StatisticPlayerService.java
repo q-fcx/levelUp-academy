@@ -24,7 +24,7 @@ public class StatisticPlayerService {
     private final PlayerRepository playerRepository;
     private final TrainerRepository trainerRepository;
     private final EmailNotificationService emailNotificationService;
-    private final TrainerRepository trainerRepository;
+
 
     public StatisticPlayer getMyStatisticsByPlayerId(Integer playerId) {
         StatisticPlayer stat = repository.findByPlayer_Id(playerId);
@@ -40,10 +40,6 @@ public class StatisticPlayerService {
         StatisticPlayer stat = repository.findByPlayer_Id(playerId);
         if (stat == null) throw new ApiException("Statistic not found for this player");
         return stat;
-    }
-
-    public List<StatisticPlayer> getAllStatisticsByTrainerId(Integer trainerId) {
-        return repository.findByPlayer_Trainer_Id(trainerId);
     }
 
 
