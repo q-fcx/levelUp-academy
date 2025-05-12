@@ -9,10 +9,12 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProDTO {
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3,max = 200,message = "Username length must be between 3 and 30 characters")

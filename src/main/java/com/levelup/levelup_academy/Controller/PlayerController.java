@@ -2,6 +2,8 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
+import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
+import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.PlayerService;
 import com.levelup.levelup_academy.Service.StatisticPlayerService;
@@ -25,10 +27,11 @@ public class PlayerController {
         return ResponseEntity.status(200).body(playerService.getAllPlayers());
     }
 
-    //get player by moderator
     @GetMapping("/get-player/{playerId}")
-    public ResponseEntity getPlayer(@AuthenticationPrincipal User moderatorId,@PathVariable Integer playerId){
-        return ResponseEntity.status(200).body(playerService.getPlayer(moderatorId.getId(), playerId));
+    public ResponseEntity getPlayer(@AuthenticationPrincipal User moderatorId, @PathVariable Integer playerId) {
+        Player player = playerService.getPlayer(moderatorId.getId(), playerId);
+        PlayerDTOOut playerDTOOut = new PlayerDTOOut(player.getUser().getUsername(),player.getUser().getFirstName(),player.getUser().getLastName(),player.getUser().getEmail());
+        return ResponseEntity.status(200).body(playerDTOOut);
     }
 
     //Register
@@ -45,8 +48,8 @@ public class PlayerController {
 
     // Delete player by ID
     @DeleteMapping("/delete")
-    public ResponseEntity<String> delete(@AuthenticationPrincipal User playerId) {
-        playerService.deletePlayer(playerId.getId());
+    public ResponseEntity<String> delete(@RequestParam Integer playerId) {
+        playerService.deletePlayer(playerId);
         return ResponseEntity.ok("Player deleted successfully");
     }
 }
