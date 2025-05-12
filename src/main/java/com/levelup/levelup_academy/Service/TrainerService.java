@@ -1,10 +1,8 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
-import com.levelup.levelup_academy.DTO.StatisticChildDTO;
-import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
-import com.levelup.levelup_academy.DTO.StatisticProDTO;
-import com.levelup.levelup_academy.DTO.TrainerDTO;
+import com.levelup.levelup_academy.DTO.*;
+import com.levelup.levelup_academy.DTOOut.TrainerDTOOut;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;

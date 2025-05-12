@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class ContractController {
     private final ContractService contractService;
 
-    @GetMapping("/get")
-    public ResponseEntity gatAllContract(){
-        return ResponseEntity.status(200).body(contractService.getAllContract());
+    @GetMapping("/get/{moderatorId}")
+    public ResponseEntity gatAllContract(@PathVariable Integer moderatorId){
+        return ResponseEntity.status(200).body(contractService.getAllContract(moderatorId));
     }
 
     @PostMapping("/add/{moderatorId}")

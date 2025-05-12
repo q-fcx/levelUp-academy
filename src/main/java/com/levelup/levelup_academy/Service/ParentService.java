@@ -3,6 +3,8 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ParentDTO;
+import com.levelup.levelup_academy.DTOOut.ChildDTOOut;
+import com.levelup.levelup_academy.DTOOut.ParentDTOOut;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,14 +27,18 @@ public class ParentService {
     private final ModeratorRepository moderatorRepository;
     private final EmailNotificationService emailNotificationService;
 
-    public List<ParentDTOOut> getAllParents() {
+    public List<ParentDTOOut> getAllParents(Integer moderatorId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null){
+            throw new ApiException("Moderator not found");
+        }
         List<Parent> parents = parentRepository.findAll();
         List<ParentDTOOut> parentDTOOuts = new ArrayList<>();
 
         for (Parent parent : parents){
             User parentUser = parent.getUser();
             List<ChildDTOOut> childDTOOuts = new ArrayList<>();
-            for (Child child : parent.getChild()){
+            for (Child child : parent.getChildren()){
                 User childUser = child.getParent().getUser();
                 childDTOOuts.add(new ChildDTOOut(childUser.getUsername(), childUser.getFirstName(), childUser.getLastName(),childUser.getEmail()));
 

@@ -105,9 +105,9 @@ public class ProController {
         return ResponseEntity.status(200).body(new ApiResponse("Expired Pro accounts have been processed."));
     }
 
-    @GetMapping("/{proId}/cv")
-    public ResponseEntity<byte[]> downloadProCv(@PathVariable Integer proId) {
-        byte[] fileContent = proService.downloadProCv(proId);
+    @GetMapping("/{moderatorId}/{proId}/cv")
+    public ResponseEntity<byte[]> downloadProCv(@PathVariable Integer proId,@PathVariable Integer moderatorId) {
+        byte[] fileContent = proService.downloadProPDF(moderatorId,proId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);  // Set content type as PDF

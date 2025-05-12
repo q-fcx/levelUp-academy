@@ -33,10 +33,14 @@ public class ProService {
     private final ModeratorRepository moderatorRepository;
     private final SessionRepository sessionRepository;
     private final ContractRepository contractRepository;
-    private final EmailNotificationService emailNotificationService;
+
 
     //GET
-    public List<ProDTOOut> getAllPro(){
+    public List<ProDTOOut> getAllPro(Integer moderatorId){
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator==null){
+            throw new ApiException("Moderator not found");
+        }
         List<Pro> pros = proRepository.findAll();
 
         List<ProDTOOut> dtoList = new ArrayList<>();
