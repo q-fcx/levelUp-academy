@@ -36,9 +36,8 @@ public class TrainerController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<Trainer>> getAllTrainers() {
-        List<Trainer> trainers = trainerService.getAllTrainers();
-        return ResponseEntity.ok(trainers);
+    public ResponseEntity getAllTrainers() {
+       return ResponseEntity.status(200).body(trainerService.getAllTrainers());
     }
     @PutMapping("/{id}")
     public ResponseEntity<String> updateTrainer(@PathVariable Integer id,

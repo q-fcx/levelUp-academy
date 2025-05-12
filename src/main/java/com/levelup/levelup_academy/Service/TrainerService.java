@@ -2,6 +2,7 @@ package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.*;
+import com.levelup.levelup_academy.DTOOut.TrainerDTOOut;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,8 +32,15 @@ public class TrainerService {
     private final EmailNotificationService emailNotificationService;
 
     //GET
-    public List<Trainer> getAllTrainers(){
-        return trainerRepository.findAll();
+    public List<TrainerDTOOut> getAllTrainers() {
+        List<Trainer> trainers = trainerRepository.findAll();
+
+        List<TrainerDTOOut> dtoList = new ArrayList<>();
+        for (Trainer trainer : trainers) {
+            User user = trainer.getUser();
+            dtoList.add(new TrainerDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+        }
+        return dtoList;
     }
     //Register Trainer
     public void registerTrainer(TrainerDTO trainerDTO, MultipartFile file){

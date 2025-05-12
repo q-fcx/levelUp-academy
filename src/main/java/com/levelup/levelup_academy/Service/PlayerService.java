@@ -3,6 +3,7 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
+import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
 import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
@@ -10,6 +11,7 @@ import com.levelup.levelup_academy.Repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,11 +20,19 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final AuthRepository authRepository;
     private final EmailNotificationService emailNotificationService;
+    private final UltraMsgService ultraMsgService;
 
     //GET
 
-    public List<Player> getAllPlayers(){
-        return playerRepository.findAll();
+    public List<PlayerDTOOut> getAllPlayers(){
+        List<Player> players = playerRepository.findAll();
+
+        List<PlayerDTOOut> dtoList = new ArrayList<>();
+        for (Player player : players) {
+            User user = player.getUser();
+            dtoList.add(new PlayerDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+        }
+        return dtoList;
     }
 
     //Register player
@@ -47,6 +57,10 @@ public class PlayerService {
 
         EmailRequest emailRequest = new EmailRequest(playerDTO.getEmail(),message, subject);
         emailNotificationService.sendEmail(emailRequest);
+
+//        String proPhoneNumber = "+447723275615";
+//        String whatsAppMessage = " New player registered: " + playerDTO.getFirstName() + " " + playerDTO.getLastName() + ".";
+//        ultraMsgService.sendWhatsAppMessage(proPhoneNumber, whatsAppMessage);
     }
     public void updatePlayer(Integer id, PlayerDTO playerDTO) {
         Player player = playerRepository.findById(id)

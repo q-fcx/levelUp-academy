@@ -3,6 +3,7 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ProDTO;
+import com.levelup.levelup_academy.DTOOut.ProDTOOut;
 import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,8 +28,15 @@ public class ProService {
     private final EmailNotificationService emailNotificationService;
 
     //GET
-    public List<Pro> getAllPro(){
-        return proRepository.findAll();
+    public List<ProDTOOut> getAllPro(){
+        List<Pro> pros = proRepository.findAll();
+
+        List<ProDTOOut> dtoList = new ArrayList<>();
+        for (Pro pro : pros) {
+            User user = pro.getUser();
+            dtoList.add(new ProDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+        }
+        return dtoList;
     }
 
     //Register pro player

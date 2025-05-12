@@ -3,6 +3,9 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ParentDTO;
+import com.levelup.levelup_academy.DTOOut.ChildDTOOut;
+import com.levelup.levelup_academy.DTOOut.ParentDTOOut;
+import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Model.Parent;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
@@ -10,6 +13,7 @@ import com.levelup.levelup_academy.Repository.ParentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,8 +24,21 @@ public class ParentService {
     private final AuthRepository authRepository;
     private final EmailNotificationService emailNotificationService;
 
-    public List<Parent> getAllParents() {
-        return parentRepository.findAll();
+    public List<ParentDTOOut> getAllParents() {
+        List<Parent> parents = parentRepository.findAll();
+        List<ParentDTOOut> parentDTOOuts = new ArrayList<>();
+
+        for (Parent parent : parents){
+            User parentUser = parent.getUser();
+            List<ChildDTOOut> childDTOOuts = new ArrayList<>();
+            for (Child child : parent.getChild()){
+                User childUser = child.getParent().getUser();
+                childDTOOuts.add(new ChildDTOOut(childUser.getUsername(), childUser.getFirstName(), childUser.getLastName(),childUser.getEmail()));
+
+            }
+            parentDTOOuts.add(new ParentDTOOut(parentUser.getUsername(),parentUser.getFirstName(),parentUser.getLastName(),parentUser.getEmail(),childDTOOuts));
+        }
+        return parentDTOOuts;
     }
 
     public void registerParent(ParentDTO parentDTO) {
