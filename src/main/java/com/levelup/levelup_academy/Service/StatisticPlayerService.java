@@ -26,12 +26,6 @@ public class StatisticPlayerService {
     private final EmailNotificationService emailNotificationService;
 
 
-    public StatisticPlayer getMyStatisticsByPlayerId(Integer playerId) {
-        StatisticPlayer stat = repository.findByPlayer_Id(playerId);
-        if (stat == null) throw new ApiException("Statistic not found for this player");
-        return stat;
-    }
-
     public StatisticPlayer getStatisticsByPlayerId(Integer trainerId,Integer playerId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
         if (trainer == null){
@@ -88,7 +82,7 @@ public class StatisticPlayerService {
         repository.delete(stat);
     }
 
-    public void addWin(Integer statsId,Integer trainerId) {
+    public void addWin(Integer trainerId,Integer statsId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
         if (trainer == null){
             throw new ApiException("Trainer is not found");
@@ -101,7 +95,7 @@ public class StatisticPlayerService {
         repository.save(statisticPlayer);
     }
 
-    public void addLoss(Integer statId,Integer trainerId) {
+    public void addLoss(Integer trainerId,Integer statId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
         if (trainer == null){
             throw new ApiException("Trainer is not found");
@@ -136,7 +130,11 @@ public class StatisticPlayerService {
     }
 
 
-    public String getTopPlayerByRating() {
+    public String getTopPlayerByRating(Integer trainerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         List<StatisticPlayer> all = repository.findAll();
 
         StatisticPlayer topPlayer = all.stream()
@@ -160,15 +158,23 @@ public class StatisticPlayerService {
         }
     }
 
-    public List<StatisticPlayer> getTop5PlayersByGame(Integer winGame) {
-        List<StatisticPlayer> all = repository.findStatisticPlayerByWinGame(winGame);
-        return all.stream()
-                .sorted(Comparator.comparing(StatisticPlayer::getRate).reversed())
-                .limit(5)
-                .collect(Collectors.toList());
-    }
+//    public List<StatisticPlayer> getTop5PlayersByGame(Integer trainerId,Integer winGame) {
+//        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+//        if (trainer == null){
+//            throw new ApiException("Trainer is not found");
+//        }
+//        List<StatisticPlayer> all = repository.findStatisticPlayerByWinGame(winGame);
+//        return all.stream()
+//                .sorted(Comparator.comparing(StatisticPlayer::getRate).reversed())
+//                .limit(5)
+//                .collect(Collectors.toList());
+//    }
 
-    public void notifyPlayerIfRateIsWeak() {
+    public void notifyPlayerIfRateIsWeak(Integer trainerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
         List<StatisticPlayer> allStats = repository.findAll();
 
         for (StatisticPlayer stat : allStats) {

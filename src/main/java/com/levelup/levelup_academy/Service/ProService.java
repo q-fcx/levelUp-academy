@@ -33,6 +33,7 @@ public class ProService {
     private final ModeratorRepository moderatorRepository;
     private final SessionRepository sessionRepository;
     private final ContractRepository contractRepository;
+    private final StatisticProRepository statisticProRepository;
 
 
     //GET
@@ -305,6 +306,12 @@ public class ProService {
         emailRequest.setMessage(body);
 
         emailNotificationService.sendEmail(emailRequest);
+    }
+
+    public StatisticPro getMyStatisticsByProfessionalId(Integer professionalId) {
+        StatisticPro stat = statisticProRepository.findByPro_Id(professionalId);
+        if (stat == null) throw new ApiException("Statistic not found for this professional");
+        return stat;
     }
 
 }

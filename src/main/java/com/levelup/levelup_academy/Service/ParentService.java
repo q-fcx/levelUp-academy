@@ -163,4 +163,14 @@ public class ParentService {
 
         return gameRepository.findGamesByAgeIsLessThanEqual(child.getAge());
     }
+
+    public StatisticChild getMyChildStatisticsByChildId(Integer parentId,Integer childId) {
+        Parent parent = parentRepository.findParentById(parentId);
+        if (parent == null){
+            throw new ApiException("Parent not found");
+        }
+        StatisticChild stat = statisticChildRepository.findByChild_Id(childId);
+        if (stat == null) throw new ApiException("Statistic not found for this child");
+        return stat;
+    }
 }

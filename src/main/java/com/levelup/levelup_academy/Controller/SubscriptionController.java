@@ -15,11 +15,6 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-    @GetMapping("/get-all")
-    public ResponseEntity getAllSubscriptions(@AuthenticationPrincipal User moderatorId) {
-        return ResponseEntity.status(200).body(subscriptionService.getAllSubscriptions(moderatorId.getId()));
-    }
-
     @PostMapping("/basic")
     public ResponseEntity addBasicSubscription(@AuthenticationPrincipal User userId) {
         subscriptionService.basicSubscription(userId.getId());

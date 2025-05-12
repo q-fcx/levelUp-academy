@@ -32,15 +32,7 @@ public class StatisticChildService {
 
 
 
-    public StatisticChild getMyChildStatisticsByChildId(Integer parentId,Integer childId) {
-        Parent parent = parentRepository.findParentById(parentId);
-        if (parent == null){
-            throw new ApiException("Parent not found");
-        }
-        StatisticChild stat = statisticChildRepository.findByChild_Id(childId);
-        if (stat == null) throw new ApiException("Statistic not found for this child");
-        return stat;
-    }
+
 
     public StatisticChild getStatisticsByChildId(Integer trainerId,Integer childId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
@@ -97,7 +89,7 @@ public class StatisticChildService {
         statisticChildRepository.delete(stat);
     }
 
-    public void addWin(Integer statsId,Integer trainerId){
+    public void addWin(Integer trainerId, Integer statsId){
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
         if (trainer == null){
             throw new ApiException("Trainer is not found");
@@ -110,7 +102,7 @@ public class StatisticChildService {
         statisticChildRepository.save(statisticChild);
     }
 
-    public void addLoss(Integer statId,Integer trainerId) {
+    public void addLoss(Integer trainerId, Integer statId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
         if (trainer == null){
             throw new ApiException("Trainer is not found");
@@ -145,7 +137,9 @@ public class StatisticChildService {
     }
 
 
-    public String getTopChildByRating() {
+    public String getTopChildByRating(Integer trainerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null) throw new ApiException("Trainer not found");
         List<StatisticChild> all = statisticChildRepository.findAll();
 
         StatisticChild topChild = all.stream()
@@ -169,23 +163,32 @@ public class StatisticChildService {
         }
     }
 
-    public List<StatisticChild> getTop5ChildrenByGame(Integer winGame) {
-        List<StatisticChild> all = statisticChildRepository.findStatisticChildByWinGame(winGame);
-        return all.stream()
-                .sorted(Comparator.comparing(StatisticChild::getRate).reversed())
-                .limit(5)
-                .collect(Collectors.toList());
-    }
+//    public List<StatisticChild> getTop5ChildrenByGame(Integer trainerId,Integer winGame) {
+//        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+//        if (trainer == null){
+//            throw new ApiException("Trainer is not found");
+//        }
+//        List<StatisticChild> all = statisticChildRepository.findStatisticChildByWinGame(winGame);
+//        return all.stream()
+//                .sorted(Comparator.comparing(StatisticChild::getRate).reversed())
+//                .limit(5)
+//                .collect(Collectors.toList());
+//    }
 
-    public void addWin(Integer statsId){
-        StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statsId);
-        if(statisticChild == null){
-            throw new ApiException("Not found");
+//    public void addWin(Integer trainerId,Integer statsId){
+//
+//        StatisticChild statisticChild = statisticChildRepository.findStatisticChildById(statsId);
+//        if(statisticChild == null){
+//            throw new ApiException("Not found");
+//        }
+//        statisticChild.setWinGame(statisticChild.getWinGame() + 1);
+//        statisticChildRepository.save(statisticChild);
+//    }
+    public void notifyParentsIfChildRateIsWeak(Integer trainerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
         }
-        statisticChild.setWinGame(statisticChild.getWinGame() + 1);
-        statisticChildRepository.save(statisticChild);
-    }
-    public void notifyParentsIfChildRateIsWeak() {
         List<StatisticChild> allStats = statisticChildRepository.findAll();
 
         for (StatisticChild stat : allStats) {

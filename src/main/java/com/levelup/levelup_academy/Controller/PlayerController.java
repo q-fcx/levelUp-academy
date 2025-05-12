@@ -2,6 +2,7 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
+import com.levelup.levelup_academy.Model.StatisticPlayer;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.PlayerService;
 import com.levelup.levelup_academy.Service.StatisticPlayerService;
@@ -21,8 +22,8 @@ public class PlayerController {
 
      //GET
     @GetMapping("/get")
-    public ResponseEntity getAllPlayers(@AuthenticationPrincipal User moderatorId){
-        return ResponseEntity.status(200).body(playerService.getAllPlayers(moderatorId.getId()));
+    public ResponseEntity getAllPlayers(@AuthenticationPrincipal User moderator){
+        return ResponseEntity.status(200).body(playerService.getAllPlayers(moderator.getId()));
     }
 
     //get player by moderator
@@ -49,4 +50,10 @@ public class PlayerController {
         playerService.deletePlayer(playerId.getId());
         return ResponseEntity.ok("Player deleted successfully");
     }
+
+    @GetMapping("/player")
+    public ResponseEntity<StatisticPlayer> getPlayerStatistics(@AuthenticationPrincipal User playerId) {
+        return ResponseEntity.ok(playerService.getMyStatisticsByPlayerId(playerId.getId()));
+    }
+
 }

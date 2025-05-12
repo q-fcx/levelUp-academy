@@ -2,19 +2,14 @@ package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
-import com.levelup.levelup_academy.Model.Review;
-import com.levelup.levelup_academy.Model.Session;
-import com.levelup.levelup_academy.Model.Trainer;
-import com.levelup.levelup_academy.Model.User;
-import com.levelup.levelup_academy.Repository.AuthRepository;
-import com.levelup.levelup_academy.Repository.ReviewRepository;
-import com.levelup.levelup_academy.Repository.SessionRepository;
-import com.levelup.levelup_academy.Repository.TrainerRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +21,22 @@ public class ReviewService {
     private final SessionRepository sessionRepository;
     private final TrainerRepository trainerRepository;
     private final EmailNotificationService emailNotificationService;
+    private final ModeratorRepository moderatorRepository;
 
 
-    public List<Review> getAllReviews() {
+    public List<Review> getAllReviews(Integer moderatorId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         return reviewRepository.findAll();
     }
 
-    public void addReview(Review review, Integer userId, Integer sessionId) {
+    public Set<Review> getMyReviews(Integer trainerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null) throw new ApiException("Trainer not found");
+        return trainer.getReviews();
+    }
+
+    public void addReview(Integer userId, Review review, Integer sessionId) {
         User user = authRepository.findUserById(userId);
         if(user == null) throw new ApiException("User not found");
 

@@ -31,9 +31,14 @@ public class TrainerService {
     private final PlayerRepository playerRepository;
     private final ProRepository proRepository;
     private final EmailNotificationService emailNotificationService;
+    private final SessionRepository sessionRepository;
+    private final BookingRepository bookingRepository;
+    private final ModeratorRepository moderatorRepository;
 
     //GET
-    public List<TrainerDTOOut> getAllTrainers() {
+    public List<TrainerDTOOut> getAllTrainers(Integer moderatorId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         List<Trainer> trainers = trainerRepository.findAll();
 
         List<TrainerDTOOut> dtoList = new ArrayList<>();
@@ -85,7 +90,9 @@ public class TrainerService {
     }
 
     //download
-    public byte[] downloadTrainerCv(Integer trainerId) {
+    public byte[] downloadTrainerCv(Integer adminId, Integer trainerId) {
+        User admin = authRepository.findUserById(adminId);
+        if(admin == null) throw new ApiException("Admin not found");
         Trainer trainer = trainerRepository.findById(trainerId)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
@@ -106,8 +113,8 @@ public class TrainerService {
             throw new RuntimeException("Failed to read CV file", e);
         }
     }
-    public void updateTrainer(Integer id, TrainerDTO trainerDTO){
-        Trainer trainer = trainerRepository.findById(id)
+    public void updateTrainer(Integer trainerId, TrainerDTO trainerDTO){
+        Trainer trainer = trainerRepository.findById(trainerId)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
         User user = trainer.getUser();
@@ -124,12 +131,21 @@ public class TrainerService {
         authRepository.save(user);
         trainerRepository.save(trainer);
     }
-    public void deleteTrainer(Integer id){
-        Trainer trainer = trainerRepository.findById(id)
+    public void deleteTrainer(Integer trainerId){
+        Trainer trainer = trainerRepository.findById(trainerId)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
         authRepository.delete(trainer.getUser());
         trainerRepository.delete(trainer);
+    }
+
+    public List<User> getAllPlayersInSession(Integer trainerId, Integer sessionId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null) throw new ApiException("Trainer not found");
+        Session session = sessionRepository.findSessionById(sessionId);
+        if (session == null) throw new ApiException("Session not found");
+
+        return bookingRepository.findUsersBySessionId(sessionId);
     }
 
     //for child
@@ -196,8 +212,6 @@ public class TrainerService {
     }
 
 
-
-
     public void giveTrophyToPro(Integer trainerId, Integer proId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
         if (trainer == null) throw new ApiException("Trainer not found");
@@ -216,7 +230,7 @@ public class TrainerService {
         String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
         stat.setTrophy(trophy);
-        statisticProRepository.save(stat);
+//        statisticProRepository.save(stat);
     }
 
     public void giveTrophyToChild(Integer trainerId, Integer childId) {

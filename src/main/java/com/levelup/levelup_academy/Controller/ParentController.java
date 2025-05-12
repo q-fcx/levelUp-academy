@@ -80,6 +80,11 @@ public class ParentController {
         return ResponseEntity.status(200).body(parentService.getGamesByChildAge(parent.getId(), childId));
     }
 
+    @GetMapping("/get-child-stati-by-parent/{childId}")
+    public ResponseEntity<StatisticChild> getChildStatisticsByParent(@AuthenticationPrincipal User parentId, @PathVariable Integer childId) {
+        return ResponseEntity.ok(parentService.getMyChildStatisticsByChildId(parentId.getId(), childId));
+    }
+
 
 
 

@@ -2,9 +2,9 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ModeratorDTO;
+import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ModeratorService;
-import com.levelup.levelup_academy.Service.PlayerService;
 import com.levelup.levelup_academy.Service.ProService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class ModeratorController {
     private final ModeratorService moderatorService;
     private final ProService proService;
-    private final PlayerService playerService;
 
     //GET
     @GetMapping("/get")
@@ -34,7 +33,7 @@ public class ModeratorController {
 
     // Update moderator
     @PutMapping("/edit")
-    public ResponseEntity<String> updateModerator(@AuthenticationPrincipal User moderator, @RequestBody @Valid ModeratorDTO moderatorDTO) {
+    public ResponseEntity<String> updateModerator(@AuthenticationPrincipal Moderator moderator, @RequestBody @Valid ModeratorDTO moderatorDTO) {
         moderatorService.updateModerator(moderator.getId(), moderatorDTO);
         return ResponseEntity.ok("Moderator updated successfully");
     }
@@ -55,21 +54,15 @@ public class ModeratorController {
 
 
     @GetMapping("/get-all-pro")
-    public ResponseEntity getAllProRequests(@AuthenticationPrincipal User moderator){
+    public ResponseEntity getAllProRequests(@AuthenticationPrincipal Moderator moderator){
         return ResponseEntity.status(200).body(proService.getAllProRequests(moderator.getId()));
     }
 
-    //To send an exam in pro email to test real skills
-    @PostMapping("/send-exam/{proId}")
-    public ResponseEntity<String> sendDiscordExam(@AuthenticationPrincipal User moderatorId, @PathVariable Integer proId) {
-        proService.sendDiscordExamLink(moderatorId.getId(),proId);
-        return ResponseEntity.status(200).body("Discord exam link has been sent to the Pro.");
-    }
 
-    @PostMapping("/promote/{playerId}")
-    public ResponseEntity promotePlayerToPro(@AuthenticationPrincipal User moderatorId,@PathVariable Integer playerId){
-        playerService.promotePlayerToPro(moderatorId.getId(),playerId);
-        return ResponseEntity.status(200).body(new ApiResponse("Player "+playerId+" have been promoted successfully"));
+    @PostMapping("/send-exam/{proId}")
+    public ResponseEntity<String> sendDiscordExam(@AuthenticationPrincipal Moderator moderator,@PathVariable Integer proId) {
+        proService.sendDiscordExamLink(moderator.getId(),proId);
+        return ResponseEntity.status(200).body("Discord exam link has been sent to the Pro.");
     }
 
 }
