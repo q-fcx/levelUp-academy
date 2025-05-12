@@ -1,7 +1,6 @@
 package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.DTO.StatisticProDTO;
-import com.levelup.levelup_academy.Model.StatisticChild;
 import com.levelup.levelup_academy.Model.StatisticPro;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.StatisticProService;
@@ -31,20 +30,15 @@ public class StatisticProController {
         return ResponseEntity.ok("Pro statistic updated");
     }
 
-    @GetMapping("/professional")
-    public ResponseEntity<StatisticPro> getProfessionalStatistics(@AuthenticationPrincipal User professionalId) {
-        return ResponseEntity.ok(statisticProService.getMyStatisticsByProfessionalId(professionalId.getId()));
-    }
-
     @GetMapping("/professional/{professionalId}")
     public ResponseEntity<StatisticPro> getProfessionalStatistics(@AuthenticationPrincipal User trainerId ,@PathVariable Integer professionalId) {
         return ResponseEntity.ok(statisticProService.getStatisticsByProfessionalId(trainerId.getId(), professionalId));
     }
 
-    @GetMapping("/professional/trainer/{trainerId}")
-    public ResponseEntity<List<StatisticPro>> getProfessionalStatsByTrainer(@AuthenticationPrincipal User trainerId) {
-        return ResponseEntity.ok(statisticProService.getAllStatisticsByTrainerId(trainerId.getId()));
-    }
+//    @GetMapping("/professional/trainer/{trainerId}")
+//    public ResponseEntity<List<StatisticPro>> getProfessionalStatsByTrainer(@AuthenticationPrincipal User trainerId) {
+//        return ResponseEntity.ok(statisticProService.getAllStatisticsByTrainerId(trainerId.getId()));
+//    }
 
 
     @DeleteMapping("/delete/{statId}")
@@ -52,10 +46,9 @@ public class StatisticProController {
         statisticProService.deleteStatistic(trainerId.getId(),statId);
         return ResponseEntity.ok("Pro statistic deleted");
     }
-    @GetMapping("/top-trophy")
-    public ResponseEntity<StatisticPro> getTopTrophyChild() {
-        StatisticPro top = statisticProService.getProWithTopTrophy();
-        return ResponseEntity.ok(top);
+    @GetMapping("/top-pro-by-rating")
+    public ResponseEntity<String> getTopProByRating() {
+        return ResponseEntity.ok(statisticProService.getTopProByRating());
     }
 
     @GetMapping("/top5")
@@ -63,4 +56,20 @@ public class StatisticProController {
         List<StatisticPro> top5 = statisticProService.getTop5ProByGame(winGame);
         return ResponseEntity.ok(top5);
     }
+    @PutMapping("/add-win/{statId}/{trainerId}")
+    public ResponseEntity<String> addWinToPro(@PathVariable Integer trainerId,@PathVariable Integer statId) {
+        statisticProService.addWin(trainerId,statId);
+        return ResponseEntity.ok("Win added successfully");
+    }
+    @PutMapping("/add-loss/{statId}/{trainerId}")
+    public ResponseEntity<String> addLossToPro(@PathVariable Integer trainerId,@PathVariable Integer statId) {
+        statisticProService.addLoss(trainerId,statId);
+        return ResponseEntity.ok("Loss added successfully");
+    }
+    @PutMapping("/update-rating/{trainerId}/{statId}")
+    public ResponseEntity<String> updateProRating(@PathVariable Integer trainerId,@PathVariable Integer statId) {
+        statisticProService.updateRatingForPro(trainerId,statId);
+        return ResponseEntity.ok("Pro rating updated successfully.");
+    }
+
 }

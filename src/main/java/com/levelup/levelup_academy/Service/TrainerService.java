@@ -30,11 +30,15 @@ public class TrainerService {
     private final ChildRepository childRepository;
     private final PlayerRepository playerRepository;
     private final ProRepository proRepository;
-    private final StatisticProRepository statisticProRepository;
     private final EmailNotificationService emailNotificationService;
+    private final SessionRepository sessionRepository;
+    private final BookingRepository bookingRepository;
+    private final ModeratorRepository moderatorRepository;
 
     //GET
-    public List<TrainerDTOOut> getAllTrainers() {
+    public List<TrainerDTOOut> getAllTrainers(Integer moderatorId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         List<Trainer> trainers = trainerRepository.findAll();
 
         List<TrainerDTOOut> dtoList = new ArrayList<>();
@@ -61,7 +65,7 @@ public class TrainerService {
         }
         String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
         User user = new User(null,trainerDTO.getUsername(),hashPassword,trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),false, null,null,null,user, null, null);
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(), false, user, null, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
         User admin = authRepository.findUserByRole("ADMIN"); // Replace with actual method if different
@@ -86,7 +90,9 @@ public class TrainerService {
     }
 
     //download
-    public byte[] downloadTrainerCv(Integer trainerId) {
+    public byte[] downloadTrainerCv(Integer adminId, Integer trainerId) {
+        User admin = authRepository.findUserById(adminId);
+        if(admin == null) throw new ApiException("Admin not found");
         Trainer trainer = trainerRepository.findById(trainerId)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
@@ -107,8 +113,8 @@ public class TrainerService {
             throw new RuntimeException("Failed to read CV file", e);
         }
     }
-    public void updateTrainer(Integer id, TrainerDTO trainerDTO){
-        Trainer trainer = trainerRepository.findById(id)
+    public void updateTrainer(Integer trainerId, TrainerDTO trainerDTO){
+        Trainer trainer = trainerRepository.findById(trainerId)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
         User user = trainer.getUser();
@@ -125,12 +131,21 @@ public class TrainerService {
         authRepository.save(user);
         trainerRepository.save(trainer);
     }
-    public void deleteTrainer(Integer id){
-        Trainer trainer = trainerRepository.findById(id)
+    public void deleteTrainer(Integer trainerId){
+        Trainer trainer = trainerRepository.findById(trainerId)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
         authRepository.delete(trainer.getUser());
         trainerRepository.delete(trainer);
+    }
+
+    public List<User> getAllPlayersInSession(Integer trainerId, Integer sessionId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if(trainer == null) throw new ApiException("Trainer not found");
+        Session session = sessionRepository.findSessionById(sessionId);
+        if (session == null) throw new ApiException("Session not found");
+
+        return bookingRepository.findUsersBySessionId(sessionId);
     }
 
     //for child
@@ -180,68 +195,63 @@ public class TrainerService {
         }
 
         Player player = playerRepository.findPlayerById(playerId);
-        if (player==null){
-            throw new ApiException("Player not found");
+        if (player == null) throw new ApiException("Player not found");
+
+        StatisticPlayer stat = player.getStatistics();
+        if (stat == null) throw new ApiException("Player statistics not found");
+
+        Double rating = stat.getRate();
+        if (rating == null) {
+            throw new ApiException("Rating not calculated yet.");
         }
 
-        StatisticPlayer stats = player.getStatistics();
-        if (stats == null) {
-            throw new ApiException("Player statistics not found.");
-        }
+        String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
-        if (stats.getWinGame() > 5 || stats.getLossGame() < 3) {
-            stats.setTrophy("GOLD");
-            playerRepository.save(player);
-        } else {
-            throw new ApiException("Player not eligible for trophy.");
-        }
+        stat.setTrophy(trophy);
+//        statisticPlayerRepository.save(stat);
     }
 
-    public void giveTrophyToProfessional(Integer trainerId, Integer professionalId) {
+
+    public void giveTrophyToPro(Integer trainerId, Integer proId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
-        if (trainer==null){
-            throw new ApiException("Trainer not found");
-        }
-        Pro pro = proRepository.findProById(professionalId);
-        if (pro==null){
-            throw new ApiException("Professional not found");
+        if (trainer == null) throw new ApiException("Trainer not found");
+
+        Pro pro = proRepository.findProById(proId);
+        if (pro == null) throw new ApiException("pro not found");
+
+        StatisticPro stat = pro.getStatistics();
+        if (stat == null) throw new ApiException("pro statistics not found");
+
+        Double rating = stat.getRate();
+        if (rating == null) {
+            throw new ApiException("Rating not calculated yet.");
         }
 
-        StatisticPro stats = pro.getStatistics();
-        if (stats == null) {
-            throw new ApiException("Professional statistics not found.");
-        }
+        String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
-        if (stats.getWinGame() > 10 || stats.getLossGame() < 2) {
-            stats.setTrophy("GOLD");
-            proRepository.save(pro);
-        } else {
-            throw new ApiException("Professional not eligible for trophy.");
-        }
+        stat.setTrophy(trophy);
+//        statisticProRepository.save(stat);
     }
 
     public void giveTrophyToChild(Integer trainerId, Integer childId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
-        if (trainer==null){
-            throw new ApiException("Trainer not found");
-        }
+        if (trainer == null) throw new ApiException("Trainer not found");
 
         Child child = childRepository.findChildById(childId);
-        if (child==null){
-            throw new ApiException("Child not found");
+        if (child == null) throw new ApiException("Child not found");
+
+        StatisticChild stat = child.getStatistics();
+        if (stat == null) throw new ApiException("Child statistics not found");
+
+        Double rating = stat.getRate();
+        if (rating == null) {
+            throw new ApiException("Rating not calculated yet.");
         }
 
-        StatisticChild stats = child.getStatistics();
-        if (stats == null) {
-            throw new ApiException("Child statistics not found.");
-        }
+        String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
-        if (stats.getWinGame() > 3 || stats.getLossGame() < 5) {
-            stats.setTrophy("GOLD");
-            childRepository.save(child);
-        } else {
-            throw new ApiException("Child not eligible for trophy.");
-        }
+        stat.setTrophy(trophy);
+//        statisticChildRepository.save(stat);
     }
 
 
@@ -266,7 +276,6 @@ public class TrainerService {
         trainerRepository.save(trainer);
     }
 
-    // rejecting the trainer  request by admin if the pdf not match the requirement
     public void rejectTrainerByAdmin(Integer adminId, Integer trainerId) {
         User admin = authRepository.findUserById(adminId);
         if (!admin.getRole().equals("ADMIN")) {

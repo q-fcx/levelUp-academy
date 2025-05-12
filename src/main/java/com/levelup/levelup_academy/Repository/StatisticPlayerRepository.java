@@ -13,7 +13,6 @@ import java.util.List;
 public interface StatisticPlayerRepository extends JpaRepository<StatisticPlayer,Integer> {
     StatisticPlayer findStatisticPlayerById(Integer id);
     StatisticPlayer findByPlayer_Id(Integer playerId);
-    List<StatisticPlayer> findByPlayer_Trainer_Id(Integer trainerId);
     List<StatisticPlayer> findAll();
     List<StatisticPlayer> findStatisticPlayerByWinGame( Integer winGame);
 

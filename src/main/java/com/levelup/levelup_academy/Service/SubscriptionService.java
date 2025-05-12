@@ -18,9 +18,6 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final AuthRepository authRepository;
 
-    public List<Subscription> getAllSubscriptions(Integer moderatorId) {
-        return subscriptionRepository.findAll();
-    }
 
     public void basicSubscription(Integer userId) {
         User user = authRepository.findUserById(userId);

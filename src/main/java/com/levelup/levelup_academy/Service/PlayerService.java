@@ -4,13 +4,11 @@ import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
 import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
-import com.levelup.levelup_academy.Model.Moderator;
-import com.levelup.levelup_academy.Model.Player;
-import com.levelup.levelup_academy.Model.Pro;
-import com.levelup.levelup_academy.Model.User;
+import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.PlayerRepository;
+import com.levelup.levelup_academy.Repository.StatisticPlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,10 +25,14 @@ public class PlayerService {
     private final ModeratorRepository moderatorRepository;
     private final EmailNotificationService emailNotificationService;
     private final UltraMsgService ultraMsgService;
+    private final StatisticPlayerRepository statisticPlayerRepository;
 
     //GET
 
-    public List<PlayerDTOOut> getAllPlayers(){
+    public List<PlayerDTOOut> getAllPlayers(Integer moderatorId){
+
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         List<Player> players = playerRepository.findAll();
 
         List<PlayerDTOOut> dtoList = new ArrayList<>();
@@ -58,7 +60,7 @@ public class PlayerService {
         playerDTO.setRole("PLAYER");
         String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
         User user = new User(null, playerDTO.getUsername(), hashPassword, playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
-        Player player = new Player(null,user,null,null);
+        Player player = new Player(null,user,null);
         authRepository.save(user);
         playerRepository.save(player);
 
@@ -76,6 +78,8 @@ public class PlayerService {
         EmailRequest emailRequest = new EmailRequest(playerDTO.getEmail(),message, subject);
         emailNotificationService.sendEmail(emailRequest);
 
+        authRepository.save(user);
+        playerRepository.save(player);
 //        String proPhoneNumber = "+447723275615";
 //        String whatsAppMessage = " New player registered: " + playerDTO.getFirstName() + " " + playerDTO.getLastName() + ".";
 //        ultraMsgService.sendWhatsAppMessage(proPhoneNumber, whatsAppMessage);
@@ -109,6 +113,12 @@ public class PlayerService {
         }
 
         playerRepository.delete(player);
+    }
+
+    public StatisticPlayer getMyStatisticsByPlayerId(Integer playerId) {
+        StatisticPlayer stat = statisticPlayerRepository.findByPlayer_Id(playerId);
+        if (stat == null) throw new ApiException("Statistic not found for this player");
+        return stat;
     }
 
 

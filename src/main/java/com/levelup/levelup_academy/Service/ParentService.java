@@ -29,9 +29,7 @@ public class ParentService {
 
     public List<ParentDTOOut> getAllParents(Integer moderatorId) {
         Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
-        if(moderator == null){
-            throw new ApiException("Moderator not found");
-        }
+        if(moderator == null) throw new ApiException("Moderator not found");
         List<Parent> parents = parentRepository.findAll();
         List<ParentDTOOut> parentDTOOuts = new ArrayList<>();
 
@@ -164,5 +162,15 @@ public class ParentService {
         if(child == null) throw new ApiException("Child not found");
 
         return gameRepository.findGamesByAgeIsLessThanEqual(child.getAge());
+    }
+
+    public StatisticChild getMyChildStatisticsByChildId(Integer parentId,Integer childId) {
+        Parent parent = parentRepository.findParentById(parentId);
+        if (parent == null){
+            throw new ApiException("Parent not found");
+        }
+        StatisticChild stat = statisticChildRepository.findByChild_Id(childId);
+        if (stat == null) throw new ApiException("Statistic not found for this child");
+        return stat;
     }
 }

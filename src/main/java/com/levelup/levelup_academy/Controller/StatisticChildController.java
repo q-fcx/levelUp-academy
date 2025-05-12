@@ -30,36 +30,53 @@ public class StatisticChildController {
         return ResponseEntity.ok("Child statistic updated");
     }
 
-    @GetMapping("/get-child-stati-by-parent/{childId}")
-    public ResponseEntity<StatisticChild> getChildStatisticsByParent(@AuthenticationPrincipal User parentId, @PathVariable Integer childId) {
-        return ResponseEntity.ok(statisticChildService.getMyChildStatisticsByChildId(parentId.getId(), childId));
-    }
-
 
     @GetMapping("/get-child-stati-by-trainer/{childId}")
-    public ResponseEntity<StatisticChild> getChildStatisticsByTainer(@AuthenticationPrincipal User trainerId, @PathVariable Integer childId) {
+    public ResponseEntity<StatisticChild> getChildStatisticsByTrainer(@AuthenticationPrincipal User trainerId, @PathVariable Integer childId) {
         return ResponseEntity.ok(statisticChildService.getStatisticsByChildId(trainerId.getId(), childId));
     }
 
-    @GetMapping("/by-trainer")
-    public ResponseEntity<List<StatisticChild>> getAllStatsByTrainer(@AuthenticationPrincipal User trainerId) {
-        return ResponseEntity.ok(statisticChildService.getAllStatisticsByTrainerId(trainerId.getId()));
-    }
+//    @GetMapping("/by-trainer")
+//    public ResponseEntity<List<StatisticChild>> getAllStatsByTrainer(@AuthenticationPrincipal User trainerId) {
+//        return ResponseEntity.ok(statisticChildService.getAllStatisticsByTrainerId(trainerId.getId()));
+//    }
 
     @DeleteMapping("/delete/{statId}")
     public ResponseEntity deleteStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer statId) {
         statisticChildService.deleteStatistic(trainerId.getId(),statId);
         return ResponseEntity.ok("Child statistic deleted");
     }
-    @GetMapping("/top-trophy")
-    public ResponseEntity<StatisticChild> getTopTrophyChild() {
-        StatisticChild top = statisticChildService.getChildWithTopTrophy();
-        return ResponseEntity.ok(top);
+    @GetMapping("/top-child-by-rating")
+    public ResponseEntity<String> getTopChildByRating(@AuthenticationPrincipal User trainerId) {
+        return ResponseEntity.ok(statisticChildService.getTopChildByRating(trainerId.getId()));
     }
 
-    @GetMapping("/top5")
-    public ResponseEntity<List<StatisticChild>> getTop5ByWinGame(@RequestParam Integer winGame) {
-        List<StatisticChild> top5 = statisticChildService.getTop5ChildrenByGame(winGame);
-        return ResponseEntity.ok(top5);
+//    @GetMapping("/top5")
+//    public ResponseEntity<List<StatisticChild>> getTop5ByWinGame(@AuthenticationPrincipal User trainer,@RequestParam Integer winGame) {
+//        List<StatisticChild> top5 = statisticChildService.getTop5ChildrenByGame(trainer.getId(),winGame);
+//        return ResponseEntity.ok(top5);
+//    }
+    @PutMapping("/add-win/{statId}")
+    public ResponseEntity<String> addWinToChild(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
+        statisticChildService.addWin(trainer.getId(),statId);
+        return ResponseEntity.ok("Win added successfully");
     }
+    @PutMapping("/add-loss/{statId}")
+    public ResponseEntity<String> addLossToChild(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
+        statisticChildService.addLoss(trainer.getId(),statId);
+        return ResponseEntity.ok("Loss added successfully");
+    }
+
+    @PutMapping("/update-rating/{statId}")
+    public ResponseEntity<String> updateChildRating(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
+        statisticChildService.updateRatingForChild(trainer.getId(),statId);
+        return ResponseEntity.ok("Child rating updated successfully.");
+    }
+
+    @PostMapping("/notify-weak")
+    public ResponseEntity<String> notifyParents(@AuthenticationPrincipal User trainer) {
+        statisticChildService.notifyParentsIfChildRateIsWeak(trainer.getId());
+        return ResponseEntity.ok("Emails sent to parents of weak-performing children.");
+    }
+
 }

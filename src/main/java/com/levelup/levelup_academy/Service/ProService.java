@@ -33,6 +33,7 @@ public class ProService {
     private final ModeratorRepository moderatorRepository;
     private final SessionRepository sessionRepository;
     private final ContractRepository contractRepository;
+    private final StatisticProRepository statisticProRepository;
 
 
     //GET
@@ -82,7 +83,7 @@ public class ProService {
         }
         String hashPassword = new BCryptPasswordEncoder().encode(proDTO.getPassword());
         User user = new User(null, proDTO.getUsername(), hashPassword, proDTO.getEmail(), proDTO.getFirstName(), proDTO.getLastName(), proDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
-        Pro pro = new Pro(null, filePath, user, null, null,null,false);
+        Pro pro = new Pro(null, filePath, user, null, null,false);
         authRepository.save(user);
         proRepository.save(pro);
 
@@ -305,6 +306,12 @@ public class ProService {
         emailRequest.setMessage(body);
 
         emailNotificationService.sendEmail(emailRequest);
+    }
+
+    public StatisticPro getMyStatisticsByProfessionalId(Integer professionalId) {
+        StatisticPro stat = statisticProRepository.findByPro_Id(professionalId);
+        if (stat == null) throw new ApiException("Statistic not found for this professional");
+        return stat;
     }
 
 }

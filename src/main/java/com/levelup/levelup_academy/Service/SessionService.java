@@ -27,7 +27,7 @@ public class SessionService {
     }
 
     //ADD
-    public void addClass(Session session,Integer moderator_id,Integer trainerId,Integer gameId){
+    public void addClass(Integer moderator_id, Session session,Integer trainerId,Integer gameId){
         Moderator moderator = moderatorRepository.findModeratorById(moderator_id);
         if(moderator == null){
             throw new ApiException("Moderator not found");
@@ -47,36 +47,36 @@ public class SessionService {
     }
 
 
-    //Assign Trainer
-    public void assignTrainerToSession(Integer trainerId,Integer sessionId){
-        Trainer trainer = trainerRepository.findTrainerById(trainerId);
-        Session session = sessionRepository.findSessionById(sessionId);
-
-        if(trainer == null){
-            throw new ApiException("Trainer not found");
-        }
-        if(session == null){
-            throw new ApiException("Session not found");
-        }
-        session.setTrainer(trainer);
-        sessionRepository.save(session);
-    }
-
-    public void assignGameToTrainer(Integer sessionId ){
-
-        Session session = sessionRepository.findSessionById(sessionId);
-
-//        if(games == null){
-//            throw new ApiException("Game not found");
+//    //Assign Trainer
+//    public void assignTrainerToSession(Integer trainerId,Integer sessionId){
+//        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+//        Session session = sessionRepository.findSessionById(sessionId);
+//
+//        if(trainer == null){
+//            throw new ApiException("Trainer not found");
 //        }
-
-        if(session == null){
-            throw new ApiException("Session not found");
-        }
-        session.setGame(session.getGame());
-        sessionRepository.save(session);
-
-    }
+//        if(session == null){
+//            throw new ApiException("Session not found");
+//        }
+//        session.setTrainer(trainer);
+//        sessionRepository.save(session);
+//    }
+//
+//    public void assignGameToTrainer(Integer sessionId ){
+//
+//        Session session = sessionRepository.findSessionById(sessionId);
+//
+////        if(games == null){
+////            throw new ApiException("Game not found");
+////        }
+//
+//        if(session == null){
+//            throw new ApiException("Session not found");
+//        }
+//        session.setGame(session.getGame());
+//        sessionRepository.save(session);
+//
+//    }
 
     //update session
     public void updateSession(Integer moderatorId, Session session, Integer sessionId){
@@ -108,7 +108,9 @@ public class SessionService {
 
         sessionRepository.delete(delSession);
     }
-    public void notifyUsersIfSessionStarting(Integer sessionId) {
+    public void notifyUsersIfSessionStarting(Integer moderatorId, Integer sessionId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
         Session session = sessionRepository.findSessionById(sessionId);
         if (session == null) throw new ApiException("Session not found");
 
@@ -144,12 +146,30 @@ public class SessionService {
         }
     }
 
-    public List<User> getAllPlayersInSession(Integer sessionId) {
-        Session session = sessionRepository.findSessionById(sessionId);
-        if (session == null) throw new ApiException("Session not found");
+    public void changeTrainerSession(Integer moderatorId, Integer trainerId, Integer newSessionId) {
+        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
+        if(moderator == null) throw new ApiException("Moderator not found");
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        Session newSession = sessionRepository.findSessionById(newSessionId);
 
-        return bookingRepository.findUsersBySessionId(sessionId);
+        if (trainer == null) {
+            throw new ApiException("Trainer not found");
+        }
+
+        if (newSession == null) {
+            throw new ApiException("New session not found");
+        }
+
+        Session oldSession = sessionRepository.findSessionsByTrainer_Id(trainerId);
+        if (oldSession != null) {
+            oldSession.setTrainer(null);
+            sessionRepository.save(oldSession);
+        }
+
+        newSession.setTrainer(trainer);
+        sessionRepository.save(newSession);
     }
+
 
 
 

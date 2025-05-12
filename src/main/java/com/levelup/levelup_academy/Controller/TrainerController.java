@@ -8,19 +8,15 @@ import com.levelup.levelup_academy.DTO.TrainerDTO;
 import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
+import com.levelup.levelup_academy.Service.SessionService;
 import com.levelup.levelup_academy.Service.TrainerService;
-import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,6 +25,7 @@ import java.util.List;
 public class TrainerController {
 
     private final TrainerService trainerService;
+    private final SessionService sessionService;
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> registerTrainer(
             @RequestPart("trainer") TrainerDTO trainerDTO,
@@ -38,8 +35,8 @@ public class TrainerController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity getAllTrainers() {
-       return ResponseEntity.status(200).body(trainerService.getAllTrainers());
+    public ResponseEntity getAllTrainers(@AuthenticationPrincipal User moderator) {
+       return ResponseEntity.status(200).body(trainerService.getAllTrainers(moderator.getId()));
     }
     @PutMapping("/edit")
     public ResponseEntity updateTrainer(@AuthenticationPrincipal User trainerId,
@@ -56,32 +53,37 @@ public class TrainerController {
 
 
 
-    @GetMapping("/cv")
-    public ResponseEntity<byte[]> downloadTrainerCv(@AuthenticationPrincipal User trainerId) {
-        byte[] cvContent = trainerService.downloadTrainerCv(trainerId.getId());
+    @GetMapping("/cv/{trainerId}")
+    public ResponseEntity<byte[]> downloadTrainerCv(@AuthenticationPrincipal User admin, @PathVariable Integer trainerId) {
+        byte[] cvContent = trainerService.downloadTrainerCv(admin.getId(), trainerId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDisposition(ContentDisposition
                 .builder("attachment")
-                .filename("trainer_cv_" + trainerId.getId() + ".pdf")
+                .filename("trainer_cv_" + trainerId + ".pdf")
                 .build());
 
         return new ResponseEntity<>(cvContent, headers, HttpStatus.OK);
     }
-    @PutMapping("/trophy/{playerId}")
+
+    @GetMapping("/get-players/{sessionId}")
+    public ResponseEntity getAllPlayersInSession(@AuthenticationPrincipal User trainer, @PathVariable Integer sessionId) {
+        return ResponseEntity.status(200).body(trainerService.getAllPlayersInSession(trainer.getId(), sessionId));
+    }
+    @PutMapping("/give-player/{playerId}")
     public ResponseEntity giveTrophyToPlayer(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId) {
         trainerService.giveTrophyToPlayer(trainerId.getId(), playerId);
         return ResponseEntity.ok("Trophy granted to player if eligible.");
     }
 
-    @PutMapping("/give/{proId}")
-    public ResponseEntity<String> giveTrophyToProfessional(@AuthenticationPrincipal User trainerId, @PathVariable Integer proId) {
-        trainerService.giveTrophyToProfessional(trainerId.getId(), proId);
-        return ResponseEntity.ok("Trophy granted to professional if eligible.");
+    @PutMapping("/give-pro/{proId}")
+    public ResponseEntity<String> giveTrophyToProfessional(@AuthenticationPrincipal User trainer, @PathVariable Integer proId) {
+        trainerService.giveTrophyToPro(trainer.getId(), proId);
+        return ResponseEntity.ok("Trophy granted to professional .");
     }
 
-    @PutMapping("/give/{childId}")
+    @PutMapping("/give-child/{childId}")
     public ResponseEntity<String> giveTrophyToChild(@AuthenticationPrincipal User trainerId,@PathVariable Integer childId) {
         trainerService.giveTrophyToChild(trainerId.getId(), childId);
         return ResponseEntity.ok("Trophy granted to child if eligible.");
@@ -108,13 +110,13 @@ public class TrainerController {
 
 
 
-    @PostMapping("/approve/{trainerId}")
+    @PostMapping("/approve-trainer/{trainerId}")
     public ResponseEntity<String> approvePro(@AuthenticationPrincipal User adminId, @PathVariable Integer trainerId) {
         trainerService.approveTrainerByAdmin(adminId.getId(), trainerId);
         return ResponseEntity.ok("The trainer has been approved.");
     }
-    @PutMapping("/reject/{trainerId}")
-    public ResponseEntity<String> rejectPro(@PathVariable User adminId, @PathVariable Integer trainerId) {
+    @PutMapping("/reject-trainer/{trainerId}")
+    public ResponseEntity<String> rejectPro(@AuthenticationPrincipal User adminId, @PathVariable Integer trainerId) {
         trainerService.rejectTrainerByAdmin(adminId.getId(), trainerId);
         return ResponseEntity.ok("The trainer has been rejected and deleted.");
     }

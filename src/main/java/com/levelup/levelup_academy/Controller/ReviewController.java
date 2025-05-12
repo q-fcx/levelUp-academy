@@ -2,10 +2,12 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.Model.Review;
+import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,19 +18,24 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("get-all")
-    public ResponseEntity getAllReviews() {
-        return ResponseEntity.status(200).body(reviewService.getAllReviews());
+    public ResponseEntity getAllReviews(@AuthenticationPrincipal User moderator) {
+        return ResponseEntity.status(200).body(reviewService.getAllReviews(moderator.getId()));
     }
 
-    @PostMapping("/add/{userId}/{sessionId}")
-    public ResponseEntity addReview(@RequestBody @Valid Review review, @PathVariable Integer userId, @PathVariable Integer sessionId) {
-        reviewService.addReview(review, userId, sessionId);
+    @GetMapping("get-my-reviews")
+    public ResponseEntity getMyReviews(@AuthenticationPrincipal User trainer) {
+        return ResponseEntity.status(200).body(reviewService.getMyReviews(trainer.getId()));
+    }
+
+    @PostMapping("/add/{sessionId}")
+    public ResponseEntity addReview(@AuthenticationPrincipal User user, @RequestBody @Valid Review review, @PathVariable Integer sessionId) {
+        reviewService.addReview(user.getId(),review, sessionId);
         return ResponseEntity.status(200).body(new ApiResponse("Review Added successfully"));
     }
 
-    @DeleteMapping("/delete/{userId}/{reviewId}")
-    public ResponseEntity deleteReview(@PathVariable Integer userId, @PathVariable Integer reviewId) {
-        reviewService.deleteReview(userId, reviewId);
+    @DeleteMapping("/delete/{reviewId}")
+    public ResponseEntity deleteReview(@AuthenticationPrincipal User user, @PathVariable Integer reviewId) {
+        reviewService.deleteReview(user.getId(), reviewId);
         return ResponseEntity.status(200).body(new ApiResponse("Review deleted successfully"));
     }
 }

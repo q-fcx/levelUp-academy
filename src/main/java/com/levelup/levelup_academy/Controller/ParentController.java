@@ -3,6 +3,7 @@ package com.levelup.levelup_academy.Controller;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ParentDTO;
+import com.levelup.levelup_academy.DTO.PlayerDTO;
 import com.levelup.levelup_academy.Model.Child;
 import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.StatisticChild;
@@ -57,7 +58,7 @@ public class ParentController {
         return ResponseEntity.status(200).body(new ApiResponse("Child registered"));
     }
 
-    @PutMapping("/update-child,{childId}")
+    @PutMapping("/update-child/{childId}")
     public ResponseEntity updateChild(@AuthenticationPrincipal User parent, @PathVariable Integer childId, @RequestBody @Valid Child child ){
         parentService.updateChild(parent.getId(),childId, child);
         return ResponseEntity.status(200).body(new ApiResponse("Child updated"));
@@ -77,6 +78,11 @@ public class ParentController {
     @GetMapping("/get-games/{childId}")
     public ResponseEntity getGamesByChildAge(@AuthenticationPrincipal User parent, @PathVariable Integer childId) {
         return ResponseEntity.status(200).body(parentService.getGamesByChildAge(parent.getId(), childId));
+    }
+
+    @GetMapping("/get-child-stati-by-parent/{childId}")
+    public ResponseEntity<StatisticChild> getChildStatisticsByParent(@AuthenticationPrincipal User parentId, @PathVariable Integer childId) {
+        return ResponseEntity.ok(parentService.getMyChildStatisticsByChildId(parentId.getId(), childId));
     }
 
 

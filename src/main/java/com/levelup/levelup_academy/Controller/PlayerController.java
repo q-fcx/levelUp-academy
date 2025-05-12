@@ -4,6 +4,7 @@ import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
 import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
 import com.levelup.levelup_academy.Model.Player;
+import com.levelup.levelup_academy.Model.StatisticPlayer;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.PlayerService;
 import com.levelup.levelup_academy.Service.StatisticPlayerService;
@@ -23,15 +24,14 @@ public class PlayerController {
 
      //GET
     @GetMapping("/get")
-    public ResponseEntity getAllPlayers(@AuthenticationPrincipal User moderatorId){
-        return ResponseEntity.status(200).body(playerService.getAllPlayers());
+    public ResponseEntity getAllPlayers(@AuthenticationPrincipal User moderator){
+        return ResponseEntity.status(200).body(playerService.getAllPlayers(moderator.getId()));
     }
 
+    //get player by moderator
     @GetMapping("/get-player/{playerId}")
-    public ResponseEntity getPlayer(@AuthenticationPrincipal User moderatorId, @PathVariable Integer playerId) {
-        Player player = playerService.getPlayer(moderatorId.getId(), playerId);
-        PlayerDTOOut playerDTOOut = new PlayerDTOOut(player.getUser().getUsername(),player.getUser().getFirstName(),player.getUser().getLastName(),player.getUser().getEmail());
-        return ResponseEntity.status(200).body(playerDTOOut);
+    public ResponseEntity getPlayer(@AuthenticationPrincipal User moderatorId,@PathVariable Integer playerId){
+        return ResponseEntity.status(200).body(playerService.getPlayer(moderatorId.getId(), playerId));
     }
 
     //Register
@@ -48,8 +48,14 @@ public class PlayerController {
 
     // Delete player by ID
     @DeleteMapping("/delete")
-    public ResponseEntity<String> delete(@RequestParam Integer playerId) {
-        playerService.deletePlayer(playerId);
+    public ResponseEntity<String> delete(@AuthenticationPrincipal User playerId) {
+        playerService.deletePlayer(playerId.getId());
         return ResponseEntity.ok("Player deleted successfully");
     }
+
+    @GetMapping("/player")
+    public ResponseEntity<StatisticPlayer> getPlayerStatistics(@AuthenticationPrincipal User playerId) {
+        return ResponseEntity.ok(playerService.getMyStatisticsByPlayerId(playerId.getId()));
+    }
+
 }

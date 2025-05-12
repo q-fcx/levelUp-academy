@@ -2,16 +2,12 @@ package com.levelup.levelup_academy.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Check;
 
-import java.io.File;
-import java.util.List;
+
 import java.util.Set;
 
 @Getter
@@ -30,15 +26,6 @@ public class Trainer {
 
 //    @Lob
 //    private byte[] cv;
-
-    @OneToMany(mappedBy = "trainer")
-    private List<Child> children;
-
-    @OneToMany(mappedBy = "trainer")
-    private List<Player> players;
-
-    @OneToMany(mappedBy = "trainer")
-    private List<Pro> professionals;
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -3,6 +3,10 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.StatisticProDTO;
 import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Model.Pro;
+import com.levelup.levelup_academy.Model.StatisticPlayer;
+import com.levelup.levelup_academy.Model.StatisticPro;
+import com.levelup.levelup_academy.Model.Trainer;
 import com.levelup.levelup_academy.Repository.ProRepository;
 import com.levelup.levelup_academy.Repository.StatisticProRepository;
 import com.levelup.levelup_academy.Repository.TrainerRepository;
@@ -20,13 +24,6 @@ public class StatisticProService {
     private final ProRepository proRepository;
     private final TrainerRepository trainerRepository;
 
-    //Get my statistic
-    public StatisticPro getMyStatisticsByProfessionalId(Integer professionalId) {
-        StatisticPro stat = statisticProRepository.findByPro_Id(professionalId);
-        if (stat == null) throw new ApiException("Statistic not found for this professional");
-        return stat;
-    }
-
     //get one pro statistic by trainer
     public StatisticPro getStatisticsByProfessionalId(Integer trainerId,Integer professionalId) {
         Trainer trainer = trainerRepository.findTrainerById(trainerId);
@@ -38,9 +35,6 @@ public class StatisticProService {
         return stat;
     }
 
-    public List<StatisticPro> getAllStatisticsByTrainerId(Integer trainerId) {
-        return statisticProRepository.findByPro_Trainer_Id(trainerId);
-    }
 
 
     public void createStatistic(Integer trainerId,Integer proId, StatisticProDTO dto) {
@@ -91,22 +85,76 @@ public class StatisticProService {
     }
 
 
-    public StatisticPro getProWithTopTrophy() {
-        List<StatisticPro> all = statisticProRepository.findAll();
-
-        return all.stream()
-                .filter(pro -> pro.getTrophy() != null)
-                .max(Comparator.comparingInt(pro -> getTrophyRank(pro.getTrophy())))
-                .orElseThrow(() -> new ApiException("No child has a trophy"));
+    public void addWin(Integer statsId,Integer trainerId){
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        StatisticPro statisticPro = statisticProRepository.findStatisticProById(statsId);
+        if(statisticPro == null){
+            throw new ApiException("Not found");
+        }
+        statisticPro.setWinGame(statisticPro.getWinGame() + 1);
+        statisticProRepository.save(statisticPro);
     }
 
-    private int getTrophyRank(String trophy) {
-        return switch (trophy.toUpperCase()) {
-            case "GOLD" -> 3;
-            case "SILVER" -> 2;
-            case "BRONZE" -> 1;
-            default -> 0;
-        };
+    public void addLoss(Integer statId,Integer trainerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        StatisticPro statisticPro = statisticProRepository.findStatisticProById(statId);
+        if (statisticPro == null) {
+            throw new ApiException("Statistic not found");
+        }
+
+        statisticPro.setLossGame(statisticPro.getLossGame() + 1);
+        statisticProRepository.save(statisticPro);
+    }
+    public void updateRatingForPro(Integer trainerId,Integer statId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        if (trainer == null){
+            throw new ApiException("Trainer is not found");
+        }
+        StatisticPro stat = statisticProRepository.findById(statId)
+                .orElseThrow(() -> new ApiException("Statistic not found"));
+
+        int win = stat.getWinGame() != null ? stat.getWinGame() : 0;
+        int loss = stat.getLossGame() != null ? stat.getLossGame() : 0;
+
+        double rating = 0.0;
+        if (win + loss > 0) {
+            rating = (win * 1.0) / (win + loss) * 10;
+            rating = Math.min(rating, 10.0);
+        }
+
+        stat.setRate(rating);
+        statisticProRepository.save(stat);
+    }
+
+
+    public String getTopProByRating() {
+        List<StatisticPro> all = statisticProRepository.findAll();
+
+        StatisticPro topPro = all.stream()
+                .filter(pro -> pro.getRate() != null)
+                .max(Comparator.comparingDouble(StatisticPro::getRate))
+                .orElseThrow(() -> new ApiException("No player has a rating"));
+
+        String trophy = getTrophyFromRating(topPro.getRate());
+        return topPro.getPro().getUser().getUsername() + ": " + trophy + " (" + topPro.getRate() + ")";
+    }
+
+    public static String getTrophyFromRating(double rating) {
+        if (rating >= 9.0) {
+            return "GOLD";
+        } else if (rating >= 6.0) {
+            return "SILVER";
+        } else if (rating > 0.0) {
+            return "BRONZE";
+        } else {
+            return "NO_TROPHY";
+        }
     }
 
     public List<StatisticPro> getTop5ProByGame(Integer winGame) {
