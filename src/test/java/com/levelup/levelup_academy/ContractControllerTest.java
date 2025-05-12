@@ -18,16 +18,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.apache.tomcat.util.net.openssl.OpenSSLStatus.setName;
+
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -85,14 +85,13 @@ public class ContractControllerTest {
     }
     @Test
     public void testAddContract() throws Exception {
-        // Mock authenticated user (moderator)
-        User mockModerator = new User();
-        mockModerator.setId(1);  // Set the user ID for the mock moderator
 
-        // Mock the contractService to do nothing (since we're testing the controller)
+        User mockModerator = new User();
+        mockModerator.setId(1);
+
         Mockito.doNothing().when(contractService).addContract(Mockito.eq(1), Mockito.any(ContractDTO.class));
 
-        // Prepare contract DTO JSON as request body
+
         String contractJson = """
         {
             "id": 1,
@@ -107,12 +106,11 @@ public class ContractControllerTest {
         }
     """;
 
-        // Set the SecurityContext with a mock AuthenticationPrincipal (the moderator)
         TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(mockModerator, null);
-        authenticationToken.setAuthenticated(true);  // Mark the token as authenticated
+        authenticationToken.setAuthenticated(true);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-        // Perform the POST request
+
         mockMvc.perform(post("/api/v1/contract/add/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(contractJson)
@@ -120,7 +118,6 @@ public class ContractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Contract added and email sent successfully."));
 
-        // Clear the security context after test (good practice to avoid cross-test pollution)
         SecurityContextHolder.clearContext();
     }
 

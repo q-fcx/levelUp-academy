@@ -34,7 +34,7 @@ public class Session {
     private String time;
 //    @NotEmpty(message = "Game can not be empty")
 //    @Column(columnDefinition = "varchar(30) not null")
-//    private String games;
+//   private String games;
 
     @ManyToOne
     @JoinColumn(name = "trainer_id" , referencedColumnName = "id")
