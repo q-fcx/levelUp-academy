@@ -60,7 +60,14 @@ public class StatisticPlayerController {
     public ResponseEntity<String> addLossToPlayer(@PathVariable Integer statId) {
         statisticPlayerService.addLoss(statId);
         return ResponseEntity.ok("Loss added successfully");
+
     }
+    @PutMapping("/update-rating/{statId}")
+    public ResponseEntity<String> updatePlayerRating(@PathVariable Integer statId) {
+        statisticPlayerService.updateRatingForPlayer(statId);
+        return ResponseEntity.ok("Player rating updated successfully.");
+    }
+
     @PostMapping("/notify-weak")
     public ResponseEntity<String> notifyPlayer() {
         statisticPlayerService.notifyPlayerIfRateIsWeak();

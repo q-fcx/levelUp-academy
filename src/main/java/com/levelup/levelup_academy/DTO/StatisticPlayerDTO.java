@@ -16,7 +16,7 @@ public class StatisticPlayerDTO {
     @NotNull
     @Min(0)
     @Column(columnDefinition = "Integer not null")
-    private Integer rate;
+    private Double rate;
 
     @NotNull
     @Min(0)

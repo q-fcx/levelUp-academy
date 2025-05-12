@@ -80,6 +80,23 @@ public class StatisticChildService {
         statisticChild.setLossGame(statisticChild.getLossGame() + 1);
         statisticChildRepository.save(statisticChild);
     }
+    public void updateRatingForChild(Integer statId) {
+        StatisticChild stat = statisticChildRepository.findById(statId)
+                .orElseThrow(() -> new ApiException("Statistic not found"));
+
+        int win = stat.getWinGame() != null ? stat.getWinGame() : 0;
+        int loss = stat.getLossGame() != null ? stat.getLossGame() : 0;
+
+        double rating;
+        if (win + loss == 0) {
+            rating = 0.0; 
+        } else {
+            rating = (win * 1.0) / (win + loss) * 10;
+        }
+
+        stat.setRate(rating);
+        statisticChildRepository.save(stat);
+    }
 
     public StatisticChild getChildWithTopTrophy() {
         List<StatisticChild> all = statisticChildRepository.findAll();

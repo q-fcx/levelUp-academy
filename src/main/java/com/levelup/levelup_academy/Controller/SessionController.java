@@ -55,6 +55,14 @@ public class SessionController {
         return ResponseEntity.status(200).body(new ApiResponse("Session Deleted"));
     }
 
+    @PutMapping("/trainer/change-session/{trainerId}/{newSessionId}")
+    public ResponseEntity<String> changeTrainerSession(
+            @PathVariable Integer trainerId,
+            @PathVariable Integer newSessionId) {
+        sessionService.changeTrainerSession(trainerId, newSessionId);
+        return ResponseEntity.ok("Trainer session changed successfully.");
+    }
+
 
 
 }

@@ -59,4 +59,10 @@ public class StatisticProController {
         statisticProService.addLoss(statId);
         return ResponseEntity.ok("Loss added successfully");
     }
+    @PutMapping("/update-rating/{statId}")
+    public ResponseEntity<String> updateProRating(@PathVariable Integer statId) {
+        statisticProService.updateRatingForProfessional(statId);
+        return ResponseEntity.ok("Professional rating updated successfully.");
+    }
+
 }

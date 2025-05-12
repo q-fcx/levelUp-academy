@@ -60,6 +60,13 @@ public class StatisticChildController {
         statisticChildService.addLoss(statId);
         return ResponseEntity.ok("Loss added successfully");
     }
+
+    @PutMapping("/update-rating/{statId}")
+    public ResponseEntity<String> updateChildRating(@PathVariable Integer statId) {
+        statisticChildService.updateRatingForChild(statId);
+        return ResponseEntity.ok("Child rating updated successfully.");
+    }
+
     @PostMapping("/notify-weak")
     public ResponseEntity<String> notifyParents() {
         statisticChildService.notifyParentsIfChildRateIsWeak();

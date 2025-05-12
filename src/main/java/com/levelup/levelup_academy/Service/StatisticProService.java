@@ -78,6 +78,24 @@ public class StatisticProService {
         statisticPro.setLossGame(statisticPro.getLossGame() + 1);
         statisticProRepository.save(statisticPro);
     }
+    public void updateRatingForProfessional(Integer statId) {
+        StatisticPro stat = statisticProRepository.findById(statId)
+                .orElseThrow(() -> new ApiException("Statistic not found"));
+
+        int win = stat.getWinGame() != null ? stat.getWinGame() : 0;
+        int loss = stat.getLossGame() != null ? stat.getLossGame() : 0;
+
+        double rating;
+        if (win + loss == 0) {
+            rating = 0.0;
+        } else {
+            rating = (win * 1.0) / (win + loss) * 10;
+        }
+
+        stat.setRate(rating);
+        statisticProRepository.save(stat);
+    }
+
 
     public StatisticPro getProWithTopTrophy() {
         List<StatisticPro> all = statisticProRepository.findAll();
