@@ -60,7 +60,7 @@ public class TrainerService {
         }
         String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
         User user = new User(null,trainerDTO.getUsername(),hashPassword,trainerDTO.getEmail(),trainerDTO.getFirstName(),trainerDTO.getLastName(),trainerDTO.getRole(),LocalDate.now(),null,null,null,null,null,null,null,null);
-        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),false, null,null,null,user, null, null);
+        Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(), false, user, null, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
         User admin = authRepository.findUserByRole("ADMIN"); // Replace with actual method if different
@@ -192,7 +192,7 @@ public class TrainerService {
         String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
         stat.setTrophy(trophy);
-        statisticPlayerRepository.save(stat);
+//        statisticPlayerRepository.save(stat);
     }
 
 
@@ -237,7 +237,7 @@ public class TrainerService {
         String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
         stat.setTrophy(trophy);
-        statisticChildRepository.save(stat);
+//        statisticChildRepository.save(stat);
     }
 
 
@@ -262,7 +262,6 @@ public class TrainerService {
         trainerRepository.save(trainer);
     }
 
-    // rejecting the trainer  request by admin if the pdf not match the requirement
     public void rejectTrainerByAdmin(Integer adminId, Integer trainerId) {
         User admin = authRepository.findUserById(adminId);
         if (!admin.getRole().equals("ADMIN")) {
