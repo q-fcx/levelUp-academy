@@ -37,9 +37,11 @@ public class ProController {
 
     //Register pro player
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity registerTrainer(@RequestPart("pro") ProDTO proDTO, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<String> registerTrainer(
+            @RequestPart("pro") ProDTO proDTO,
+            @RequestPart("file") MultipartFile file) {
         proService.registerPro(proDTO, file);
-        return ResponseEntity.ok("pro player registered successfully with PDF uploaded");
+        return ResponseEntity.ok("pro player registered successfully with CV uploaded");
     }
 
     //Edit
@@ -101,6 +103,21 @@ public class ProController {
     public ResponseEntity expireAccount(){
         proService.expireAccount();
         return ResponseEntity.status(200).body(new ApiResponse("Expired Pro accounts have been processed."));
+    }
+
+    @GetMapping("/{proId}/cv")
+    public ResponseEntity<byte[]> downloadProCv(@PathVariable Integer proId) {
+        byte[] fileContent = proService.downloadProCv(proId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);  // Set content type as PDF
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("Pro_CV_" + proId + ".pdf")
+                .build());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(fileContent);
     }
 
 }

@@ -1,23 +1,27 @@
 package com.levelup.levelup_academy.Controller;
 
-import com.levelup.levelup_academy.Service.WhatsAppService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.levelup.levelup_academy.DTO.WhatsAppDTO;
+import com.levelup.levelup_academy.Service.UltraMsgService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/whatsapp")
 public class WhatsAppController {
-    private final WhatsAppService whatsAppService;
 
-    // Endpoint to send WhatsApp messages
+    private final UltraMsgService ultraMsgService;
+
+    @Autowired
+    public WhatsAppController(UltraMsgService ultraMsgService) {
+        this.ultraMsgService = ultraMsgService;
+    }
+
+    // Endpoint to send a WhatsApp message
     @PostMapping("/send")
-    public String sendMessage(@RequestParam String toPhoneNumber, @RequestParam String message) {
-        whatsAppService.sendWhatsAppMessage(toPhoneNumber, message);
-        return "Message sent successfully!";
+    public ResponseEntity sendTestMessage(@RequestBody WhatsAppDTO messageRequest) {
+        ultraMsgService.sendWhatsAppMessage(messageRequest.getTo(), messageRequest.getMessage());
+        return ResponseEntity.status(200).body("Message sent to: " + messageRequest.getTo());
     }
 }

@@ -1,6 +1,7 @@
 package com.levelup.levelup_academy.Service;
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ParentDTO;
 import com.levelup.levelup_academy.Model.*;
 import com.levelup.levelup_academy.Repository.*;
@@ -21,11 +22,23 @@ public class ParentService {
     private final GameRepository gameRepository;
     private final StatisticChildRepository statisticChildRepository;
     private final ModeratorRepository moderatorRepository;
+    private final EmailNotificationService emailNotificationService;
 
-    public List<Parent> getAllParents(Integer moderatorId) {
-        Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
-        if(moderator == null) throw new ApiException("Moderator not found");
-        return parentRepository.findAll();
+    public List<ParentDTOOut> getAllParents() {
+        List<Parent> parents = parentRepository.findAll();
+        List<ParentDTOOut> parentDTOOuts = new ArrayList<>();
+
+        for (Parent parent : parents){
+            User parentUser = parent.getUser();
+            List<ChildDTOOut> childDTOOuts = new ArrayList<>();
+            for (Child child : parent.getChild()){
+                User childUser = child.getParent().getUser();
+                childDTOOuts.add(new ChildDTOOut(childUser.getUsername(), childUser.getFirstName(), childUser.getLastName(),childUser.getEmail()));
+
+            }
+            parentDTOOuts.add(new ParentDTOOut(parentUser.getUsername(),parentUser.getFirstName(),parentUser.getLastName(),parentUser.getEmail(),childDTOOuts));
+        }
+        return parentDTOOuts;
     }
 
     public void registerParent(ParentDTO parentDTO) {
@@ -37,19 +50,20 @@ public class ParentService {
         authRepository.save(user);
         parentRepository.save(parent);
 
-//        User user = new User();
-//        user.setRole("PARENTS");
-//        user.setFirstName(parentDTO.getFirstName());
-//        user.setLastName(parentDTO.getLastName());
-//        user.setEmail(parentDTO.getEmail());
-//        String hashPassword = new BCryptPasswordEncoder().encode(parentDTO.getPassword());
-//        user.setPassword(hashPassword);
-//
-//        Parent parent = new Parent(null, user,null, null);
-//        user.setParent(parent);
-//        parentRepository.save(parent);
-//        authRepository.save(user);
-//
+        String subject = "Welcome to LevelUp Academy ";
+        String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; line-height: 1.6; background-color: #A53A10; padding: 40px 20px;'>" +
+                "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                "<h2 style='color: #fff;'>👨‍👩‍👧 Welcome to <span style='color: #FFD700;'>LevelUp Academy</span>, " + parentDTO.getFirstName() + "!</h2>" +
+                "<p style='font-size: 16px;'>We're excited to have you as part of our growing community of supportive parents.</p>" +
+                "<p style='font-size: 16px;'> Please don’t forget to <b>register your child</b> so they can begin their learning journey with us.</p>" +
+                "<p style='font-size: 16px;'> If you need any help, feel free to contact our support team anytime.</p>" +
+                "<p style='font-size: 15px;'>With warm regards,<br/><b>The LevelUp Academy Team</b></p>" +
+                "</div>" +
+                "</body></html>";
+
+        EmailRequest emailRequest = new EmailRequest(parentDTO.getEmail(),message, subject);
+        emailNotificationService.sendEmail(emailRequest);
 
     }
 

@@ -8,12 +8,13 @@ import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.BookingRepository;
 import com.levelup.levelup_academy.Repository.SessionRepository;
-import com.levelup.levelup_academy.Repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -23,7 +24,6 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final SessionRepository sessionRepository;
     private final AuthRepository authRepository;
-    private final SubscriptionRepository subscriptionRepository;
 
 
     public List<Booking> getMyBookings(Integer userId) {

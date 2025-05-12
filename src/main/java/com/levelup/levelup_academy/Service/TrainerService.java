@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,10 +32,19 @@ public class TrainerService {
     private final ChildRepository childRepository;
     private final PlayerRepository playerRepository;
     private final ProRepository proRepository;
+    private final StatisticProRepository statisticProRepository;
+    private final EmailNotificationService emailNotificationService;
 
     //GET
-    public List<Trainer> getAllTrainers(){
-        return trainerRepository.findAll();
+    public List<TrainerDTOOut> getAllTrainers() {
+        List<Trainer> trainers = trainerRepository.findAll();
+
+        List<TrainerDTOOut> dtoList = new ArrayList<>();
+        for (Trainer trainer : trainers) {
+            User user = trainer.getUser();
+            dtoList.add(new TrainerDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+        }
+        return dtoList;
     }
     //Register Trainer
     public void registerTrainer(TrainerDTO trainerDTO, MultipartFile file){
@@ -56,6 +66,25 @@ public class TrainerService {
         Trainer trainer = new Trainer(null,filePath,trainerDTO.getIsAvailable(),false, null,null,null,user, null, null);
         authRepository.save(user);
         trainerRepository.save(trainer);
+        User admin = authRepository.findUserByRole("ADMIN"); // Replace with actual method if different
+        if (admin != null) {
+            String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                    "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                    "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                    "<h2>📋 New Trainer Registration</h2>" +
+                    "<p><b>" + user.getFirstName() + " " + user.getLastName() + "</b> has registered as a Trainer.</p>" +
+                    "<p>Email: " + user.getEmail() + "</p>" +
+                    "<p>The trainer is awaiting your approval.</p>" +
+                    "<p style='font-size: 14px;'>– LevelUp Academy System</p>" +
+                    "</div></body></html>";
+
+            EmailRequest emailRequest = new EmailRequest();
+            emailRequest.setRecipient(admin.getEmail());
+            emailRequest.setSubject("New Trainer Awaiting Approval");
+            emailRequest.setMessage(message);
+
+            emailNotificationService.sendEmail(emailRequest);
+        }
     }
 
     //download
@@ -84,11 +113,11 @@ public class TrainerService {
         Trainer trainer = trainerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
-
         User user = trainer.getUser();
         String hashPassword = new BCryptPasswordEncoder().encode(trainerDTO.getPassword());
         user.setPassword(hashPassword);
         user.setUsername(trainerDTO.getUsername());
+        user.setPassword(hashPassword);
         user.setEmail(trainerDTO.getEmail());
         user.setFirstName(trainerDTO.getFirstName());
         user.setLastName(trainerDTO.getLastName());
