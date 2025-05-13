@@ -2,6 +2,8 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.PlayerDTO;
+import com.levelup.levelup_academy.DTOOut.PlayerDTOOut;
+import com.levelup.levelup_academy.Model.Player;
 import com.levelup.levelup_academy.Model.StatisticPlayer;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.PlayerService;
@@ -29,7 +31,7 @@ public class PlayerController {
     //get player by moderator
     @GetMapping("/get-player/{playerId}")
     public ResponseEntity getPlayer(@AuthenticationPrincipal User moderatorId,@PathVariable Integer playerId){
-        return ResponseEntity.status(200).body(playerService.getPlayer(moderatorId.getId(), playerId));
+        return ResponseEntity.status(200).body(playerService.getPlayer(moderatorId.getModerator().getId(), playerId));
     }
 
     //Register

@@ -13,6 +13,7 @@ import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.ProRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,6 +35,31 @@ public class ModeratorService {
         return moderatorRepository.findAll();
     }
 
+    public void registerModerator(Integer adminId, ModeratorDTO moderatorDTO){
+        User admin = authRepository.findUserById(adminId);
+        String hashPassword = new BCryptPasswordEncoder().encode(moderatorDTO.getPassword());
+        if(admin == null) throw new ApiException("Admin not found");
+
+
+        moderatorDTO.setRole("MODERATOR");
+
+
+        User user = new User();
+        user.setUsername(moderatorDTO.getUsername());
+        user.setPassword(hashPassword);
+        user.setEmail(moderatorDTO.getEmail());
+        user.setFirstName(moderatorDTO.getFirstName());
+        user.setLastName(moderatorDTO.getLastName());
+        user.setRole("MODERATOR");
+
+
+        Moderator moderator = new Moderator();
+        moderator.setUser(user);
+        user.setModerator(moderator);
+
+
+        authRepository.save(user);
+    }
 
     public void updateModerator(Integer id, ModeratorDTO moderatorDTO){
         Moderator moderator = moderatorRepository.findById(id)

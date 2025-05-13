@@ -33,21 +33,21 @@ public class Session {
     private String time;
 //    @NotEmpty(message = "Game can not be empty")
 //    @Column(columnDefinition = "varchar(30) not null")
-//    private String games;
+//   private String games;
 
     @ManyToOne
-    @JoinColumn(name = "trainer_id" , referencedColumnName = "id")
     @JsonIgnore
     private Trainer trainer;
     @ManyToOne
-    @JoinColumn(name = "game_id" , referencedColumnName = "id")
     @JsonIgnore
     private Game game;
 
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "session")
+    @JsonIgnore
     private Set<Review> reviews;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "session")
+    @JsonIgnore
     private Set<Booking> bookings;
 
 
