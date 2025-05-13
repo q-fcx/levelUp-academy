@@ -2,13 +2,11 @@ package com.levelup.levelup_academy.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.List;
 import java.util.Set;
-
+@Data
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,15 +19,13 @@ public class Parent {
 
 
     @OneToOne
-    @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    private Set<Child> children;
+    private List<Child> children;
 
     @OneToOne
-    @JoinColumn(name = "booking_id")
     @JsonIgnore
     private Booking booking;
 
