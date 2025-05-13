@@ -30,7 +30,7 @@ public class ParentController {
 
     @GetMapping("/get")
     public ResponseEntity getAllParents(@AuthenticationPrincipal User moderator) {
-        return ResponseEntity.status(200).body(parentService.getAllParents(moderator.getId()));
+        return ResponseEntity.status(200).body(parentService.getAllParents(moderator.getModerator().getId()));
     }
 
     @PostMapping("/register")
@@ -54,7 +54,7 @@ public class ParentController {
 
     @PostMapping("/add-child")
     public ResponseEntity registerChild(@AuthenticationPrincipal User parent, @RequestBody @Valid Child child){
-        parentService.addChildToParent(parent.getId(),child);
+        parentService.addChildToParent(parent.getParent().getId(),child);
         return ResponseEntity.status(200).body(new ApiResponse("Child registered"));
     }
 
