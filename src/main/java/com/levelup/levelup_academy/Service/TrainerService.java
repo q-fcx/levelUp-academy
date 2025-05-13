@@ -34,6 +34,8 @@ public class TrainerService {
     private final SessionRepository sessionRepository;
     private final BookingRepository bookingRepository;
     private final ModeratorRepository moderatorRepository;
+    private final StatisticPlayerRepository statisticPlayerRepository;
+    private final StatisticChildRepository statisticChildRepository;
 
     //GET
     public List<TrainerDTOOut> getAllTrainers(Integer moderatorId) {
@@ -208,7 +210,7 @@ public class TrainerService {
         String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
         stat.setTrophy(trophy);
-//        statisticPlayerRepository.save(stat);
+        statisticPlayerRepository.save(stat);
     }
 
 
@@ -251,7 +253,7 @@ public class TrainerService {
         String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
         stat.setTrophy(trophy);
-//        statisticChildRepository.save(stat);
+        statisticChildRepository.save(stat);
     }
 
 

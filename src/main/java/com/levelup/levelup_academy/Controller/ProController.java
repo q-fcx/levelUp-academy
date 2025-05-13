@@ -2,6 +2,7 @@ package com.levelup.levelup_academy.Controller;
 
 import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ProDTO;
+import com.levelup.levelup_academy.DTOOut.ProDTOOut;
 import com.levelup.levelup_academy.Model.Pro;
 import com.levelup.levelup_academy.Model.StatisticPro;
 import com.levelup.levelup_academy.Model.User;
@@ -26,10 +27,10 @@ public class ProController {
 
 
 
-    //get pro player by id
+//    //get pro player by id
     @GetMapping("/get/{proId}")
-     public ResponseEntity getPro(@AuthenticationPrincipal User moderatorId,@PathVariable Integer proId){
-        return ResponseEntity.status(200).body(proService.getPro(moderatorId.getId(), proId));
+     public ResponseEntity getPro(@AuthenticationPrincipal Integer moderatorId,@PathVariable Integer proId){
+        return ResponseEntity.status(200).body(proService.getPro(moderatorId, proId));
      }
 
     //Register pro player
@@ -40,6 +41,7 @@ public class ProController {
         proService.registerPro(proDTO, file);
         return ResponseEntity.ok("pro player registered successfully with CV uploaded");
     }
+
 
     //Edit
     @PutMapping("/edit")
@@ -111,5 +113,7 @@ public class ProController {
     public ResponseEntity getContractForPro(@AuthenticationPrincipal User proId){
         return ResponseEntity.status(200).body(contractService.getAllContract(proId.getId()));
     }
+
+
 
 }
