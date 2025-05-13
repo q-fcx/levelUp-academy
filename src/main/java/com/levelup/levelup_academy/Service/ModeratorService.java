@@ -103,11 +103,29 @@ public class ModeratorService {
         contract.setModeratorStatus(true);
         contractRepository.save(contract);
 
-
+        String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                "<h2>Contract Review Notice</h2>" +
+                "<p style='font-size: 16px;'>Dear <b>" + pro.getUser().getFirstName() + "</b>,</p>" +
+                "<p style='font-size: 16px;'>Your contract has been reviewed by our moderators and has been conditionally approved.</p>" +
+                "<p style='font-size: 16px; text-align: left; padding: 10px 0;'><b>Conditions:</b></p>" +
+                "<ul style='font-size: 15px; text-align: left; line-height: 1.6; padding-left: 20px;'>" +
+                "<li>A <b>10%</b> service fee will be deducted from your contract amount.</li>" +
+                "<li>Your account will be <b>temporarily paused</b> until you accept these conditions.</li>" +
+                "<li>You must maintain a <b>minimum rating of 4.5</b>.</li>" +
+                "<li>At least <b>5 sessions/month</b> are required to remain eligible for bonuses.</li>" +
+                "<li><b>Violations</b> of academy guidelines may result in termination.</li>" +
+                "<li>Payment will be processed <b>monthly</b> after session report approval.</li>" +
+                "<li>Monthly feedback meetings with moderators are <b>mandatory</b>.</li>" +
+                "</ul>" +
+                "<p style='font-size: 16px;'>Please log in to your dashboard to confirm or decline the contract.</p>" +
+                "<p style='font-size: 14px;'>– The LevelUp Academy Team</p>" +
+                "</div></body></html>";
             EmailRequest email = new EmailRequest();
             email.setRecipient(pro.getUser().getEmail());
             email.setSubject("Contract Reviewed");
-            email.setMessage("Your contract has been reviewed by the moderator. Please check your dashboard for further actions.");
+            email.setMessage(message);
 
             emailNotificationService.sendEmail(email);
 

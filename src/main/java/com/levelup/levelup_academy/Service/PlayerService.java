@@ -38,7 +38,7 @@ public class PlayerService {
         List<PlayerDTOOut> dtoList = new ArrayList<>();
         for (Player player : players) {
             User user = player.getUser();
-            dtoList.add(new PlayerDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+            dtoList.add(new PlayerDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(),user.getPlayer().getStatistics()));
         }
         return dtoList;
     }

@@ -48,7 +48,7 @@ public class ContractService {
                 contractDTO.getGame(),
                 contractDTO.getStartDate(),
                 contractDTO.getEndDate(),
-                contractDTO.getAmount(),false
+                contractDTO.getAmount()
                 ,false,null,null,null
         );
               contract.setModeratorStatus(false);

@@ -50,7 +50,7 @@ public class Contract {
     @Column(columnDefinition = "double not null")
     private Double amount;
 
-    private Boolean proStatus = false;
+
 
     private Boolean moderatorStatus = false;
 

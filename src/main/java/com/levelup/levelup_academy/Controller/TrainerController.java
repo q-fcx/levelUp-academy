@@ -41,13 +41,13 @@ public class TrainerController {
     @PutMapping("/edit")
     public ResponseEntity updateTrainer(@AuthenticationPrincipal User trainerId,
                                                 @RequestBody @Valid TrainerDTO trainerDTO){
-        trainerService.updateTrainer(trainerId.getId(), trainerDTO);
+        trainerService.updateTrainer(trainerId.getTrainer().getId(), trainerDTO);
         return ResponseEntity.ok("Trainer updated successfully");
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity deleteTrainer(@AuthenticationPrincipal User trainerId){
-        trainerService.deleteTrainer(trainerId.getId());
+        trainerService.deleteTrainer(trainerId.getTrainer().getId());
         return ResponseEntity.ok("Trainer deleted successfully");
     }
 
@@ -69,17 +69,17 @@ public class TrainerController {
 
     @GetMapping("/get-players/{sessionId}")
     public ResponseEntity getAllPlayersInSession(@AuthenticationPrincipal User trainer, @PathVariable Integer sessionId) {
-        return ResponseEntity.status(200).body(trainerService.getAllPlayersInSession(trainer.getId(), sessionId));
+        return ResponseEntity.status(200).body(trainerService.getAllPlayersInSession(trainer.getTrainer().getId(), sessionId));
     }
     @PutMapping("/give-player/{playerId}")
     public ResponseEntity giveTrophyToPlayer(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId) {
-        trainerService.giveTrophyToPlayer(trainerId.getId(), playerId);
+        trainerService.giveTrophyToPlayer(trainerId.getTrainer().getId(), playerId);
         return ResponseEntity.ok("Trophy granted to player if eligible.");
     }
 
     @PutMapping("/give-pro/{proId}")
     public ResponseEntity<String> giveTrophyToProfessional(@AuthenticationPrincipal User trainer, @PathVariable Integer proId) {
-        trainerService.giveTrophyToPro(trainer.getId(), proId);
+        trainerService.giveTrophyToPro(trainer.getTrainer().getId(), proId);
         return ResponseEntity.ok("Trophy granted to professional .");
     }
 
@@ -92,19 +92,19 @@ public class TrainerController {
 
     @PostMapping("/addStatisticToChild/{childId}")
     public ResponseEntity addStatisticToChild(@AuthenticationPrincipal User trainerId, @PathVariable Integer childId, @RequestBody @Valid StatisticChildDTO statisticChildDTO) {
-        trainerService.addStatisticToChild(trainerId.getId(), childId, statisticChildDTO);
+        trainerService.addStatisticToChild(trainerId.getTrainer().getId(), childId, statisticChildDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
     }
 
     @PostMapping("/addStatisticToPlayer/{playerId}")
     public ResponseEntity addStatisticToChild(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId, @RequestBody @Valid StatisticPlayerDTO statisticPlayerDTO) {
-        trainerService.addStatisticToPlayer(trainerId.getId(), playerId, statisticPlayerDTO);
+        trainerService.addStatisticToPlayer(trainerId.getTrainer().getId(), playerId, statisticPlayerDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
     }
 
     @PostMapping("/addStatisticToPro/{proId}")
     public ResponseEntity addStatisticToPro(@AuthenticationPrincipal User trainerId, @PathVariable Integer proId, @RequestBody @Valid StatisticProDTO statisticProDTO) {
-        trainerService.addStatisticToPro(trainerId.getId(), proId, statisticProDTO);
+        trainerService.addStatisticToPro(trainerId.getTrainer().getId(), proId, statisticProDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
     }
 

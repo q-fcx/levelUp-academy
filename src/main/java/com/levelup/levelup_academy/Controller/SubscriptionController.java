@@ -32,6 +32,10 @@ public class SubscriptionController {
         subscriptionService.premiumSubscription(userId.getId());
         return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Premium Subscription"));
     }
+    @GetMapping("/get-subs")
+    public ResponseEntity gatAllSubs(@AuthenticationPrincipal User user){
+        return ResponseEntity.status(200).body(subscriptionService.gatAllSubs(user.getId()));
+    }
 
 
 }

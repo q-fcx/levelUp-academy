@@ -38,7 +38,8 @@ public class ParentService {
             List<ChildDTOOut> childDTOOuts = new ArrayList<>();
             for (Child child : parent.getChildren()){
                 User childUser = child.getParent().getUser();
-                childDTOOuts.add(new ChildDTOOut(childUser.getUsername(), childUser.getFirstName(), childUser.getLastName(),childUser.getEmail()));
+                StatisticChild statistics = child.getStatistics();
+                childDTOOuts.add(new ChildDTOOut(childUser.getUsername(), childUser.getFirstName(), childUser.getLastName(),childUser.getEmail(),statistics));
 
             }
             parentDTOOuts.add(new ParentDTOOut(parentUser.getUsername(),parentUser.getFirstName(),parentUser.getLastName(),parentUser.getEmail(),childDTOOuts));

@@ -98,7 +98,7 @@ public class BookingService {
         LocalDateTime now = LocalDateTime.now();
 
         if (!now.isBefore(sessionStart.minusHours(1))) {
-            throw new RuntimeException("Cannot cancel booking less than 1 hour before the session.");
+            throw new ApiException("Cannot cancel booking less than 1 hour before the session.");
         }
 
         booking.setStatus("CANCELLED");

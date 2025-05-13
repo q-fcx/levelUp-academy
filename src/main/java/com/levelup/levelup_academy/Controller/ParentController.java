@@ -72,7 +72,7 @@ public class ParentController {
 
     @GetMapping("/child-statistic/{childId}")
     public ResponseEntity getChildStatistic(@AuthenticationPrincipal User parent,@PathVariable Integer childId) {
-        return ResponseEntity.status(200).body(parentService.getChildStatistic(parent.getId(), childId));
+        return ResponseEntity.status(200).body(parentService.getChildStatistic(parent.getParent().getId(), childId));
     }
 
     @GetMapping("/get-games/{childId}")
