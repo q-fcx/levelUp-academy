@@ -69,4 +69,12 @@ public class SubscriptionService {
     }
 
 
+    public List<Subscription> gatAllSubs(Integer userId){
+        User user = authRepository.findUserById(userId);
+        if (user == null){
+            throw new ApiException("User not found");
+        }
+        return subscriptionRepository.findAll();
+    }
+
 }

@@ -36,7 +36,7 @@ public class ConfigurationSecurity {
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/parent/register", "/api/v1/player/register", "/api/v1/trainer/register", "/api/v1/pro/register").permitAll()
+                .requestMatchers("/api/v1/parent/register", "/api/v1/player/register", "/api/v1/trainer/register", "/api/v1/pro/register","/api/v1/contract/**").permitAll()
 
                 .requestMatchers("/api/v1/parent/edit","/api/v1/parent/delete", "/api/v1/parent/add-child",
                                     "/api/v1/parent/update-child", "/api/v1/parent/delete-child", "/api/v1/parent/child-statistic","/api/v1/parent/get-games","/api/v1/parent/get-child-stati-by-parent").hasAuthority("PARENTS")
@@ -46,10 +46,10 @@ public class ConfigurationSecurity {
                                      "/api/v1/review/add","/api/v1/review/delete").hasAnyAuthority("PLAYER", "PARENTS","PRO")
 
 
-                .requestMatchers("/api/v1/game/**","/api/v1/contract/**", "/api/v1/moderator/edit", "/api/v1/moderator/delete","/api/v1/parent/get",
+                .requestMatchers("/api/v1/game/**", "/api/v1/moderator/edit", "/api/v1/moderator/delete","/api/v1/parent/get",
                               "/api/v1/moderator/get-all-pro", "/api/v1/moderator/review-contract","/api/v1/moderator/send-exam","/api/v1/player/get","/api/v1/player/get-player",
                               "/api/v1/pro/get","/api/v1/pro/cv","/api/v1/review/get-all", "/api/v1/session/get", "/api/v1/session/add","/api/v1/session/update","/api/v1/session/del",
-                                "/api/v1/session/change-session","/api/v1/trainer/get").hasAuthority("MODERATOR")
+                                "/api/v1/session/change-session","/api/v1/trainer/get","/api/v1/subscription/get-subs").hasAuthority("MODERATOR")
 
                 .requestMatchers("/api/v1/player/edit","/api/v1/player/delete","/api/v1/player/player").hasAuthority("PLAYER")
 

@@ -27,7 +27,7 @@ public class ProController {
     //GET
     @GetMapping("/get")
     public ResponseEntity getAllPro(@AuthenticationPrincipal User moderatorId) {
-        return ResponseEntity.status(200).body(proService.getAllPro(moderatorId.getId()));
+        return ResponseEntity.status(200).body(proService.getAllPro(moderatorId.getModerator().getId()));
     }
 
     //get pro player by id
@@ -93,7 +93,7 @@ public class ProController {
     // Accept contract
     @PutMapping("/accept/{contractId}")
     public ResponseEntity acceptContract(@AuthenticationPrincipal User proId,@PathVariable Integer contractId) {
-        contractService.acceptContract(proId.getId(), contractId);
+        contractService.acceptContract(proId.getPro().getId(), contractId);
         return ResponseEntity.ok("Contract accepted.");
     }
 

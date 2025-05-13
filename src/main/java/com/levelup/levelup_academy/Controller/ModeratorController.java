@@ -48,7 +48,7 @@ public class ModeratorController {
     @PostMapping("/review-contract/{contractId}/{proId}")
     public ResponseEntity reviewContract(@AuthenticationPrincipal User moderator, @PathVariable Integer contractId, @PathVariable Integer proId) {
 
-        moderatorService.reviewContract(moderator.getId(),contractId,proId);
+        moderatorService.reviewContract(moderator.getModerator().getId(),contractId,proId);
         return ResponseEntity.ok("Contract reviewed and Pro has been notified.");
     }
 
@@ -60,8 +60,8 @@ public class ModeratorController {
 
 
     @PostMapping("/send-exam/{proId}")
-    public ResponseEntity<String> sendDiscordExam(@AuthenticationPrincipal Moderator moderator,@PathVariable Integer proId) {
-        proService.sendDiscordExamLink(moderator.getId(),proId);
+    public ResponseEntity<String> sendDiscordExam(@AuthenticationPrincipal User moderator,@PathVariable Integer proId) {
+        proService.sendDiscordExamLink(moderator.getModerator().getId(),proId);
         return ResponseEntity.status(200).body("Discord exam link has been sent to the Pro.");
     }
 

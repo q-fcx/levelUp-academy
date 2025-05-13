@@ -43,7 +43,6 @@ public class Session {
     private Game game;
 
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "session")
-    @JsonIgnore
     private Set<Review> reviews;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "session")

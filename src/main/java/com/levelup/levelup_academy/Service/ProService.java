@@ -47,7 +47,7 @@ public class ProService {
         List<ProDTOOut> dtoList = new ArrayList<>();
         for (Pro pro : pros) {
             User user = pro.getUser();
-            dtoList.add(new ProDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+            dtoList.add(new ProDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(),user.getPro().getStatistics()));
         }
         return dtoList;
     }
@@ -90,7 +90,7 @@ public class ProService {
         String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
                 "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
                 "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
-                "<h2>🎓 Welcome to <b>LevelUp Academy</b>, " + proDTO.getFirstName() + "!</h2>" +
+                "<h2> Welcome to <b>LevelUp Academy</b>, " + proDTO.getFirstName() + "!</h2>" +
                 "<p style='font-size: 16px;'>We're thrilled to have you on board as a Pro.</p>" +
                 "<p style='font-size: 16px;'>Please wait while our team reviews your profile and approves your registration.</p>" +
                 "<p style='font-size: 14px;'>– The LevelUp Academy Team</p>" +
@@ -195,7 +195,7 @@ public class ProService {
         String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
                 "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
                 "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
-                "<h2>✅ You're Approved, " + user.getFirstName() + "!</h2>" +
+                "<h2> You're Approved, " + user.getFirstName() + "!</h2>" +
                 "<p style='font-size: 16px;'>Welcome officially to <b>LevelUp Academy</b> as a Pro! 🎉</p>" +
                 "<p style='font-size: 16px;'>We're thrilled to have you. You can now connect with other players and join activities in our community.</p>" +
                 "<p><a href='https://discord.gg/3KQPVdrv' style='color: #ffffff; background-color: #7289DA; padding: 10px 20px; text-decoration: none; border-radius: 8px;'>Join our Discord Community</a></p>" +
@@ -228,7 +228,7 @@ public class ProService {
         String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
                 "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
                 "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
-                "<h2>❌ Application Update, " + user.getFirstName() + "</h2>" +
+                "<h2> Application Update, " + user.getFirstName() + "</h2>" +
                 "<p style='font-size: 16px;'>Thank you for applying to <b>LevelUp Academy</b>.</p>" +
                 "<p style='font-size: 16px;'>After careful consideration, we regret to inform you that your application was not approved at this time.</p>" +
                 "<p style='font-size: 16px;'>We believe in growth and potential – and we encourage you to keep improving and try again in the future. 💪</p>" +
@@ -262,7 +262,7 @@ public class ProService {
         if (moderator == null) {
             throw new ApiException("Moderator is not found.");
         }
-        String discordChannelLink = "https://discord.com/invite/yourChannelID";
+        String discordChannelLink = "https://discord.gg/QPJfN6g5";
 
         String emailMessage = "Dear " + pro.getUser().getUsername() + ",\n\n" +
                 "Please click the link below to join the Discord channel and demonstrate your professional skills:\n\n" +
