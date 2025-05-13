@@ -81,7 +81,7 @@ public class ParentServiceTest {
         when(child.getParent()).thenReturn(childParent);
         when(childParent.getUser()).thenReturn(childUser);
 
-        parent.setChildren(Set.of(child));
+        parent.setChildren(List.of(child));
         when(parentRepository.findAll()).thenReturn(List.of(parent));
 
         // Act
