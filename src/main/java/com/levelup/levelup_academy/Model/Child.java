@@ -34,7 +34,6 @@ public class Child {
     private Integer age;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonIgnore
     private Parent parent;
 

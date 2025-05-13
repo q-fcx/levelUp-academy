@@ -32,8 +32,8 @@ public class PlayerRepositoryTest {
     @BeforeEach
     void setUp() {
         user = new User(null, "player1", "password", "player1@example.com", "John", "Doe", "PLAYER", LocalDate.now(), null, null, null, null, null, null, null, null);
-        player1 = new Player(null, user, null, null);
-        player2 = new Player(null, new User(null, "player2", "password", "player2@example.com", "Jane", "Doe", "PLAYER", LocalDate.now(), null, null, null, null, null, null, null, null), null, null);
+        player1 = new Player(null, user, null);
+        player2 = new Player(null, new User(null, "player2", "password", "player2@example.com", "Jane", "Doe", "PLAYER", LocalDate.now(), null, null, null, null, null, null, null, null), null);
     }
 
     @Test

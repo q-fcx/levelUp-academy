@@ -73,7 +73,12 @@ public class ContractControllerTest {
 
         Mockito.when(contractService.getAllContract(1)).thenReturn(contractList);
 
-        mockMvc.perform(get("/api/v1/contract/get/1"))
+        User mockUser = new User();
+        mockUser.setId(1);
+        TestingAuthenticationToken auth = new TestingAuthenticationToken(mockUser, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        mockMvc.perform(get("/api/v1/contract/get"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -82,9 +87,13 @@ public class ContractControllerTest {
                 .andExpect(jsonPath("$[0].commercialRegister").value(123456))
                 .andExpect(jsonPath("$[0].game").value("Valorant"))
                 .andExpect(jsonPath("$[0].amount").value(2000.0));
+
+        SecurityContextHolder.clearContext();
     }
+
     @Test
     public void testAddContract() throws Exception {
+
 
         User mockModerator = new User();
         mockModerator.setId(1);
@@ -106,17 +115,18 @@ public class ContractControllerTest {
         }
     """;
 
+
         TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(mockModerator, null);
         authenticationToken.setAuthenticated(true);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-
-        mockMvc.perform(post("/api/v1/contract/add/1")
+        mockMvc.perform(post("/api/v1/contract/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(contractJson)
-                )
+                        .content(contractJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Contract added and email sent successfully."));
+
+
 
         SecurityContextHolder.clearContext();
     }

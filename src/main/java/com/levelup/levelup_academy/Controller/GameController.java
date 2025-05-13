@@ -25,7 +25,7 @@ public class GameController {
     //ADD
     @PostMapping("/add")
     public ResponseEntity addGame(@AuthenticationPrincipal User moderator, @RequestBody @Valid Game game){
-        gameService.addGame(moderator.getId(), game);
+        gameService.addGame(moderator.getModerator().getId(), game);
         return ResponseEntity.status(200).body(new ApiResponse("Game Added"));
     }
 

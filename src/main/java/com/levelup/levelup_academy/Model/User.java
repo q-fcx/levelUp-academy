@@ -58,7 +58,6 @@ public class User implements UserDetails {
     private Pro pro;
     //Moderator
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
     private Moderator moderator;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")

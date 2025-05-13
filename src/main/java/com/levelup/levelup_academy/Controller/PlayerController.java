@@ -31,7 +31,7 @@ public class PlayerController {
     //get player by moderator
     @GetMapping("/get-player/{playerId}")
     public ResponseEntity getPlayer(@AuthenticationPrincipal User moderatorId,@PathVariable Integer playerId){
-        return ResponseEntity.status(200).body(playerService.getPlayer(moderatorId.getId(), playerId));
+        return ResponseEntity.status(200).body(playerService.getPlayer(moderatorId.getModerator().getId(), playerId));
     }
 
     //Register

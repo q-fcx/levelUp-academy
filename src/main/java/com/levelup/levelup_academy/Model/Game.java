@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,7 +31,7 @@ public class Game {
 
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "game")
-    private Set<Session> sessions;
+    private List<Session> sessions;
 
 
 }

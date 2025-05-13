@@ -16,12 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 public class Moderator {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
     @JsonIgnore
+    @MapsId
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "moderator")
