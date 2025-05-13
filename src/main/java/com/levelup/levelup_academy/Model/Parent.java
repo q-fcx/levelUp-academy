@@ -21,6 +21,7 @@ public class Parent {
     @OneToOne
     @JsonIgnore
     private User user;
+    private String phoneNumber;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     private List<Child> children;
