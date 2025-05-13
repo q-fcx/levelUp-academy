@@ -57,7 +57,7 @@ public class PlayerService {
     //Register player
 
     public void registerPlayer(PlayerDTO playerDTO){
-        playerDTO.setRole("PLAYER");
+        playerDTO.setRole("ADMIN");
         String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
         User user = new User(null, playerDTO.getUsername(), hashPassword, playerDTO.getEmail(), playerDTO.getFirstName(), playerDTO.getLastName(), playerDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
         Player player = new Player(null,user,null);
@@ -95,7 +95,6 @@ public class PlayerService {
         String hashPassword = new BCryptPasswordEncoder().encode(playerDTO.getPassword());
         user.setPassword(hashPassword);
         user.setUsername(playerDTO.getUsername());
-        user.setPassword(playerDTO.getPassword());
         user.setEmail(playerDTO.getEmail());
         user.setFirstName(playerDTO.getFirstName());
         user.setLastName(playerDTO.getLastName());

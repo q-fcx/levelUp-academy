@@ -10,6 +10,7 @@ import com.levelup.levelup_academy.Repository.AuthRepository;
 import com.levelup.levelup_academy.Repository.ModeratorRepository;
 import com.levelup.levelup_academy.Repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -71,7 +72,8 @@ public class UserService {
         User admin = authRepository.findUserById(adminId);
         if(admin == null) throw new ApiException("Admin not found");
         moderatorDTO.setRole("MODERATOR");
-        User user = new User(null, moderatorDTO.getUsername(), moderatorDTO.getPassword(), moderatorDTO.getEmail(), moderatorDTO.getFirstName(), moderatorDTO.getLastName(), moderatorDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
+        String hashPassword = new BCryptPasswordEncoder().encode(moderatorDTO.getPassword());
+        User user = new User(null, moderatorDTO.getUsername(),hashPassword, moderatorDTO.getEmail(), moderatorDTO.getFirstName(), moderatorDTO.getLastName(), moderatorDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
         Moderator moderator = new Moderator(null,user,null);
         authRepository.save(user);
         moderatorRepository.save(moderator);

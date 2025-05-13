@@ -24,11 +24,7 @@ public class ProController {
     private final StatisticProService statisticProService;
     private final ContractService contractService;
 
-    //GET
-    @GetMapping("/get-all-pro")
-    public ResponseEntity getAllPro(@AuthenticationPrincipal User moderatorId) {
-        return ResponseEntity.status(200).body(proService.getAllPro(moderatorId.getId()));
-    }
+
 
     //get pro player by id
     @GetMapping("/get/{proId}")
@@ -109,21 +105,7 @@ public class ProController {
         proService.expireAccount();
         return ResponseEntity.status(200).body(new ApiResponse("Expired Pro accounts have been processed."));
     }
-
-    @GetMapping("/{moderatorId}/{proId}/cv")
-    public ResponseEntity<byte[]> downloadProCv(@PathVariable Integer proId,@PathVariable Integer moderatorId) {
-        byte[] fileContent = proService.downloadProPDF(moderatorId,proId);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);  // Set content type as PDF
-        headers.setContentDisposition(ContentDisposition.builder("attachment")
-                .filename("Pro_CV_" + proId + ".pdf")
-                .build());
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .headers(headers)
-                .body(fileContent);
-    }
+    
 
     @GetMapping("/get-all-contract/{proId}")
     public ResponseEntity getContractForPro(@AuthenticationPrincipal User proId){

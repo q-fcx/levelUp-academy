@@ -6,6 +6,7 @@ import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ModeratorService;
 import com.levelup.levelup_academy.Service.ProService;
+import com.levelup.levelup_academy.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class ModeratorController {
     private final ModeratorService moderatorService;
     private final ProService proService;
+    private final UserService userService;
 
     //GET
     @GetMapping("/get")
@@ -26,7 +28,7 @@ public class ModeratorController {
     }
     @PostMapping("/register")
     public ResponseEntity registerModerator(@AuthenticationPrincipal User admin,@RequestBody @Valid ModeratorDTO moderatorDTO){
-        moderatorService.registerModerator(admin.getId(), moderatorDTO);
+        userService.registerModerator(admin.getId(), moderatorDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Moderator registered"));
 
     }

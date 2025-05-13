@@ -294,4 +294,29 @@ public class TrainerService {
 
 
 
+    public void sendPromotionRequestToModerator(Integer trainerId,Integer playerId) {
+        Trainer trainer = trainerRepository.findTrainerById(trainerId);
+        Player player = playerRepository.findPlayerById(playerId);
+        if(trainer == null){
+            new ApiException("Trainer not found");
+        }
+        if(player == null){
+            new ApiException("Player not found");
+        }
+        String subject = "Promotion Request: Player to Pro";
+        String body = String.format("Trainer %s has recommended player %s for promotion to Pro.\n\n" +
+                        "Reason: %s",
+                trainer.getUser().getFirstName(), player.getUser().getUsername());
+
+        List<Moderator> moderators = moderatorRepository.findAll();
+        for (Moderator moderator : moderators) {
+
+            EmailRequest emailRequest = new EmailRequest();
+            emailRequest.setRecipient(moderator.getUser().getEmail());
+            emailRequest.setSubject(subject);
+            emailRequest.setMessage(body);
+            emailNotificationService.sendEmail(emailRequest);
+        }
+    }
+
 }

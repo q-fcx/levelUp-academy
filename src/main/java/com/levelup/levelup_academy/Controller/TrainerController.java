@@ -108,6 +108,13 @@ public class TrainerController {
         return ResponseEntity.status(200).body(new ApiResponse("Statistic added successfully."));
     }
 
+    @PostMapping("/send-promotion-request/{playerId}")
+    public ResponseEntity sendPromotionRequestToModerator(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId) {
+        // Call the service to send the promotion request
+        trainerService.sendPromotionRequestToModerator(trainerId.getId(),playerId);
+        return ResponseEntity.ok("Promotion request sent to Moderator successfully.");
+    }
+
 
 
     @PostMapping("/approve-trainer/{trainerId}")

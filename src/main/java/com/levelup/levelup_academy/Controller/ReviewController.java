@@ -17,7 +17,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("get-all")
+    @GetMapping("/get-all")
     public ResponseEntity getAllReviews(@AuthenticationPrincipal User moderator) {
         return ResponseEntity.status(200).body(reviewService.getAllReviews(moderator.getId()));
     }

@@ -41,7 +41,7 @@ public class PlayerController {
     @PutMapping("/edit")
     public ResponseEntity edit(@AuthenticationPrincipal User playerId, @RequestBody PlayerDTO playerDTO) {
         playerService.updatePlayer(playerId.getId(), playerDTO);
-        return ResponseEntity.ok("Player updated successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Player updated successfully"));
     }
 
     // Delete player by ID

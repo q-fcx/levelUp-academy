@@ -55,7 +55,7 @@ public class ConfigurationSecurity {
 
                 .requestMatchers("/api/v1/pro/edit","/api/v1/pro/delete","/api/v1/pro/accept","/api/v1/pro/reject","/api/v1/pro/expireAccount","/api/v1/pro/professional").hasAuthority("PRO")
 
-                .requestMatchers("/api/v1/pro/approve","/api/v1/user/get-all","/api/v1/trainer/cv","/api/v1/trainer/approve-trainer","/api/v1/trainer/reject-trainer").hasAuthority("ADMIN")
+                .requestMatchers("/api/v1/pro/approve","/api/v1/user/get-all","/api/v1/trainer/cv","/api/v1/trainer/approve-trainer","/api/v1/trainer/reject-trainer","/api/v1/moderator/register").hasAuthority("ADMIN")
 
                 .requestMatchers("/api/v1/review/get-my-reviews","/api/v1/session/notify-start","/api/v1/trainer/get-players","/api/v1/child-statistic/**","/api/v1/player-statistic/**",
                                 "/api/v1/pro-statistic/**", "/api/v1/trainer/edit", "/api/v1/trainer/delete","/api/v1/trainer/give-player","/api/v1/trainer/give-pro","/api/v1/trainer/give-child",
