@@ -60,15 +60,15 @@ public class SessionController {
     @GetMapping("/notify-start/{sessionId}")
     public ResponseEntity notifyUsersOfSessionStart(@AuthenticationPrincipal User trainer, @PathVariable Integer sessionId) {
         sessionService.notifyUsersIfSessionStarting(trainer.getId(),sessionId);
-        return ResponseEntity.ok("Emails sent to all booked users for session ID: " + sessionId);
+        return ResponseEntity.ok(new ApiResponse("Emails sent to all booked users for session ID: " + sessionId));
     }
 
     @PutMapping("/change-session/{trainerId}/{newSessionId}")
-    public ResponseEntity<String> changeTrainerSession(@AuthenticationPrincipal User moderator,
+    public ResponseEntity changeTrainerSession(@AuthenticationPrincipal User moderator,
             @PathVariable Integer trainerId,
             @PathVariable Integer newSessionId) {
         sessionService.changeTrainerSession(moderator.getId(), trainerId, newSessionId);
-        return ResponseEntity.ok("Trainer session changed successfully.");
+        return ResponseEntity.ok(new ApiResponse("Trainer session changed successfully."));
     }
 
 

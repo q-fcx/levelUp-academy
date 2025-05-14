@@ -156,14 +156,14 @@ public class ParentService {
         return statistic;
     }
 
-    public List<Game> getGamesByChildAge(Integer parentId, Integer childId) {
+    public List<String> getGamesByChildAge(Integer parentId, Integer childId) {
         Parent parent = parentRepository.findParentById(parentId);
         if(parent == null) throw new ApiException("Parent not found");
 
         Child child = childRepository.findChildById(childId);
         if(child == null) throw new ApiException("Child not found");
 
-        return gameRepository.findGamesByAgeIsLessThanEqual(child.getAge());
+        return gameRepository.findGamesByAgeLessThanEqual(child.getAge());
     }
 
     public StatisticChild getMyChildStatisticsByChildId(Integer parentId,Integer childId) {

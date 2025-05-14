@@ -47,23 +47,24 @@ public class UserService {
     public void generateModeratorLogin(Integer adminId, Integer moderatorId) {
         User admin = authRepository.findUserById(adminId);
         if (admin == null || !admin.getRole().equals("ADMIN")) {
-            throw new ApiException("only admin can create moderator account");
+            throw new ApiException("Only admin can create moderator account");
         }
 
         Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
         if (moderator == null) {
             throw new ApiException("Moderator not found");
         }
+
         String username = "moderator" + moderatorId;
-        Random random = new Random();
-        String password = String.valueOf(random.nextInt(90000000) + 10000000);
+        String password = String.valueOf(new Random().nextInt(90000000) + 10000000);
 
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
+        user.setRole("MODERATOR");
+        user.setModerator(moderator);
 
         authRepository.save(user);
-        moderatorRepository.save(moderator);
     }
 
 

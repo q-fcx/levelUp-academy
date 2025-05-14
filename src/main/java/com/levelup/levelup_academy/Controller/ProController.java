@@ -38,11 +38,11 @@ public class ProController {
 
     //Register pro player
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> registerTrainer(
+    public ResponseEntity registerTrainer(
             @RequestPart("pro") ProDTO proDTO,
             @RequestPart("file") MultipartFile file) {
         proService.registerPro(proDTO, file);
-        return ResponseEntity.ok("pro player registered successfully with CV uploaded");
+        return ResponseEntity.ok(new ApiResponse("pro player registered successfully with CV uploaded"));
     }
 
     //Edit
@@ -67,12 +67,12 @@ public class ProController {
     @PostMapping("/approve/{proId}")
     public ResponseEntity approvePro(@AuthenticationPrincipal User adminId, @PathVariable Integer proId) {
         proService.approveProByAdmin(adminId.getId(), proId);
-        return ResponseEntity.ok("The professional player has been approved.");
+        return ResponseEntity.ok(new ApiResponse("The professional player has been approved."));
     }
     @PutMapping("/reject/{proId}")
     public ResponseEntity rejectPro(@AuthenticationPrincipal User adminId, @PathVariable Integer proId) {
         proService.rejectProByAdmin(adminId.getId(), proId);
-        return ResponseEntity.ok("The professional player has been rejected and deleted.");
+        return ResponseEntity.ok(new ApiResponse("The professional player has been rejected and deleted."));
     }
 
     @GetMapping("/cv/{proId}")
@@ -94,14 +94,14 @@ public class ProController {
     @PutMapping("/accept/{contractId}")
     public ResponseEntity acceptContract(@AuthenticationPrincipal User proId,@PathVariable Integer contractId) {
         contractService.acceptContract(proId.getPro().getId(), contractId);
-        return ResponseEntity.ok("Contract accepted.");
+        return ResponseEntity.ok(new ApiResponse("Contract accepted."));
     }
 
     // Reject contrat
     @PutMapping("/reject/{contractId}")
     public ResponseEntity rejectContract(@AuthenticationPrincipal User proId,@PathVariable Integer contractId) {
         contractService.rejectContract(proId.getId(), contractId);
-        return ResponseEntity.ok("Contract rejected.");
+        return ResponseEntity.ok(new ApiResponse("Contract rejected."));
     }
 
     @PostMapping("/expireAccount")

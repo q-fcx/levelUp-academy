@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Controller;
 
+import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.ContractDTO;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ContractService;
@@ -21,9 +22,9 @@ public class ContractController {
 //    }
 
     @PostMapping("/add/{moderatorId}")
-    public ResponseEntity<String> addContract(@PathVariable Integer moderatorId ,@RequestBody @Valid ContractDTO contractDTO) {
+    public ResponseEntity addContract(@PathVariable Integer moderatorId ,@RequestBody @Valid ContractDTO contractDTO) {
         contractService.addContract(moderatorId,contractDTO);
-        return ResponseEntity.ok("Contract added and email sent successfully.");
+        return ResponseEntity.ok(new ApiResponse("Contract added and email sent successfully."));
     }
 
 

@@ -42,14 +42,14 @@ public class ParentController {
     @PutMapping("/edit")
     public ResponseEntity editParent(@AuthenticationPrincipal User parent, @RequestBody ParentDTO parentDTO) {
             parentService.editParent(parent.getId(), parentDTO);
-            return ResponseEntity.status(200).body("Parent details updated successfully");
+            return ResponseEntity.status(200).body(new ApiResponse("Parent details updated successfully"));
 
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity deleteParent(@AuthenticationPrincipal User parent) {
         parentService.deleteParent(parent.getId());
-        return ResponseEntity.status(200).body("Parent deleted successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Parent deleted successfully"));
     }
 
     @PostMapping("/add-child")
@@ -81,7 +81,7 @@ public class ParentController {
     }
 
     @GetMapping("/get-child-stati-by-parent/{childId}")
-    public ResponseEntity<StatisticChild> getChildStatisticsByParent(@AuthenticationPrincipal User parentId, @PathVariable Integer childId) {
+    public ResponseEntity getChildStatisticsByParent(@AuthenticationPrincipal User parentId, @PathVariable Integer childId) {
         return ResponseEntity.ok(parentService.getMyChildStatisticsByChildId(parentId.getId(), childId));
     }
 

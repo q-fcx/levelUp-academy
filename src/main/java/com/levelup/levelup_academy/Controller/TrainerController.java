@@ -42,13 +42,13 @@ public class TrainerController {
     public ResponseEntity updateTrainer(@AuthenticationPrincipal User trainerId,
                                                 @RequestBody @Valid TrainerDTO trainerDTO){
         trainerService.updateTrainer(trainerId.getTrainer().getId(), trainerDTO);
-        return ResponseEntity.ok("Trainer updated successfully");
+        return ResponseEntity.ok(new ApiResponse("Trainer updated successfully"));
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity deleteTrainer(@AuthenticationPrincipal User trainerId){
         trainerService.deleteTrainer(trainerId.getTrainer().getId());
-        return ResponseEntity.ok("Trainer deleted successfully");
+        return ResponseEntity.ok(new ApiResponse("Trainer deleted successfully"));
     }
 
 
@@ -74,19 +74,19 @@ public class TrainerController {
     @PutMapping("/give-player/{playerId}")
     public ResponseEntity giveTrophyToPlayer(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId) {
         trainerService.giveTrophyToPlayer(trainerId.getTrainer().getId(), playerId);
-        return ResponseEntity.ok("Trophy granted to player if eligible.");
+        return ResponseEntity.ok(new ApiResponse("Trophy granted to player if eligible."));
     }
 
     @PutMapping("/give-pro/{proId}")
-    public ResponseEntity<String> giveTrophyToProfessional(@AuthenticationPrincipal User trainer, @PathVariable Integer proId) {
+    public ResponseEntity giveTrophyToProfessional(@AuthenticationPrincipal User trainer, @PathVariable Integer proId) {
         trainerService.giveTrophyToPro(trainer.getTrainer().getId(), proId);
-        return ResponseEntity.ok("Trophy granted to professional .");
+        return ResponseEntity.ok(new ApiResponse("Trophy granted to professional ."));
     }
 
     @PutMapping("/give-child/{childId}")
-    public ResponseEntity<String> giveTrophyToChild(@AuthenticationPrincipal User trainerId,@PathVariable Integer childId) {
+    public ResponseEntity giveTrophyToChild(@AuthenticationPrincipal User trainerId,@PathVariable Integer childId) {
         trainerService.giveTrophyToChild(trainerId.getId(), childId);
-        return ResponseEntity.ok("Trophy granted to child if eligible.");
+        return ResponseEntity.ok(new ApiResponse("Trophy granted to child if eligible."));
     }
 
 
@@ -110,9 +110,8 @@ public class TrainerController {
 
     @PostMapping("/send-promotion-request/{playerId}")
     public ResponseEntity sendPromotionRequestToModerator(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId) {
-        // Call the service to send the promotion request
         trainerService.sendPromotionRequestToModerator(trainerId.getId(),playerId);
-        return ResponseEntity.ok("Promotion request sent to Moderator successfully.");
+        return ResponseEntity.ok(new ApiResponse("Promotion request sent to Moderator successfully."));
     }
 
 
