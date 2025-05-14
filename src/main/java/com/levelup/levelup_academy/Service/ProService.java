@@ -90,7 +90,7 @@ public class ProService {
         String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
                 "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
                 "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
-                "<h2>🎓 Welcome to <b>LevelUp Academy</b>, " + proDTO.getFirstName() + "!</h2>" +
+                "<h2> Welcome to <b>LevelUp Academy</b>, " + proDTO.getFirstName() + "!</h2>" +
                 "<p style='font-size: 16px;'>We're thrilled to have you on board as a Pro.</p>" +
                 "<p style='font-size: 16px;'>Please wait while our team reviews your profile and approves your registration.</p>" +
                 "<p style='font-size: 14px;'>– The LevelUp Academy Team</p>" +

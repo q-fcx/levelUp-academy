@@ -10,12 +10,9 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -42,7 +39,7 @@ public class ProRepositoryTest {
         user.setRole("PRO");
 
         Pro pro = new Pro();
-        pro.setCvPath("cv1.pdf");
+        pro.setPdfPath("cv1.pdf");
         pro.setIsApproved(true);
         pro.setUser(user);
         user.setPro(pro);
@@ -51,7 +48,7 @@ public class ProRepositoryTest {
 
         Pro foundPro = proRepository.findProById(pro.getId());
         assertNotNull(foundPro);
-        assertEquals("cv1.pdf", foundPro.getCvPath());
+        assertEquals("cv1.pdf", foundPro.getPdfPath());
     }
 
     @Test
@@ -67,7 +64,7 @@ public class ProRepositoryTest {
         user.setRole("PRO");
 
         Pro pro = new Pro();
-        pro.setCvPath("cv2.pdf");
+        pro.setPdfPath("cv2.pdf");
         pro.setIsApproved(false);
         pro.setUser(user);
         user.setPro(pro);
@@ -78,7 +75,7 @@ public class ProRepositoryTest {
         assertFalse(unapprovedPros.isEmpty());
 
         boolean found = unapprovedPros.stream()
-                .anyMatch(p -> p.getCvPath().equals("cv2.pdf"));
+                .anyMatch(p -> p.getPdfPath().equals("cv2.pdf"));
         assertTrue(found);
     }
 }

@@ -69,6 +69,8 @@ public class ModeratorService {
         user.setUsername(moderatorDTO.getUsername());
         user.setPassword(moderatorDTO.getPassword());
         user.setEmail(moderatorDTO.getEmail());
+        String hashPassword = new BCryptPasswordEncoder().encode(moderatorDTO.getPassword());
+        user.setPassword(hashPassword);
         user.setFirstName(moderatorDTO.getFirstName());
         user.setLastName(moderatorDTO.getLastName());
 
