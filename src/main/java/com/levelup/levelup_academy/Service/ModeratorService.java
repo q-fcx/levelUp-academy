@@ -3,14 +3,8 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ModeratorDTO;
-import com.levelup.levelup_academy.Model.Contract;
-import com.levelup.levelup_academy.Model.Moderator;
-import com.levelup.levelup_academy.Model.Pro;
-import com.levelup.levelup_academy.Model.User;
-import com.levelup.levelup_academy.Repository.AuthRepository;
-import com.levelup.levelup_academy.Repository.ContractRepository;
-import com.levelup.levelup_academy.Repository.ModeratorRepository;
-import com.levelup.levelup_academy.Repository.ProRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +21,8 @@ public class ModeratorService {
     private final ContractRepository contractRepository;
     private final EmailNotificationService emailNotificationService;
     private final ProRepository proRepository;
+    private final ParentRepository parentRepository;
+    private final UltraMsgService ultraMsgService;
 
     //GET
     public List<Moderator> getAllModerator(Integer adminId){
@@ -69,6 +65,8 @@ public class ModeratorService {
         user.setUsername(moderatorDTO.getUsername());
         user.setPassword(moderatorDTO.getPassword());
         user.setEmail(moderatorDTO.getEmail());
+        String hashPassword = new BCryptPasswordEncoder().encode(moderatorDTO.getPassword());
+        user.setPassword(hashPassword);
         user.setFirstName(moderatorDTO.getFirstName());
         user.setLastName(moderatorDTO.getLastName());
 
@@ -103,16 +101,50 @@ public class ModeratorService {
         contract.setModeratorStatus(true);
         contractRepository.save(contract);
 
-
+        String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                "<h2>Contract Review Notice</h2>" +
+                "<p style='font-size: 16px;'>Dear <b>" + pro.getUser().getFirstName() + "</b>,</p>" +
+                "<p style='font-size: 16px;'>Your contract has been reviewed by our moderators and has been conditionally approved.</p>" +
+                "<p style='font-size: 16px; text-align: left; padding: 10px 0;'><b>Conditions:</b></p>" +
+                "<ul style='font-size: 15px; text-align: left; line-height: 1.6; padding-left: 20px;'>" +
+                "<li>A <b>10%</b> service fee will be deducted from your contract amount.</li>" +
+                "<li>Your account will be <b>temporarily paused</b> until you accept these conditions.</li>" +
+                "<li>You must maintain a <b>minimum rating of 4.5</b>.</li>" +
+                "<li>At least <b>5 sessions/month</b> are required to remain eligible for bonuses.</li>" +
+                "<li><b>Violations</b> of academy guidelines may result in termination.</li>" +
+                "<li>Payment will be processed <b>monthly</b> after session report approval.</li>" +
+                "<li>Monthly feedback meetings with moderators are <b>mandatory</b>.</li>" +
+                "</ul>" +
+                "<p style='font-size: 16px;'>Please log in to your dashboard to confirm or decline the contract.</p>" +
+                "<p style='font-size: 14px;'>– The LevelUp Academy Team</p>" +
+                "</div></body></html>";
             EmailRequest email = new EmailRequest();
             email.setRecipient(pro.getUser().getEmail());
             email.setSubject("Contract Reviewed");
-            email.setMessage("Your contract has been reviewed by the moderator. Please check your dashboard for further actions.");
+            email.setMessage(message);
 
             emailNotificationService.sendEmail(email);
 
     }
 
+    public void sendReportToParent(Integer parentId, String reportContent) {
+        Parent parent = parentRepository.findById(parentId)
+                .orElseThrow(() -> new ApiException("Parent not found"));
+
+        String phoneNumber = parent.getPhoneNumber();
+
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new ApiException("Parent phone number is missing");
+        }
+
+        String message = ":clipboard: *Child Progress Report*\n\n" +
+                reportContent + "\n\n" +
+                "Thank you for being part of LevelUp Academy!\n– The Moderator Team";
+
+        ultraMsgService.sendWhatsAppMessage(phoneNumber, message);
+    }
 
 
 }

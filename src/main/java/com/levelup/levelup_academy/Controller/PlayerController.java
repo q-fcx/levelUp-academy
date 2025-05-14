@@ -24,8 +24,8 @@ public class PlayerController {
 
      //GET
     @GetMapping("/get")
-    public ResponseEntity getAllPlayers(@AuthenticationPrincipal Integer moderatorId){
-        return ResponseEntity.status(200).body(playerService.getAllPlayers(moderatorId));
+    public ResponseEntity getAllPlayers(@AuthenticationPrincipal User moderator){
+        return ResponseEntity.status(200).body(playerService.getAllPlayers(moderator.getModerator().getId()));
     }
 
     //get player by moderator

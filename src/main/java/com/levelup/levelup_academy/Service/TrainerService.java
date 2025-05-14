@@ -46,7 +46,7 @@ public class TrainerService {
         List<TrainerDTOOut> dtoList = new ArrayList<>();
         for (Trainer trainer : trainers) {
             User user = trainer.getUser();
-            dtoList.add(new TrainerDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+            dtoList.add(new TrainerDTOOut(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(),user.getTrainer().getSessions()));
         }
         return dtoList;
     }

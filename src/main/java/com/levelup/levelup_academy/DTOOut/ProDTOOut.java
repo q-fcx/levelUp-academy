@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.DTOOut;
 
+import com.levelup.levelup_academy.Model.StatisticPro;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,4 +11,5 @@ public class ProDTOOut {
     private String firstName;
     private String lastName;
     private String email;
+    private StatisticPro statistics;
 }

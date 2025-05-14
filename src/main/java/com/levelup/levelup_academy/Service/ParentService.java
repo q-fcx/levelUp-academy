@@ -27,6 +27,7 @@ public class ParentService {
     private final ModeratorRepository moderatorRepository;
     private final EmailNotificationService emailNotificationService;
 
+
     public List<ParentDTOOut> getAllParents(Integer moderatorId) {
         Moderator moderator = moderatorRepository.findModeratorById(moderatorId);
         if(moderator == null) throw new ApiException("Moderator not found");
@@ -38,7 +39,8 @@ public class ParentService {
             List<ChildDTOOut> childDTOOuts = new ArrayList<>();
             for (Child child : parent.getChildren()){
                 User childUser = child.getParent().getUser();
-                childDTOOuts.add(new ChildDTOOut(childUser.getUsername(), childUser.getFirstName(), childUser.getLastName(),childUser.getEmail()));
+                StatisticChild statistics = child.getStatistics();
+                childDTOOuts.add(new ChildDTOOut(childUser.getUsername(), childUser.getFirstName(), childUser.getLastName(),childUser.getEmail(),statistics));
 
             }
             parentDTOOuts.add(new ParentDTOOut(parentUser.getUsername(),parentUser.getFirstName(),parentUser.getLastName(),parentUser.getEmail(),childDTOOuts));
@@ -51,7 +53,7 @@ public class ParentService {
         String hashPassword = new BCryptPasswordEncoder().encode(parentDTO.getPassword());
         User user = new User(null, parentDTO.getUsername(), hashPassword, parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
 
-        Parent parent = new Parent(null, user,null, null);
+        Parent parent = new Parent(null, user,parentDTO.getPhoneNumber(),null, null);
         authRepository.save(user);
         parentRepository.save(parent);
 
@@ -59,7 +61,7 @@ public class ParentService {
         String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; line-height: 1.6; background-color: #A53A10; padding: 40px 20px;'>" +
                 "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
                 "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
-                "<h2 style='color: #fff;'>👨‍👩‍👧 Welcome to <span style='color: #FFD700;'>LevelUp Academy</span>, " + parentDTO.getFirstName() + "!</h2>" +
+                "<h2 style='color: #fff;'>:family_mwg: Welcome to <span style='color: #FFD700;'>LevelUp Academy</span>, " + parentDTO.getFirstName() + "!</h2>" +
                 "<p style='font-size: 16px;'>We're excited to have you as part of our growing community of supportive parents.</p>" +
                 "<p style='font-size: 16px;'> Please don’t forget to <b>register your child</b> so they can begin their learning journey with us.</p>" +
                 "<p style='font-size: 16px;'> If you need any help, feel free to contact our support team anytime.</p>" +

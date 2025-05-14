@@ -36,7 +36,7 @@ public class ConfigurationSecurity {
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/parent/register", "/api/v1/player/register", "/api/v1/trainer/register", "/api/v1/pro/register").permitAll()
+                .requestMatchers("/api/v1/parent/register", "/api/v1/player/register", "/api/v1/trainer/register", "/api/v1/pro/register","/api/v1/contract/**","/api/v1/subscription/**", "/api/v1/payments/callback").permitAll()
 
                 .requestMatchers("/api/v1/parent/edit","/api/v1/parent/delete", "/api/v1/parent/add-child",
                                     "/api/v1/parent/update-child", "/api/v1/parent/delete-child", "/api/v1/parent/child-statistic","/api/v1/parent/get-games","/api/v1/parent/get-child-stati-by-parent").hasAuthority("PARENTS")

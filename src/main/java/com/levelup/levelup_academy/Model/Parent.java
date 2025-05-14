@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.util.List;
 import java.util.Set;
-@Data
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,13 +19,16 @@ public class Parent {
 
 
     @OneToOne
+    @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+    private String phoneNumber;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    private List<Child> children;
+    private Set<Child> children;
 
     @OneToOne
+    @JoinColumn(name = "booking_id")
     @JsonIgnore
     private Booking booking;
 

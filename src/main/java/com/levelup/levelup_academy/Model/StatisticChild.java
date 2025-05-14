@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -50,6 +51,7 @@ public class StatisticChild {
     private LocalDate date;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "child_id", referencedColumnName = "id", unique = true)
     private Child child;
 }

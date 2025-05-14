@@ -20,8 +20,11 @@ public class Trainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @JsonIgnore
     private String cvPath;
+    @JsonIgnore
     private Boolean isAvailable = false;
+    @JsonIgnore
     private Boolean isApproved=false;
 
 //    @Lob
@@ -38,7 +41,6 @@ public class Trainer {
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "trainer")
     private Set<Review> reviews;
-
 
 
 }

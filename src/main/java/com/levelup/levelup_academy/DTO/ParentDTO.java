@@ -30,6 +30,8 @@ public class ParentDTO {
     @NotEmpty(message = "lastName can not be empty")
     @Column(columnDefinition = "varchar(40) not null")
     private String lastName;
+    @Pattern(regexp = "^(05\\d{8}|\\+9665\\d{8}|9665\\d{8})$", message = "Invalid Saudi phone number format")
+    private String phoneNumber;
 
     @Column(columnDefinition = "varchar(40) not null")
     @Pattern(regexp = "^(ADMIN|MODERATOR|PLAYER|PRO|PARENTS)$", message = "Role must be ADMIN, MODERATOR, PLAYER, PRO or PARENTS only")
