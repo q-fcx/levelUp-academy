@@ -2,6 +2,7 @@ package com.levelup.levelup_academy.Service;
 
 
 import com.levelup.levelup_academy.Api.ApiException;
+import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ModeratorDTO;
 import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.Subscription;
@@ -25,6 +26,7 @@ public class UserService {
     private final AuthRepository authRepository;
     private final ModeratorRepository moderatorRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final EmailNotificationService emailNotificationService;
 
     public void register(User user) {
         User user1 = new User();
@@ -78,6 +80,29 @@ public class UserService {
         Moderator moderator = new Moderator(null,user,null);
         authRepository.save(user);
         moderatorRepository.save(moderator);
+
+        String message = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                "<h2>Welcome Aboard, " + moderatorDTO.getFirstName() + "!</h2>" +
+                "<p style='font-size: 16px;'>You've been successfully registered as a <b>Moderator</b> at <b>LevelUp Academy</b>.</p>" +
+                "<p style='font-size: 16px;'>Here are your login credentials:</p>" +
+                "<div style='background: #fff; color: #000; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 15px;'>" +
+                "<p><b>Username:</b> " + moderatorDTO.getUsername() + "</p>" +
+                "<p><b>Password:</b> " + moderatorDTO.getPassword() + "</p>" +  // Replace with your actual password value
+                "</div>" +
+                "<p style='font-size: 14px;'>Please change your password after logging in for security reasons.</p>" +
+                "<p style='font-size: 14px;'>– The LevelUp Academy Team</p>" +
+                "</div></body></html>";
+
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRecipient(moderatorDTO.getEmail());
+        emailRequest.setSubject("Welcome to LevelUp Academy – Moderator Access");
+        emailRequest.setMessage(message);
+
+        emailNotificationService.sendEmail(emailRequest);
+
+
 
     }
 }

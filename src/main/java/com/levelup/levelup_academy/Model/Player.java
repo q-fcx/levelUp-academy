@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne

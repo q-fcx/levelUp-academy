@@ -27,11 +27,11 @@ public class TrainerController {
     private final TrainerService trainerService;
     private final SessionService sessionService;
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> registerTrainer(
+    public ResponseEntity registerTrainer(
             @RequestPart("trainer") TrainerDTO trainerDTO,
             @RequestPart("file") MultipartFile file) {
         trainerService.registerTrainer(trainerDTO, file);
-        return ResponseEntity.ok("Trainer registered successfully with CV uploaded");
+        return ResponseEntity.status(200).body(new ApiResponse("Trainer registered successfully with CV uploaded"));
     }
 
     @GetMapping("/get")
