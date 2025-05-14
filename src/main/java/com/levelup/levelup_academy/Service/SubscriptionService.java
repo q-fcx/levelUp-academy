@@ -91,7 +91,7 @@ public class SubscriptionService {
             case "STANDARD":
                 subscription.setPackageType("STANDARD");
                 subscription.setSessionCount(8);
-                subscription.setPrice(1);
+                subscription.setPrice(300);
                 break;
             case "PREMIUM":
                 subscription.setPackageType("PREMIUM");
