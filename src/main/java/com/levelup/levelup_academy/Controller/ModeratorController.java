@@ -66,5 +66,10 @@ public class ModeratorController {
         proService.sendDiscordExamLink(moderator.getModerator().getId(),proId);
         return ResponseEntity.status(200).body("Discord exam link has been sent to the Pro.");
     }
+    @PostMapping("/send-report/{parentId}")
+    public ResponseEntity sendReport(@PathVariable Integer parentId, @RequestBody String reportMessage) {
+        moderatorService.sendReportToParent(parentId, reportMessage);
+        return ResponseEntity.status(200).body(new ApiResponse("Report sent to parent successfully."));
+    }
 
 }

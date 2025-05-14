@@ -3,14 +3,8 @@ package com.levelup.levelup_academy.Service;
 import com.levelup.levelup_academy.Api.ApiException;
 import com.levelup.levelup_academy.DTO.EmailRequest;
 import com.levelup.levelup_academy.DTO.ModeratorDTO;
-import com.levelup.levelup_academy.Model.Contract;
-import com.levelup.levelup_academy.Model.Moderator;
-import com.levelup.levelup_academy.Model.Pro;
-import com.levelup.levelup_academy.Model.User;
-import com.levelup.levelup_academy.Repository.AuthRepository;
-import com.levelup.levelup_academy.Repository.ContractRepository;
-import com.levelup.levelup_academy.Repository.ModeratorRepository;
-import com.levelup.levelup_academy.Repository.ProRepository;
+import com.levelup.levelup_academy.Model.*;
+import com.levelup.levelup_academy.Repository.*;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +21,8 @@ public class ModeratorService {
     private final ContractRepository contractRepository;
     private final EmailNotificationService emailNotificationService;
     private final ProRepository proRepository;
+    private final ParentRepository parentRepository;
+    private final UltraMsgService ultraMsgService;
 
     //GET
     public List<Moderator> getAllModerator(Integer adminId){
@@ -131,6 +127,22 @@ public class ModeratorService {
 
     }
 
+    public void sendReportToParent(Integer parentId, String reportContent) {
+        Parent parent = parentRepository.findById(parentId)
+                .orElseThrow(() -> new ApiException("Parent not found"));
+
+        String phoneNumber = parent.getPhoneNumber();
+
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new ApiException("Parent phone number is missing");
+        }
+
+        String message = ":clipboard: *Child Progress Report*\n\n" +
+                reportContent + "\n\n" +
+                "Thank you for being part of LevelUp Academy!\n– The Moderator Team";
+
+        ultraMsgService.sendWhatsAppMessage(phoneNumber, message);
+    }
 
 
 }

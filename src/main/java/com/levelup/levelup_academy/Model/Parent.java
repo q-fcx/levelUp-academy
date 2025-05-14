@@ -22,6 +22,7 @@ public class Parent {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+    private String phoneNumber;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     private Set<Child> children;
