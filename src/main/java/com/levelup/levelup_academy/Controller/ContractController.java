@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 public class ContractController {
     private final ContractService contractService;
 
-//    @GetMapping("/get")
-//    public ResponseEntity gatAllContract(){
-//        return ResponseEntity.status(200).body(contractService.getAllContract());
-//    }
+    @GetMapping("/get")
+    public ResponseEntity gatAllContract(@AuthenticationPrincipal User user){
+        return ResponseEntity.status(200).body(contractService.getAllContract(user.getPro().getId()));
+    }
 
     @PostMapping("/add/{moderatorId}")
     public ResponseEntity<String> addContract(@PathVariable Integer moderatorId ,@RequestBody @Valid ContractDTO contractDTO) {

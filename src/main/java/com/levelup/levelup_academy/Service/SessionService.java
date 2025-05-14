@@ -116,9 +116,9 @@ public class SessionService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime sessionTime = LocalTime.parse(session.getTime(), formatter);
-        LocalTime now = LocalTime.now().withSecond(0).withNano(0);
+        LocalTime now = LocalTime.now();
 
-        if (!now.equals(sessionTime)) {
+        if (!now.isBefore(sessionTime)) {
             throw new ApiException("Session has not started yet.");
         }
 
@@ -127,15 +127,19 @@ public class SessionService {
 
         for (Booking booking : bookings) {
             User user = booking.getUser();
-            String message = "<html><body style='font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;'>" +
-                    "<h2> Session Starting Now!</h2>" +
-                    "<p>Hi " + user.getFirstName() + ",</p>" +
-                    "<p>Your session <b>" + session.getName() + "</b> is starting now.</p>" +
-                    "<p><b>Game:</b> " + session.getGame() + "<br>" +
-                    "<b>Start Time:</b> " + session.getTime() + "<br>" +
-                    "<b>Date:</b> " + session.getStartDate() + "</p>" +
-                    "<p>Good luck!<br>– LevelUp Academy</p>" +
-                    "</body></html>";
+            String message = "<html><body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 30px;'>" +
+                    "<div style='max-width: 600px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>" +
+                    "<h2 style='color: #A53A10;'>🎮 Session Starting Now!</h2>" +
+                    "<p style='font-size: 16px; color: #333;'>Hi <b>" + user.getFirstName() + "</b>,</p>" +
+                    "<p style='font-size: 16px; color: #333;'>Your session <b>" + session.getName() + "</b> is starting now!</p>" +
+                    "<div style='background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 15px;'>" +
+                    "<p><b>🎮 Game:</b> " + session.getGame().getName() + "</p>" +
+                    "<p><b>🕒 Start Time:</b> " + session.getTime() + "</p>" +
+                    "</div>" +
+                    "<p style='font-size: 16px; color: #333;'>Good luck and have fun!</p>" +
+                    "<p style='font-size: 14px; color: #555;'>– The LevelUp Academy Team</p>" +
+                    "</div></body></html>";
+
 
             EmailRequest email = new EmailRequest();
             email.setRecipient(user.getEmail());

@@ -77,7 +77,7 @@ public class ProController {
 
     @GetMapping("/cv/{proId}")
     public ResponseEntity<byte[]> downloadProCv(@AuthenticationPrincipal User moderatorId,@PathVariable Integer proId) {
-        byte[] cvContent = proService.downloadProPDF(moderatorId.getId(),proId);
+        byte[] cvContent = proService.downloadProPDF(moderatorId.getModerator().getId(),proId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

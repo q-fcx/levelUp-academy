@@ -34,9 +34,9 @@ public class SubscriptionController {
 //        return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Premium Subscription"));
 //    }
 
-    @PostMapping("/subscribe/{userId}")
-    public ResponseEntity subscribeWithPayment(@PathVariable Integer userId, @RequestParam String packageType, @RequestBody PaymentRequest paymentRequest) {
-        return subscriptionService.subscribeWithPayment(userId, packageType, paymentRequest);
+    @PostMapping("/subscribe")
+    public ResponseEntity subscribeWithPayment(@AuthenticationPrincipal User user,@RequestParam String packageType, @RequestBody PaymentRequest paymentRequest) {
+        return subscriptionService.subscribeWithPayment(user.getId(), packageType, paymentRequest);
     }
     @GetMapping("/get-subs")
     public ResponseEntity gatAllSubs(@AuthenticationPrincipal User user){

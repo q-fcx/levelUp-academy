@@ -55,6 +55,8 @@ public class ModeratorService {
 
 
         authRepository.save(user);
+
+
     }
 
     public void updateModerator(Integer id, ModeratorDTO moderatorDTO){
