@@ -36,7 +36,7 @@ public class TrainerController {
 
     @GetMapping("/get")
     public ResponseEntity getAllTrainers(@AuthenticationPrincipal User moderator) {
-       return ResponseEntity.status(200).body(trainerService.getAllTrainers(moderator.getId()));
+       return ResponseEntity.status(200).body(trainerService.getAllTrainers(moderator.getModerator().getId()));
     }
     @PutMapping("/edit")
     public ResponseEntity updateTrainer(@AuthenticationPrincipal User trainerId,

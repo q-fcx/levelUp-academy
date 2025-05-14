@@ -16,7 +16,7 @@ public class Pro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String pdfPath;
+    private String cvPath;
 
     @OneToOne
     @JoinColumn(name = "user_id")

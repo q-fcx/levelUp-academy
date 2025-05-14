@@ -58,4 +58,5 @@ public class StatisticPlayer {
     @MapsId
     private Player player;
 
+
 }

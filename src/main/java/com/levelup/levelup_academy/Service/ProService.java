@@ -157,7 +157,7 @@ public class ProService {
         Pro pro = proRepository.findById(proId)
                 .orElseThrow(() -> new RuntimeException("Pro not found"));
 
-        String filePath = pro.getPdfPath();
+        String filePath = pro.getCvPath();
         if (filePath == null || filePath.isEmpty()) {
             throw new RuntimeException("CV not uploaded for this pro.");
         }

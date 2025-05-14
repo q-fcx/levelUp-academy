@@ -43,5 +43,4 @@ public class Trainer {
     private Set<Review> reviews;
 
 
-
 }
