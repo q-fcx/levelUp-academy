@@ -16,28 +16,25 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-//    @PostMapping("/basic")
-//    public ResponseEntity addBasicSubscription(@AuthenticationPrincipal User userId) {
-//        subscriptionService.basicSubscription(userId.getId());
-//        return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Basic Subscription"));
-//    }
-//
-//    @PostMapping("/standard")
-//    public ResponseEntity addStandardSubscription(@AuthenticationPrincipal User userId) {
-//        subscriptionService.standardSubscription(userId.getId());
-//        return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Standard Subscription"));
-//    }
-//
-//    @PostMapping("/premium")
-//    public ResponseEntity addPremiumSubscription(@AuthenticationPrincipal User userId) {
-//        subscriptionService.premiumSubscription(userId.getId());
-//        return ResponseEntity.status(200).body(new ApiResponse("you subscribed to Premium Subscription"));
-//    }
-
-    @PostMapping("/subscribe")
-    public ResponseEntity subscribeWithPayment(@AuthenticationPrincipal User user,@RequestParam String packageType, @RequestBody PaymentRequest paymentRequest) {
-        return subscriptionService.subscribeWithPayment(user.getId(), packageType, paymentRequest);
+    @PostMapping("/basic")
+    public ResponseEntity basicSubscription(@AuthenticationPrincipal User user, @RequestBody PaymentRequest paymentRequest) {
+        return subscriptionService.basicSubscription(user.getId(), paymentRequest);
     }
+
+@PostMapping("/standard")
+public ResponseEntity standardSubscription(@AuthenticationPrincipal User user, @RequestBody PaymentRequest paymentRequest) {
+    return subscriptionService.standardSubscription(user.getId(), paymentRequest);
+}
+
+@PostMapping("/premium")
+public ResponseEntity premiumSubscription(@AuthenticationPrincipal User user, @RequestBody PaymentRequest paymentRequest) {
+    return subscriptionService.premiumSubscription(user.getId(), paymentRequest);
+}
+
+//    @PostMapping("/subscribe/{userId}")
+//    public ResponseEntity subscribeWithPayment(@PathVariable Integer userId,@RequestParam String packageType, @RequestBody PaymentRequest paymentRequest) {
+//        return subscriptionService.subscribeWithPayment(userId, packageType, paymentRequest);
+//    }
     @GetMapping("/get-subs")
     public ResponseEntity gatAllSubs(@AuthenticationPrincipal User user){
         return ResponseEntity.status(200).body(subscriptionService.gatAllSubs(user.getId()));

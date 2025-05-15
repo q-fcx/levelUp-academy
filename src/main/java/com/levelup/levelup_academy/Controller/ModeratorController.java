@@ -5,6 +5,7 @@ import com.levelup.levelup_academy.DTO.ModeratorDTO;
 import com.levelup.levelup_academy.Model.Moderator;
 import com.levelup.levelup_academy.Model.User;
 import com.levelup.levelup_academy.Service.ModeratorService;
+import com.levelup.levelup_academy.Service.PlayerService;
 import com.levelup.levelup_academy.Service.ProService;
 import com.levelup.levelup_academy.Service.UserService;
 import jakarta.validation.Valid;
@@ -20,6 +21,7 @@ public class ModeratorController {
     private final ModeratorService moderatorService;
     private final ProService proService;
     private final UserService userService;
+    private  final PlayerService playerService;
 
     //GET
     @GetMapping("/get")
@@ -70,6 +72,12 @@ public class ModeratorController {
     public ResponseEntity sendReport(@PathVariable Integer parentId, @RequestBody String reportMessage) {
         moderatorService.sendReportToParent(parentId, reportMessage);
         return ResponseEntity.status(200).body(new ApiResponse("Report sent to parent successfully."));
+    }
+
+    @PostMapping("/promote/{playerId}")
+    public ResponseEntity PromotePlayerToPro(@AuthenticationPrincipal User user, @PathVariable Integer playerId) {
+        moderatorService.promotePlayerToPro(user.getModerator().getId(), playerId);
+        return ResponseEntity.status(200).body(new ApiResponse("Player promoted successfully"));
     }
 
 }

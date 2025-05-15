@@ -110,7 +110,7 @@ public class TrainerController {
 
     @PostMapping("/send-promotion-request/{playerId}")
     public ResponseEntity sendPromotionRequestToModerator(@AuthenticationPrincipal User trainerId, @PathVariable Integer playerId) {
-        trainerService.sendPromotionRequestToModerator(trainerId.getId(),playerId);
+        trainerService.sendPromotionRequestToModerator(trainerId.getTrainer().getId(),playerId);
         return ResponseEntity.ok(new ApiResponse("Promotion request sent to Moderator successfully."));
     }
 

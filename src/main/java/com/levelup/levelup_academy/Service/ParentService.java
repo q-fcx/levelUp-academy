@@ -53,7 +53,7 @@ public class ParentService {
         String hashPassword = new BCryptPasswordEncoder().encode(parentDTO.getPassword());
         User user = new User(null, parentDTO.getUsername(), hashPassword, parentDTO.getEmail(), parentDTO.getFirstName(), parentDTO.getLastName(), parentDTO.getRole(), LocalDate.now(),null,null,null,null,null,null,null,null);
 
-        Parent parent = new Parent(null, user,parentDTO.getPhoneNumber(),null, null);
+        Parent parent = new Parent(null, user,parentDTO.getPhoneNumber(),null);
         authRepository.save(user);
         parentRepository.save(parent);
 

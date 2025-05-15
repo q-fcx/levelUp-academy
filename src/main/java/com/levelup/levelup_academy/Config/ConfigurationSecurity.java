@@ -36,11 +36,11 @@ public class ConfigurationSecurity {
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/parent/register", "/api/v1/player/register", "/api/v1/trainer/register", "/api/v1/pro/register","/api/v1/contract/**", "/api/v1/payments/callback").permitAll()
+                .requestMatchers("/api/v1/parent/register", "/api/v1/player/register", "/api/v1/trainer/register", "/api/v1/pro/register","/api/v1/contract/**", "/api/v1/payments/**").permitAll()
 
                 .requestMatchers("/api/v1/parent/edit","/api/v1/parent/delete", "/api/v1/parent/add-child",
                                     "/api/v1/parent/update-child", "/api/v1/parent/delete-child", "/api/v1/parent/child-statistic","/api/v1/parent/get-games","/api/v1/parent/get-child-stati-by-parent").hasAuthority("PARENTS")
-                .requestMatchers("/api/v1/subscription/**").hasAnyAuthority("PARENTS","PLAYER")
+                .requestMatchers("/api/v1/subscription/basic","/api/v1/subscription/standard", "/api/v1/subscription/premium").hasAnyAuthority("PARENTS","PLAYER")
 
 
                 .requestMatchers("/api/v1/booking/add", "api/v1/booking/cancel", "api/v1/booking/check", "/api/v1/booking/get-all",
@@ -50,7 +50,7 @@ public class ConfigurationSecurity {
                 .requestMatchers("/api/v1/game/**","/api/v1/contract/**", "/api/v1/moderator/edit", "/api/v1/moderator/delete","/api/v1/parent/get",
                               "/api/v1/moderator/get-all-pro", "/api/v1/moderator/review-contract","/api/v1/moderator/send-exam","/api/v1/player/get","/api/v1/player/get-player",
                               "/api/v1/pro/get","/api/v1/pro/cv","/api/v1/review/get-all", "/api/v1/session/get", "/api/v1/session/add","/api/v1/session/update","/api/v1/session/del",
-                                "/api/v1/session/change-session","/api/v1/trainer/get").hasAuthority("MODERATOR")
+                                "/api/v1/session/change-session","/api/v1/trainer/get", "/api/v1/moderator/promote").hasAuthority("MODERATOR")
 
                 .requestMatchers("/api/v1/player/edit","/api/v1/player/delete","/api/v1/player/player").hasAuthority("PLAYER")
 
@@ -60,7 +60,7 @@ public class ConfigurationSecurity {
 
                 .requestMatchers("/api/v1/review/get-my-reviews","/api/v1/session/notify-start","/api/v1/trainer/get-players","/api/v1/child-statistic/**","/api/v1/player-statistic/**",
                                 "/api/v1/pro-statistic/**", "/api/v1/trainer/edit", "/api/v1/trainer/delete","/api/v1/trainer/give-player","/api/v1/trainer/give-pro","/api/v1/trainer/give-child",
-                                 "/api/v1/trainer/addStatisticToChild", "/api/v1/trainer/addStatisticToPlayer", "/api/v1/trainer/addStatisticToPro").hasAuthority("TRAINER")
+                                 "/api/v1/trainer/addStatisticToChild", "/api/v1/trainer/addStatisticToPlayer", "/api/v1/trainer/addStatisticToPro", "/api/v1/trainer/send-promotion-request").hasAuthority("TRAINER")
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutUrl("/api/v1/user/logout")
