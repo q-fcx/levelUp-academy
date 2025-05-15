@@ -34,8 +34,6 @@ public class TrainerService {
     private final SessionRepository sessionRepository;
     private final BookingRepository bookingRepository;
     private final ModeratorRepository moderatorRepository;
-    private final StatisticPlayerRepository statisticPlayerRepository;
-    private final StatisticChildRepository statisticChildRepository;
 
     //GET
     public List<TrainerDTOOut> getAllTrainers(Integer moderatorId) {
@@ -210,7 +208,7 @@ public class TrainerService {
         String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
         stat.setTrophy(trophy);
-        statisticPlayerRepository.save(stat);
+
     }
 
 
@@ -232,7 +230,6 @@ public class TrainerService {
         String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
         stat.setTrophy(trophy);
-//        statisticProRepository.save(stat);
     }
 
     public void giveTrophyToChild(Integer trainerId, Integer childId) {
@@ -253,7 +250,7 @@ public class TrainerService {
         String trophy = StatisticPlayerService.getTrophyFromRating(rating);
 
         stat.setTrophy(trophy);
-        statisticChildRepository.save(stat);
+//        statisticChildRepository.save(stat);
     }
 
 
@@ -306,9 +303,9 @@ public class TrainerService {
             new ApiException("Player not found");
         }
         String subject = "Promotion Request: Player to Pro";
-        String body = String.format("Trainer %s has recommended player %s for promotion to Pro.\n\n" +
-                        "Reason: %s",
-                trainer.getUser().getFirstName(), player.getUser().getUsername());
+        String body = String.format("Trainer %s has recommended player %s for promotion to Pro.\n\n",
+                trainer.getUser().getFirstName(),
+                player.getUser().getUsername());
 
         List<Moderator> moderators = moderatorRepository.findAll();
         for (Moderator moderator : moderators) {

@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Controller;
 
+import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.StatisticPlayerDTO;
 import com.levelup.levelup_academy.Model.StatisticPlayer;
 import com.levelup.levelup_academy.Model.StatisticPro;
@@ -22,13 +23,13 @@ public class StatisticPlayerController {
     @PostMapping("/create/{playerId}")
     public ResponseEntity createStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer playerId, @RequestBody @Valid StatisticPlayerDTO dto) {
         statisticPlayerService.createStatisticPlayer(trainerId.getId(), playerId, dto);
-        return ResponseEntity.status(201).body("Player statistic created");
+        return ResponseEntity.status(201).body(new ApiResponse("Player statistic created"));
     }
 
     @PutMapping("/update/{statId}")
     public ResponseEntity updateStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer statId, @RequestBody @Valid StatisticPlayerDTO dto) {
         statisticPlayerService.updateStatistic(trainerId.getId(),statId, dto);
-        return ResponseEntity.ok("Player statistic updated");
+        return ResponseEntity.ok(new ApiResponse("Player statistic updated"));
     }
 
     @GetMapping("/player/{playerId}")
@@ -45,7 +46,7 @@ public class StatisticPlayerController {
     @DeleteMapping("/delete/{statId}")
     public ResponseEntity deleteStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer statId) {
         statisticPlayerService.deleteStatistic(trainerId.getId(),statId);
-        return ResponseEntity.ok("Player statistic deleted");
+        return ResponseEntity.ok(new ApiResponse("Player statistic deleted"));
     }
     @GetMapping("/top-player-by-rating")
     public ResponseEntity<String> getTopPlayerByRating(@AuthenticationPrincipal User trainer) {
@@ -62,25 +63,25 @@ public class StatisticPlayerController {
 //        return ResponseEntity.ok(top5);
 //    }
     @PutMapping("/add-win/{statId}/{trainerId}")
-    public ResponseEntity<String> addWinToPlayer(@PathVariable Integer statId,@PathVariable Integer trainerId) {
+    public ResponseEntity addWinToPlayer(@PathVariable Integer statId,@PathVariable Integer trainerId) {
         statisticPlayerService.addWin(statId,trainerId);
-        return ResponseEntity.ok("Win added successfully");
+        return ResponseEntity.ok(new ApiResponse("Win added successfully"));
     }
     @PutMapping("/add-loss/{statId}/{trainerId}")
-    public ResponseEntity<String> addLossToPlayer(@PathVariable Integer statId,@PathVariable Integer trainerId) {
+    public ResponseEntity addLossToPlayer(@PathVariable Integer statId,@PathVariable Integer trainerId) {
         statisticPlayerService.addLoss(statId,trainerId);
-        return ResponseEntity.ok("Loss added successfully");
+        return ResponseEntity.ok(new ApiResponse("Loss added successfully"));
 
     }
     @PutMapping("/update-rating/{trainerId}/{statId}")
-    public ResponseEntity<String> updatePlayerRating(@PathVariable Integer trainerId,@PathVariable Integer statId) {
+    public ResponseEntity updatePlayerRating(@PathVariable Integer trainerId,@PathVariable Integer statId) {
         statisticPlayerService.updateRatingForPlayer(trainerId,statId);
-        return ResponseEntity.ok("Player rating updated successfully.");
+        return ResponseEntity.ok(new ApiResponse("Player rating updated successfully."));
     }
 
     @PostMapping("/notify-weak")
-    public ResponseEntity<String> notifyPlayer(@AuthenticationPrincipal User trainer) {
+    public ResponseEntity notifyPlayer(@AuthenticationPrincipal User trainer) {
         statisticPlayerService.notifyPlayerIfRateIsWeak(trainer.getId());
-        return ResponseEntity.ok("Emails sent to player of weak-performing.");
+        return ResponseEntity.ok(new ApiResponse("Emails sent to player of weak-performing."));
     }
 }

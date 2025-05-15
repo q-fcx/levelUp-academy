@@ -23,6 +23,7 @@ public class ModeratorService {
     private final ProRepository proRepository;
     private final ParentRepository parentRepository;
     private final UltraMsgService ultraMsgService;
+    private final PlayerRepository playerRepository;
 
     //GET
     public List<Moderator> getAllModerator(Integer adminId){
@@ -55,6 +56,8 @@ public class ModeratorService {
 
 
         authRepository.save(user);
+
+
     }
 
     public void updateModerator(Integer id, ModeratorDTO moderatorDTO){
@@ -144,6 +147,50 @@ public class ModeratorService {
                 "Thank you for being part of LevelUp Academy!\n– The Moderator Team";
 
         ultraMsgService.sendWhatsAppMessage(phoneNumber, message);
+    }
+
+    public void promotePlayerToPro(Integer moderateId,Integer playerId) {
+        Player player = playerRepository.findPlayerById(playerId);
+        if (player == null) {
+            throw new ApiException("Player is not found");
+        }
+        Moderator moderator = moderatorRepository.findModeratorById(moderateId);
+        if (moderator == null) {
+            throw new ApiException("Moderate is not found");
+        }
+//        Integer requireRate = 10;
+//        if (player.getStatistics().getRate() < requireRate) {
+//            throw new ApiException("Player does not reach enough rate to be promoted to Pro");
+//        }
+        String hashPassword = new BCryptPasswordEncoder().encode(player.getUser().getPassword());
+        User user = new User();
+        user.setPassword(hashPassword);
+        user.setFirstName(player.getUser().getFirstName());
+        user.setLastName(player.getUser().getLastName());
+        user.setRole("PRO");
+        user.setEmail(player.getUser().getEmail());
+        user.setUsername(player.getUser().getUsername());
+
+        Pro pro = new Pro();
+        pro.setUser(user);
+        pro.setIsApproved(true);
+
+        String subject = "Congratulations on Becoming a Pro! 🎉";
+
+        String body = String.format("Dear %s,\n\n" +
+                "Congratulations! You have been successfully promoted to a Pro player! 🎉\n\n" +
+                "We are thrilled to welcome you to the elite group of Pro players. Your achievements have earned you this well-deserved recognition. Keep up the great work!\n\n" +
+                "If you have any questions or need further assistance, feel free to contact support.\n\n" +
+                "Best regards,\nTeam", pro.getUser().getUsername());
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRecipient(pro.getUser().getEmail());
+        emailRequest.setSubject(subject);
+        emailRequest.setMessage(body);
+
+        emailNotificationService.sendEmail(emailRequest);
+
+        playerRepository.delete(player);
+        proRepository.save(pro);
     }
 
 

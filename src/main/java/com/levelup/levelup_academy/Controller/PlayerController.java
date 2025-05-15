@@ -48,9 +48,9 @@ public class PlayerController {
 
     // Delete player by ID
     @DeleteMapping("/delete")
-    public ResponseEntity<String> delete(@AuthenticationPrincipal User playerId) {
+    public ResponseEntity delete(@AuthenticationPrincipal User playerId) {
         playerService.deletePlayer(playerId.getId());
-        return ResponseEntity.ok("Player deleted successfully");
+        return ResponseEntity.ok(new ApiResponse("Player deleted successfully"));
     }
 
     @GetMapping("/player")

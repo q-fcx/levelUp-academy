@@ -264,12 +264,15 @@ public class ProService {
         }
         String discordChannelLink = "https://discord.gg/QPJfN6g5";
 
-        String emailMessage = "Dear " + pro.getUser().getUsername() + ",\n\n" +
-                "Please click the link below to join the Discord channel and demonstrate your professional skills:\n\n" +
-                discordChannelLink + "\n\n" +
-                "Best regards,\n" +
-                "The Team";
-
+        String emailMessage = "<html><body style='font-family: Arial, sans-serif; color: #fff; background-color: #A53A10; padding: 40px 20px;'>" +
+                "<div style='max-width: 600px; margin: auto; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; text-align: center;'>" +
+                "<img src='https://i.imgur.com/Q6FtCEu.jpeg' alt='LevelUp Academy Logo' style='width:90px; border-radius: 10px; margin-bottom: 20px;'/>" +
+                "<h2>Hello " + pro.getUser().getFirstName() + "!</h2>" +
+                "<p style='font-size: 16px;'>You're officially invited to join the upcoming <b>LevelUp Academy Exam</b>.</p>" +
+                "<p style='font-size: 16px;'>This is your chance to prove your skills and move to the next level! Be focused and do your best. 🎯</p>" +
+                "<a href='" + discordChannelLink + "' style='display: inline-block; margin-top: 20px; background-color: #fff; color: #A53A10; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;'>Join the Exam</a>" +
+                "<p style='font-size: 14px; margin-top: 30px;'>– The LevelUp Academy Team</p>" +
+                "</div></body></html>";
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setRecipient(pro.getUser().getEmail());
         emailRequest.setSubject("Discord Exam Link");

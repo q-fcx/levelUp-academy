@@ -27,9 +27,4 @@ public class Parent {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     private Set<Child> children;
 
-    @OneToOne
-    @JoinColumn(name = "booking_id")
-    @JsonIgnore
-    private Booking booking;
-
 }

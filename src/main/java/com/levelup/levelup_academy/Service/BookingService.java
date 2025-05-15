@@ -59,7 +59,6 @@ public class BookingService {
         if(subscription == null) throw new ApiException("Subscription not found");
         if(subscription.getSessionCount() <= 0) throw new ApiException("You have no remaining sessions in your subscription");
 
-        subscription.setSessionCount(subscription.getSessionCount() - 1);
         Booking booking = new Booking();
         booking.setBookDate(LocalDateTime.now());
         booking.setUser(user);

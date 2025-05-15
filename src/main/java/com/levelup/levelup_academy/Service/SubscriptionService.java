@@ -23,56 +23,7 @@ public class SubscriptionService {
     private final PaymentService paymentService;
 
 
-//    public void basicSubscription(Integer userId) {
-//        User user = authRepository.findUserById(userId);
-//        if (user == null) throw new ApiException("User not found");
-//
-//        Subscription subscription = new Subscription();
-//        subscription.setPackageType("BASIC");
-//        subscription.setStartDate(LocalDate.now());
-//        subscription.setEndDate(LocalDate.now().plusDays(30));
-//        subscription.setSessionCount(4);
-//        subscription.setPrice(200);
-//        subscription.setUser(user);
-//
-//        authRepository.save(user);
-//        subscriptionRepository.save(subscription);
-//
-//    }
-//
-//    public void standardSubscription(Integer userId) {
-//        User user = authRepository.findUserById(userId);
-//        if (user == null) throw new ApiException("User not found");
-//
-//        Subscription subscription = new Subscription();
-//        subscription.setPackageType("STANDARD");
-//        subscription.setStartDate(LocalDate.now());
-//        subscription.setEndDate(LocalDate.now().plusDays(30));
-//        subscription.setSessionCount(8);
-//        subscription.setPrice(300);
-//        subscription.setUser(user);
-//
-//        authRepository.save(user);
-//        subscriptionRepository.save(subscription);
-//    }
-//
-//    public void premiumSubscription(Integer userId) {
-//        User user = authRepository.findUserById(userId);
-//        if (user == null) throw new ApiException("User not found");
-//
-//        Subscription subscription = new Subscription();
-//        subscription.setPackageType("PREMIUM");
-//        subscription.setStartDate(LocalDate.now());
-//        subscription.setEndDate(LocalDate.now().plusDays(30));
-//        subscription.setSessionCount(12);
-//        subscription.setPrice(600);
-//        subscription.setUser(user);
-//
-//        authRepository.save(user);
-//        subscriptionRepository.save(subscription);
-//    }
-
-    public ResponseEntity subscribeWithPayment(Integer userId, String packageType, PaymentRequest paymentRequest) {
+    public ResponseEntity basicSubscription(Integer userId, PaymentRequest paymentRequest) {
         User user = authRepository.findUserById(userId);
         if (user == null) throw new ApiException("User not found");
 
@@ -81,29 +32,12 @@ public class SubscriptionService {
         subscription.setStartDate(LocalDate.now());
         subscription.setEndDate(LocalDate.now().plusDays(30));
         subscription.setStatus("PENDING");
-
-        switch (packageType.toUpperCase()) {
-            case "BASIC":
-                subscription.setPackageType("BASIC");
-                subscription.setSessionCount(4);
-                subscription.setPrice(200);
-                break;
-            case "STANDARD":
-                subscription.setPackageType("STANDARD");
-                subscription.setSessionCount(8);
-                subscription.setPrice(300);
-                break;
-            case "PREMIUM":
-                subscription.setPackageType("PREMIUM");
-                subscription.setSessionCount(12);
-                subscription.setPrice(600);
-                break;
-            default:
-                throw new ApiException("Invalid package type");
-        }
+        subscription.setPackageType("BASIC");
+        subscription.setSessionCount(4);
+        subscription.setPrice(200);
 
         paymentRequest.setAmount(subscription.getPrice());
-        paymentRequest.setDescription("Subscription: " + packageType);
+        paymentRequest.setDescription("Subscription: BASIC");
         paymentRequest.setCallbackUrl("http://localhost:8080/api/v1/payments/callback");
 
         ResponseEntity<String> response = paymentService.processPayment(paymentRequest);
@@ -116,13 +50,111 @@ public class SubscriptionService {
         return response;
     }
 
-
-    public List<Subscription> gatAllSubs(Integer userId){
+    public ResponseEntity standardSubscription(Integer userId, PaymentRequest paymentRequest) {
         User user = authRepository.findUserById(userId);
-        if (user == null){
-            throw new ApiException("User not found");
+        if (user == null) throw new ApiException("User not found");
+
+        Subscription subscription = new Subscription();
+        subscription.setUser(user);
+        subscription.setStartDate(LocalDate.now());
+        subscription.setEndDate(LocalDate.now().plusDays(30));
+        subscription.setStatus("PENDING");
+        subscription.setPackageType("STANDARD");
+        subscription.setSessionCount(8);
+        subscription.setPrice(300);
+
+        paymentRequest.setAmount(subscription.getPrice());
+        paymentRequest.setDescription("Subscription: STANDARD");
+        paymentRequest.setCallbackUrl("http://localhost:8080/api/v1/payments/callback");
+
+        ResponseEntity<String> response = paymentService.processPayment(paymentRequest);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            subscription.setStatus("ACTIVE");
         }
-        return subscriptionRepository.findAll();
+
+        subscriptionRepository.save(subscription);
+        return response;
     }
+
+    public ResponseEntity premiumSubscription(Integer userId, PaymentRequest paymentRequest) {
+        User user = authRepository.findUserById(userId);
+        if (user == null) throw new ApiException("User not found");
+
+        Subscription subscription = new Subscription();
+        subscription.setUser(user);
+        subscription.setStartDate(LocalDate.now());
+        subscription.setEndDate(LocalDate.now().plusDays(30));
+        subscription.setStatus("PENDING");
+        subscription.setPackageType("PREMIUM");
+        subscription.setSessionCount(12);
+        subscription.setPrice(600);
+
+        paymentRequest.setAmount(subscription.getPrice());
+        paymentRequest.setDescription("Subscription: PREMIUM");
+        paymentRequest.setCallbackUrl("http://localhost:8080/api/v1/payments/callback");
+
+        ResponseEntity<String> response = paymentService.processPayment(paymentRequest);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            subscription.setStatus("ACTIVE");
+        }
+
+        subscriptionRepository.save(subscription);
+        return response;
+    }
+
+//    public ResponseEntity subscribeWithPayment(Integer userId, String packageType, PaymentRequest paymentRequest) {
+//        User user = authRepository.findUserById(userId);
+//        if (user == null) throw new ApiException("User not found");
+//
+//        Subscription subscription = new Subscription();
+//        subscription.setUser(user);
+//        subscription.setStartDate(LocalDate.now());
+//        subscription.setEndDate(LocalDate.now().plusDays(30));
+//        subscription.setStatus("PENDING");
+//
+//        switch (packageType.toUpperCase()) {
+//            case "BASIC":
+//                subscription.setPackageType("BASIC");
+//                subscription.setSessionCount(4);
+//                subscription.setPrice(200);
+//                break;
+//            case "STANDARD":
+//                subscription.setPackageType("STANDARD");
+//                subscription.setSessionCount(8);
+//                subscription.setPrice(300);
+//                break;
+//            case "PREMIUM":
+//                subscription.setPackageType("PREMIUM");
+//                subscription.setSessionCount(12);
+//                subscription.setPrice(600);
+//                break;
+//            default:
+//                throw new ApiException("Invalid package type");
+//        }
+//
+//        paymentRequest.setAmount(subscription.getPrice());
+//        paymentRequest.setDescription("Subscription: " + packageType);
+//        paymentRequest.setCallbackUrl("http://localhost:8080/api/v1/payments/callback");
+//
+//        ResponseEntity<String> response = paymentService.processPayment(paymentRequest);
+//
+//        if (response.getStatusCode().is2xxSuccessful()) {
+//            subscription.setStatus("ACTIVE");
+//        }
+//
+//        subscriptionRepository.save(subscription);
+//        return response;
+//    }
+//
+//
+//    public List<Subscription> gatAllSubs(Integer userId){
+//        User user = authRepository.findUserById(userId);
+//        if (user == null){
+//            throw new ApiException("User not found");
+//        }
+//        return subscriptionRepository.findAll();
+//    }
 
 }

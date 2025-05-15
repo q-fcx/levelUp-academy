@@ -1,5 +1,6 @@
 package com.levelup.levelup_academy.Controller;
 
+import com.levelup.levelup_academy.Api.ApiResponse;
 import com.levelup.levelup_academy.DTO.StatisticChildDTO;
 import com.levelup.levelup_academy.Model.StatisticChild;
 import com.levelup.levelup_academy.Model.User;
@@ -21,13 +22,13 @@ public class StatisticChildController {
     @PostMapping("/create/{childId}")
     public ResponseEntity createStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer childId, @RequestBody @Valid StatisticChildDTO dto) {
         statisticChildService.createStatisticChild(trainerId.getId(), childId, dto);
-        return ResponseEntity.status(201).body("Child statistic created");
+        return ResponseEntity.status(201).body(new ApiResponse("Child statistic created"));
     }
 
     @PutMapping("/update/{statId}")
     public ResponseEntity updateStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer statId, @RequestBody @Valid StatisticChildDTO dto) {
         statisticChildService.updateStatistic(trainerId.getId(),statId, dto);
-        return ResponseEntity.ok("Child statistic updated");
+        return ResponseEntity.ok(new ApiResponse("Child statistic updated"));
     }
 
 
@@ -44,7 +45,7 @@ public class StatisticChildController {
     @DeleteMapping("/delete/{statId}")
     public ResponseEntity deleteStatistic(@AuthenticationPrincipal User trainerId,@PathVariable Integer statId) {
         statisticChildService.deleteStatistic(trainerId.getId(),statId);
-        return ResponseEntity.ok("Child statistic deleted");
+        return ResponseEntity.ok(new ApiResponse("Child statistic deleted"));
     }
     @GetMapping("/top-child-by-rating")
     public ResponseEntity<String> getTopChildByRating(@AuthenticationPrincipal User trainerId) {
@@ -57,26 +58,26 @@ public class StatisticChildController {
 //        return ResponseEntity.ok(top5);
 //    }
     @PutMapping("/add-win/{statId}")
-    public ResponseEntity<String> addWinToChild(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
+    public ResponseEntity addWinToChild(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
         statisticChildService.addWin(trainer.getId(),statId);
-        return ResponseEntity.ok("Win added successfully");
+        return ResponseEntity.ok(new ApiResponse("Win added successfully"));
     }
     @PutMapping("/add-loss/{statId}")
-    public ResponseEntity<String> addLossToChild(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
+    public ResponseEntity addLossToChild(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
         statisticChildService.addLoss(trainer.getId(),statId);
-        return ResponseEntity.ok("Loss added successfully");
+        return ResponseEntity.ok(new ApiResponse("Loss added successfully"));
     }
 
     @PutMapping("/update-rating/{statId}")
-    public ResponseEntity<String> updateChildRating(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
+    public ResponseEntity updateChildRating(@AuthenticationPrincipal User trainer,@PathVariable Integer statId) {
         statisticChildService.updateRatingForChild(trainer.getId(),statId);
-        return ResponseEntity.ok("Child rating updated successfully.");
+        return ResponseEntity.ok(new ApiResponse("Child rating updated successfully."));
     }
 
     @PostMapping("/notify-weak")
-    public ResponseEntity<String> notifyParents(@AuthenticationPrincipal User trainer) {
+    public ResponseEntity notifyParents(@AuthenticationPrincipal User trainer) {
         statisticChildService.notifyParentsIfChildRateIsWeak(trainer.getId());
-        return ResponseEntity.ok("Emails sent to parents of weak-performing children.");
+        return ResponseEntity.ok(new ApiResponse("Emails sent to parents of weak-performing children."));
     }
 
 }
