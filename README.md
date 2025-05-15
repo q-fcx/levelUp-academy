@@ -9,17 +9,14 @@ Our goal is to create a safe and effective environment that fosters youth develo
 
 LevelUp Academy is the place where learning and professionalism meet, bringing together trainers, professionals, and companies on one platform to exchange knowledge and opportunities.
 
-----
 
-# Class Diagram 
+# ER Diagram
 ![image](https://github.com/user-attachments/assets/4c1cee2e-a66f-43ac-8429-506e15113292)
 
-----
 
 # Postman Documentation
 https://documenter.getpostman.com/view/42844633/2sB2qUoQNQ
 
-----
 
 # Figma Design
 https://www.figma.com/design/aV8HrntxoVro76ryTkFKG8/LevelUp-Academy?node-id=0-1&t=B32aiecSCd7B8BWb-1
